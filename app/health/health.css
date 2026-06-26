@@ -1,0 +1,415 @@
+/* ═══════════════ מרכז הבריאות - סגנון מקומי ═══════════════ */
+/* פלטת קרם-לברדור בלבד. אין ירוקים. כל הצבעים נשענים על המשתנים הגלובליים
+   (--brand #c99a5b, --brand-light #e8c887, --cream #fbf7ef, --ink #2a2018,
+   --text #241a12) או על גוונים נגזרים מהם. */
+
+/* ── דרגות דחיפות (סולם חום-ענבר חם, בלי אדום זועק) ── */
+:root {
+  --u-emergency: #b4452a;   /* חמרה - דחיפות עליונה, גוון אדמדם-חום חמים */
+  --u-urgent: #c9772f;      /* כתום-ענבר */
+  --u-watch: #b08841;       /* חרדל רגוע */
+}
+
+/* ── Hero ── */
+.health-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  padding: 56px 28px;
+  margin-bottom: 28px;
+  text-align: center;
+  background: linear-gradient(160deg, #fdf6e9, #fbf7ef);
+  border: 1px solid rgba(201, 154, 91, 0.12);
+}
+.health-hero-inner { position: relative; z-index: 1; }
+
+/* ── סקשנים ── */
+.health-section { margin: 40px 0; }
+.health-head { margin-bottom: 26px; }
+.health-head .section-title { margin-top: 4px; }
+.health-head-sub {
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 1.7;
+  max-width: 640px;
+  margin-top: 12px;
+}
+
+/* ═════════════ הצהרה וטרינרית ═════════════ */
+.vet-disc {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: linear-gradient(120deg, rgba(232, 200, 135, 0.16), rgba(201, 154, 91, 0.08));
+  border: 1px solid rgba(201, 154, 91, 0.3);
+  border-right: 5px solid var(--brand);
+  border-radius: 18px;
+  padding: 20px 24px;
+  margin: 8px 0;
+}
+.vet-disc-badge {
+  flex-shrink: 0;
+  background: var(--brand);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: var(--chip-lg-pad);
+  border-radius: var(--pill-radius);
+  white-space: nowrap;
+}
+.vet-disc-text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #3a3128;
+  font-weight: 600;
+  margin: 0;
+}
+.vet-disc-inline {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--brand-dark);
+  margin: 18px 0 0;
+}
+.vet-disc-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand);
+  flex-shrink: 0;
+}
+
+/* ═════════════ טריאז' ═════════════ */
+.triage-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.triage-filter {
+  background: #fff;
+  border: 1.5px solid #e2dccf;
+  color: #5e5346;
+  padding: 10px 18px;
+  min-height: 44px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+.triage-filter:hover { border-color: var(--brand); color: #241a12; }
+.triage-filter.on {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+/* מקרא */
+.triage-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  list-style: none;
+  padding: 16px 20px;
+  margin: 0 0 18px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 16px;
+}
+.triage-legend-item { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.triage-legend-label { font-weight: 800; color: #241a12; }
+.triage-legend-timing { color: var(--text-soft); font-size: 13px; }
+
+.u-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.u-dot-sm { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; background: var(--brand); }
+.u-emergency { background: var(--u-emergency); }
+.u-urgent { background: var(--u-urgent); }
+.u-watch { background: var(--u-watch); }
+
+/* רשימת אקורדיונים */
+.triage-list { display: flex; flex-direction: column; gap: 10px; }
+.triage-item {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: box-shadow 0.25s, border-color 0.25s;
+}
+.triage-item:hover { box-shadow: 0 8px 28px rgba(42, 32, 24, 0.08); }
+.triage-item[open] { box-shadow: 0 12px 36px rgba(42, 32, 24, 0.1); }
+.u-border-emergency { border-right: 5px solid var(--u-emergency); }
+.u-border-urgent { border-right: 5px solid var(--u-urgent); }
+.u-border-watch { border-right: 5px solid var(--u-watch); }
+
+.triage-summary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 22px;
+  cursor: pointer;
+  list-style: none;
+  min-height: 56px;
+  font-weight: 700;
+}
+.triage-summary::-webkit-details-marker { display: none; }
+.u-pill {
+  flex-shrink: 0;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  padding: var(--chip-md-pad);
+  border-radius: var(--pill-radius);
+  white-space: nowrap;
+}
+.u-pill.u-emergency { background: var(--u-emergency); }
+.u-pill.u-urgent { background: var(--u-urgent); }
+.u-pill.u-watch { background: var(--u-watch); }
+.triage-sign {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 800;
+  color: #241a12;
+  letter-spacing: -0.2px;
+}
+.triage-chevron {
+  flex-shrink: 0;
+  color: var(--brand-dark);
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+.triage-item[open] .triage-chevron { transform: rotate(180deg); }
+
+.triage-body {
+  padding: 0 22px 20px 22px;
+  border-top: 1px solid #f1ece2;
+}
+.triage-detail {
+  font-size: 15px;
+  line-height: 1.75;
+  color: #3a3128;
+  margin: 16px 0 0;
+}
+.triage-action {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 14px 0 0;
+  padding: 12px 16px;
+  background: rgba(232, 200, 135, 0.12);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #3a3128;
+  line-height: 1.55;
+}
+.triage-action .u-dot-sm { margin-top: 6px; }
+
+/* ═════════════ חיסונים ═════════════ */
+.vax-track {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
+/* קו אנכי שמחבר את השלבים */
+.vax-track::before {
+  content: '';
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  right: 17px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--brand-light), rgba(201, 154, 91, 0.25));
+}
+.vax-step {
+  position: relative;
+  display: flex;
+  gap: 20px;
+  padding: 0 0 18px 0;
+}
+.vax-step:last-child { padding-bottom: 0; }
+.vax-node {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 900;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 4px var(--cream);
+}
+.vax-card {
+  flex: 1;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  padding: 18px 22px;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.vax-card:hover { transform: var(--hover-lift-sm); box-shadow: var(--hover-shadow-sm); }
+.vax-age {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--brand-dark);
+  background: rgba(232, 200, 135, 0.16);
+  padding: var(--chip-md-pad);
+  border-radius: var(--pill-radius);
+  margin-bottom: 8px;
+}
+.vax-title { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; margin: 0 0 6px; }
+.vax-detail { font-size: 15px; line-height: 1.7; color: #3a3128; margin: 0; }
+.vax-tag {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--brand-dark);
+  border: 1px solid rgba(201, 154, 91, 0.4);
+  padding: var(--chip-md-pad);
+  border-radius: var(--pill-radius);
+}
+
+/* ═════════════ עונות ═════════════ */
+.season-switch {
+  display: inline-flex;
+  gap: 4px;
+  padding: 5px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 100px;
+  margin-bottom: 22px;
+}
+.season-tab {
+  background: transparent;
+  border: none;
+  color: #5e5346;
+  padding: 11px 26px;
+  min-height: 44px;
+  border-radius: 100px;
+  font-size: 15px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.season-tab:hover { color: #241a12; }
+.season-tab.on { background: var(--brand); color: #fff; }
+
+.season-panel {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+.season-intro { font-size: 16px; line-height: 1.7; color: #3a3128; margin: 0 0 18px; }
+.season-tips { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.season-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #3a3128;
+}
+.season-check {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(232, 200, 135, 0.25);
+  color: var(--brand-dark);
+  font-size: 13px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+.season-flag {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 22px 0 0;
+  padding: 16px 20px;
+  background: linear-gradient(120deg, rgba(180, 69, 42, 0.08), rgba(201, 119, 47, 0.06));
+  border: 1px solid rgba(180, 69, 42, 0.25);
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.6;
+  color: #3a3128;
+}
+.season-flag-label {
+  background: var(--u-emergency);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: var(--chip-lg-pad);
+  border-radius: var(--pill-radius);
+  white-space: nowrap;
+}
+
+/* ═════════════ ערכת חירום ═════════════ */
+.kit {
+  background: var(--ink);
+  border-radius: 22px;
+  padding: 34px;
+  border: 1px solid rgba(232, 200, 135, 0.18);
+}
+.kit-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 28px; }
+.kit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.88);
+}
+.kit-mark {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(232, 200, 135, 0.16);
+  color: var(--brand-light);
+  font-size: 13px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+.kit-cta { margin-top: 26px; }
+
+/* ═════════════ רספונסיב ═════════════ */
+@media (max-width: 720px) {
+  .health-hero { padding: 44px 20px; }
+  .kit { padding: 24px; }
+  .kit-list { grid-template-columns: 1fr; }
+  .triage-summary { gap: 10px; padding: 16px 18px; flex-wrap: wrap; }
+  .triage-sign { font-size: 15px; flex-basis: 100%; order: 3; }
+  .season-tab { padding: 11px 20px; }
+}
+
+/* ═════════════ נגישות: הפחתת תנועה ═════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .triage-chevron,
+  .vax-card:hover { transition: none !important; transform: none !important; }
+}

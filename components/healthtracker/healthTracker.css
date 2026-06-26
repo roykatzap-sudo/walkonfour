@@ -1,0 +1,277 @@
+/* ──────────────────────────────────────────────────────────────
+   מעקב בריאות אישי לכלב - סגנונות מקומיים.
+   פלטת קרם-לברדור בלבד (--brand / --brand-light / --cream / --ink).
+   ────────────────────────────────────────────────────────────── */
+
+/* כותרת בלוק */
+.ht-block-head { margin-bottom: 20px; }
+.ht-block-sub {
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 1.7;
+  margin: 8px 0 0;
+  max-width: 720px;
+}
+
+.ht-dog-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.ht-remove-dog {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  flex-shrink: 0;
+}
+
+.ht-sub-h {
+  font-size: 19px;
+  font-weight: 900;
+  color: var(--ink);
+  margin: 0 0 14px;
+}
+
+/* ── טפסים ── */
+.ht-form { display: flex; flex-direction: column; gap: 18px; }
+
+.ht-field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+.ht-field { display: flex; flex-direction: column; gap: 7px; }
+.ht-field-wide { grid-column: 1 / -1; }
+
+.ht-label {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ink);
+}
+.ht-req { color: var(--brand-dark); }
+.ht-opt {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-soft);
+}
+.ht-help {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.ht-form .input { width: 100%; }
+.ht-form select.input { cursor: pointer; }
+
+.ht-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  cursor: pointer;
+}
+.ht-check input[type='checkbox'] {
+  margin-top: 3px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--brand);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.ht-error {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #8a3a1a;
+  background: #f7e4d6;
+  border: 1.5px solid #d9a37e;
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+
+.ht-form-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* ── בורר כלבים ── */
+.ht-dog-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+.ht-dog-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  text-align: start;
+  padding: 12px 18px;
+  min-height: 44px;
+  border-radius: 16px;
+  border: 1.5px solid rgba(201, 154, 91, 0.3);
+  background: #fff;
+  color: var(--ink);
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+.ht-dog-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--brand);
+}
+.ht-dog-chip.is-active {
+  background: linear-gradient(160deg, #fdf6e9, #fbf7ef);
+  border-color: var(--brand);
+  box-shadow: var(--shadow-brand-sm);
+}
+.ht-dog-name { font-size: 16px; font-weight: 900; }
+.ht-dog-meta { font-size: 12.5px; color: var(--text-muted); font-weight: 600; }
+
+/* ── פריסת תיק הכלב ── */
+.ht-dog-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .ht-dog-grid { grid-template-columns: 1fr; gap: 32px; }
+}
+
+/* ── ציר זמן ── */
+.ht-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+/* קו אנכי לאורך הציר */
+.ht-timeline::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 7px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: rgba(201, 154, 91, 0.3);
+}
+.ht-tl-item {
+  position: relative;
+  padding-inline-start: 30px;
+}
+.ht-tl-node {
+  position: absolute;
+  inset-inline-start: 0;
+  top: 22px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--brand);
+  border: 3px solid var(--cream);
+  box-shadow: 0 0 0 2px rgba(201, 154, 91, 0.4);
+}
+.ht-tl-card { padding: 18px 20px; }
+.ht-tl-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.ht-tl-type {
+  display: block;
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--ink);
+}
+.ht-tl-date {
+  display: block;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-top: 2px;
+}
+.ht-tl-del {
+  flex-shrink: 0;
+  background: none;
+  border: 1.5px solid rgba(201, 154, 91, 0.35);
+  border-radius: 100px;
+  padding: 6px 14px;
+  min-height: 36px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--brand-dark);
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+.ht-tl-del:hover {
+  border-color: var(--brand-dark);
+  background: #fdf6e9;
+}
+.ht-tl-note {
+  margin: 10px 0 0;
+  font-size: 14.5px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.ht-tl-reminder {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* ── חיווי תקלת אחסון ── */
+.ht-storage-warn {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 24px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: #fdf6e9;
+  border: 1.5px solid var(--brand);
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+.ht-storage-icon {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* כיבוד הפחתת תנועה - ביטול הזחות hover */
+@media (prefers-reduced-motion: reduce) {
+  .ht-dog-chip,
+  .ht-dog-chip:hover {
+    transform: none;
+    transition: none;
+  }
+}

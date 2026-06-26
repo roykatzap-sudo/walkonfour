@@ -1,0 +1,358 @@
+/* ============================================================
+   homepage.css - utility classes extracted from app/page.tsx
+   פלטת קרם-לברדור בלבד. אין ירוקים. משתני CSS מ-globals.css.
+   ============================================================ */
+
+/* ── tokens משלימים (נשענים על globals.css) ── */
+:root {
+  --kv-card-bg: #fff;
+  --kv-card-muted: var(--text-soft);   /* מאוחד ל-token הגלובלי - מונע הגדרה כפולה של גוון משני */
+  --kv-pill-bg: #f6ecda;               /* רקע תגית סנד רך בטונים קרמיים */
+  --kv-pill-fg: #a97c46;               /* טקסט תגית - חום-לברדור, קונטרסט AA על הסנד */
+  --kv-card-shadow: 0 14px 34px rgba(42, 32, 24, 0.12);
+  --kv-card-shadow-lg: 0 16px 38px rgba(42, 32, 24, 0.14);
+}
+
+/* ── סקשן רוחב מלא עם ריווח אחיד (ערים / גזעים) ── */
+.kv-section {
+  padding: 64px 24px;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+.kv-section--breeds {
+  padding: 72px 24px;
+}
+
+/* ── גריד כרטיסים רספונסיבי (auto-fit, ממלא רוחב) ── */
+.kv-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-top: 28px;
+}
+.kv-card-grid--breeds {
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 22px;
+}
+
+/* ── קישור-כרטיס (במקום inline על ה-Link) ── */
+.kv-card-link {
+  text-decoration: none;
+  display: block;
+  height: 100%;
+  border-radius: 24px;
+}
+/* פוקוס נראה לניווט מקלדת - נגישות */
+.kv-card-link:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 3px;
+}
+
+/* ── גוף הכרטיס ── */
+.kv-card {
+  border-radius: 24px;
+  overflow: hidden;
+  background: var(--kv-card-bg);
+  box-shadow: var(--kv-card-shadow);
+  height: 100%;
+}
+.kv-card--breeds {
+  border-radius: 24px;
+  box-shadow: var(--kv-card-shadow-lg);
+}
+
+/* ── מדיה עליונה בכרטיס ── */
+.kv-card-media {
+  position: relative;
+  height: 138px;
+  overflow: hidden;
+}
+.kv-card-media--breeds {
+  height: 168px;
+}
+.kv-card-media--breeds img {
+  object-position: center top;
+}
+.kv-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* נקודת-צבע של עיר (פינה עליונה) */
+.kv-card-dot {
+  position: absolute;
+  top: 12px;
+  inset-inline-start: 12px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.7);
+}
+
+/* תגית גודל גזע (פינה עליונה) */
+.kv-card-size {
+  position: absolute;
+  top: 12px;
+  inset-inline-end: 12px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: var(--pill-radius);
+  padding: 5px 11px;
+}
+
+/* ── תוכן הכרטיס ── */
+.kv-card-body {
+  padding: 16px 18px;
+}
+.kv-card-name {
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--ink);
+}
+.kv-card-name--breeds {
+  font-size: 19px;
+}
+.kv-card-meta {
+  margin-top: 4px;
+  color: var(--kv-card-muted);
+  font-size: 14px;
+}
+.kv-card-en {
+  margin-top: 3px;
+  color: var(--kv-card-muted);
+  font-size: 13px;
+  direction: ltr;
+  text-align: right;
+}
+
+/* תגית "חברים" של עיר */
+.kv-pill {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--kv-pill-fg);
+  background: var(--kv-pill-bg);
+  border-radius: var(--pill-radius);
+  padding: 5px 12px;
+}
+
+/* שורת תגיות אופי (גזעים) */
+.kv-tag-row {
+  margin-top: 10px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.kv-tag {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--kv-pill-fg);
+  background: var(--kv-pill-bg);
+  border-radius: var(--pill-radius);
+  padding: 4px 10px;
+}
+
+/* מד אנרגיה (גזעים) */
+.kv-energy {
+  margin-top: 12px;
+  color: #c99a5b;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+.kv-energy-off {
+  opacity: 0.25;
+}
+
+/* ── עדות: איפוס margin של figure בתוך .tc ── */
+.tc-fig {
+  margin: 0;
+}
+
+/* ── עוטף ה-HERO (היה inline position:relative) ── */
+.hero-layer {
+  position: relative;
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* ── תמונת ה-HERO עם הפרלקס (טרנספורם נשלט ב-ref) ── */
+.hero-tilt {
+  transform: perspective(900px) rotateY(0deg) rotateX(0deg);
+  transition: transform 0.2s ease-out;
+  height: 100%;
+}
+
+/* ── מילוי גובה מלא (היה inline height:100% בכרטיסים) ── */
+.kv-fill-h {
+  height: 100%;
+}
+
+/* ── מיישרי קישור/כפתור (היו inline) ── */
+.kv-block-link {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}
+.kv-inline-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+/* ── reduced-motion: ביטול הטיית ה-HERO ── */
+@media (prefers-reduced-motion: reduce) {
+  .hero-tilt {
+    transition: none;
+  }
+}
+
+/* ── מסכים זעירים (iPhone SE ‏375px ומטה): עמודה אחת, ריווח צד מצומצם ── */
+@media (max-width: 380px) {
+  .kv-card-grid,
+  .kv-card-grid--breeds {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .kv-section {
+    padding: 48px 16px;
+  }
+  .kv-section--breeds {
+    padding: 56px 16px;
+  }
+}
+
+/* ============================================================
+   רצועת "קורה עכשיו" - רגעים אנושיים שמתחלפים. פלטת קרם-לברדור.
+   רקע כהה (--ink) כדי לקשור ויזואלית ל-hero שמעליה ולמרקיזה שמתחתיה.
+   ============================================================ */
+.ln-wrap {
+  background: var(--ink);
+  border-top: 1px solid rgba(232, 200, 135, 0.12);
+  padding: 14px 24px;
+}
+.ln-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.ln-tag {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--brand-light);
+  white-space: nowrap;
+}
+.ln-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand-light);
+  box-shadow: 0 0 0 0 rgba(232, 200, 135, 0.5);
+  animation: ln-pulse 2s infinite;
+}
+@keyframes ln-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(232, 200, 135, 0.45); }
+  70% { box-shadow: 0 0 0 7px rgba(232, 200, 135, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(232, 200, 135, 0); }
+}
+.ln-feed {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+.ln-line {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  animation: ln-in 0.5s ease-out;
+}
+.ln-line strong {
+  color: #fff;
+  font-weight: 800;
+}
+.ln-ago {
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 400;
+}
+@keyframes ln-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.ln-dots {
+  flex-shrink: 0;
+  display: flex;
+  gap: 5px;
+}
+.ln-pip {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  transition: background 0.3s, width 0.3s;
+}
+.ln-pip.on {
+  width: 16px;
+  border-radius: 100px;
+  background: var(--brand-light);
+}
+@media (max-width: 600px) {
+  .ln-dots { display: none; }
+  .ln-line { font-size: 13px; }
+  .ln-tag { font-size: 10px; letter-spacing: 1.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ln-dot { animation: none; }
+  .ln-line { animation: none; }
+}
+
+/* ============================================================
+   פתק מייסד - שובר את סימטריית עמודת ה-hero. כרטיס סנד עם רוטציה קלה.
+   ============================================================ */
+.fn-card {
+  margin-top: 36px;
+  max-width: 340px;
+  background: rgba(251, 247, 239, 0.06);
+  border: 1px solid rgba(232, 200, 135, 0.22);
+  border-inline-start: 3px solid var(--brand-light);
+  border-radius: 4px 16px 16px 4px;
+  padding: 18px 20px;
+  transform: rotate(-1.2deg);
+}
+.fn-text {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.82);
+}
+.fn-sign {
+  margin: 10px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--brand-light);
+}
+@media (max-width: 480px) {
+  .fn-card { transform: none; max-width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fn-card { transform: none; }
+}
