@@ -11,16 +11,15 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  if (!waitlistConfigured()) {
-    return NextResponse.json({ ok: false, configured: false })
-  }
-  // rate limit: עד 5 הרשמות לדקה לכל IP (מונע ספאם/הצפת רשימה)
+  // rate limit + הגבלת גודל body - חלים תמיד, לפני כל לוגיקה (מונע ספאם/הצפה/probing)
   if (rateLimited(`${clientIp(req)}:waitlist`, 5, 60_000)) {
     return NextResponse.json({ ok: false, error: 'rate' }, { status: 429 })
   }
-  // הגבלת גודל body (מונע payload ענק)
   if (Number(req.headers.get('content-length') || 0) > 2000) {
     return NextResponse.json({ ok: false, error: 'too_large' }, { status: 413 })
+  }
+  if (!waitlistConfigured()) {
+    return NextResponse.json({ ok: false, configured: false })
   }
   const body = await req.json().catch(() => ({}))
   const email = String(body?.email ?? '').trim().toLowerCase()
