@@ -40,7 +40,14 @@ const fredoka = Fredoka({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   alternates: { canonical: SITE_URL },
-  icons: { icon: '/icon.png', shortcut: '/icon.png', apple: '/icon.png' },
+  icons: {
+    // אייקון יחיד וברור, מספיק גדול (512²) שגוגל יזהה - בלי כפילויות וה-sizes הקטן שבלבל אותו
+    icon: [
+      { url: '/icon.png', type: 'image/png', sizes: '512x512' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    apple: '/icon.png',
+  },
   title: 'קהילה על ארבע - גזעי כלבים, אילוף וקהילת בעלי הכלבים בישראל',
   description:
     'מדריך גזעי כלבים, חידון "איזה כלב מתאים לי", מדריכי אילוף, מחשבונים, מפת גינות כלבים, אימוץ וקהילות לפי עיר - כל מה שבעל כלב בישראל צריך, במקום אחד.',
