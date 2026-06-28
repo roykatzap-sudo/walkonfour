@@ -5,6 +5,7 @@ import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { getCityHub, cityHubSlugs, allCityHubs } from '@/lib/cityHubs'
 import { CityParksList } from '@/components/city/CityParksList'
+import { SuggestMissing } from '@/components/city/SuggestMissing'
 
 export function generateStaticParams() {
   return cityHubSlugs().map((slug) => ({ slug }))
@@ -132,6 +133,9 @@ export default function CityPage({ params }: { params: { slug: string } }) {
           </Link>
         </section>
       )}
+
+      {/* הצעה למשהו חסר - בכל מדריכי הערים */}
+      <SuggestMissing city={community.name} />
 
       {/* ערים נוספות - קישור פנימי */}
       {others.length > 0 && (
