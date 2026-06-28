@@ -82,7 +82,7 @@ export function ArticleSearch() {
                           style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }}
                         />
                         {breed?.name && (
-                          <span className="chip3d-dark" aria-hidden="true" style={{ position: 'absolute', top: 12, insetInlineStart: 12, backdropFilter: 'blur(6px)', background: 'rgba(42,32,24,.62)', color: '#fff', border: '1px solid rgba(255,255,255,.3)' }}>
+                          <span className="chip3d-dark" aria-hidden="true" style={{ position: 'absolute', bottom: 12, insetInlineStart: 12, backdropFilter: 'blur(6px)', background: 'rgba(42,32,24,.62)', color: '#fff', border: '1px solid rgba(255,255,255,.3)' }}>
                             {breed.name}
                           </span>
                         )}
