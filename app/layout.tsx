@@ -11,6 +11,7 @@ import { SkipLink } from '@/components/a11y/SkipLink'
 import { AccessibilityMenu } from '@/components/a11y/AccessibilityMenu'
 import { ClickBurst } from '@/components/fx/ClickBurst'
 import { FacebookCTA } from '@/components/fx/FacebookCTA'
+import { GlobalSuggest } from '@/components/fx/GlobalSuggest'
 import { RouteProgress } from '@/components/fx/RouteProgress'
 import { JsonLd, organizationSchema, websiteSchema } from '@/components/seo/JsonLd'
 import { Analytics } from '@vercel/analytics/next'
@@ -98,6 +99,7 @@ export default function RootLayout({
           <AccessibilityMenu />
           <ClickBurst />
           <FacebookCTA />
+          <GlobalSuggest />
         </ToastProvider>
         <Analytics />
       </body>

@@ -27,33 +27,42 @@ function makeClient(): Client {
 const CREATE_SQL = `
   create table if not exists suggestions (
     id bigint generated always as identity primary key,
-    city text not null,
+    page text,
+    city text,
     type text not null,
     name text not null,
     details text,
     status text not null default 'pending',
     created_at timestamptz default now()
   )`
+// לטבלאות קיימות: מוסיף page ומסיר את חובת city (הצעות גלובליות בלי עיר)
+const ALTER_SQL = [
+  'alter table suggestions add column if not exists page text',
+  'alter table suggestions alter column city drop not null',
+]
 
 /** מוסיף הצעה. type חייב להיות אחד מ-SUGGESTION_TYPES (נאכף גם כאן). */
 export async function addSuggestion(s: {
-  city: string
+  page: string | null
+  city: string | null
   type: string
   name: string
   details: string | null
 }): Promise<boolean> {
   if (!suggestionsConfigured()) return false
-  const type = (SUGGESTION_TYPES as readonly string[]).includes(s.type) ? s.type : 'other'
+  const type = (SUGGESTION_TYPES as readonly string[]).includes(s.type) ? s.type : 'general'
   const client = makeClient()
   try {
     await client.connect()
     await client.query(CREATE_SQL)
+    for (const a of ALTER_SQL) await client.query(a)
     await client.query(
-      'insert into suggestions (city, type, name, details) values ($1, $2, $3, $4)',
-      [s.city, type, s.name, s.details],
+      'insert into suggestions (page, city, type, name, details) values ($1, $2, $3, $4, $5)',
+      [s.page, s.city, type, s.name, s.details],
     )
     return true
-  } catch {
+  } catch (e) {
+    console.error('[suggestions] add failed', e)
     return false
   } finally {
     try { await client.end() } catch {}
@@ -68,11 +77,12 @@ export async function listSuggestions(status?: string, city?: string): Promise<S
   try {
     await client.connect()
     await client.query(CREATE_SQL)
+    for (const a of ALTER_SQL) await client.query(a)
     const where: string[] = []
     const vals: string[] = []
     if (safeStatus) { vals.push(safeStatus); where.push(`status = $${vals.length}`) }
     if (city) { vals.push(city); where.push(`city = $${vals.length}`) }
-    const sql = `select id, city, type, name, details, status, created_at from suggestions
+    const sql = `select id, page, city, type, name, details, status, created_at from suggestions
                  ${where.length ? 'where ' + where.join(' and ') : ''}
                  order by created_at desc limit 1000`
     const res = await client.query(sql, vals)

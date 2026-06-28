@@ -16,14 +16,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, configured: false })
   }
   const body = await req.json().catch(() => ({}))
-  const city = typeof body?.city === 'string' ? body.city.trim().slice(0, 60) : ''
-  const type = typeof body?.type === 'string' ? body.type.trim() : ''
+  const page = typeof body?.page === 'string' && body.page.trim() ? body.page.trim().slice(0, 120) : null
+  const city = typeof body?.city === 'string' && body.city.trim() ? body.city.trim().slice(0, 60) : null
+  const type = typeof body?.type === 'string' && (SUGGESTION_TYPES as readonly string[]).includes(body.type.trim()) ? body.type.trim() : 'general'
   const name = typeof body?.name === 'string' ? body.name.trim().slice(0, 80) : ''
   const details = typeof body?.details === 'string' && body.details.trim() ? body.details.trim().slice(0, 500) : null
-  if (!city || !name || !(SUGGESTION_TYPES as readonly string[]).includes(type)) {
+  // חובה: שם + הקשר (עמוד או עיר). הסוג נופל ל-general אם לא תקין.
+  if (!name || (!page && !city)) {
     return NextResponse.json({ ok: false, error: 'input' }, { status: 400 })
   }
-  const ok = await addSuggestion({ city, type, name, details })
+  const ok = await addSuggestion({ page, city, type, name, details })
   return ok
     ? NextResponse.json({ ok: true })
     : NextResponse.json({ ok: false, error: 'server' }, { status: 500 })

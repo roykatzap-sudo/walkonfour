@@ -51,13 +51,14 @@ export function AdminSuggestions() {
 
   useEffect(() => { if (authed && token) load(token, tab) }, [authed, token, tab, load])
 
-  // קיבוץ לפי עיר
+  // קיבוץ לפי העמוד שממנו הוצעה ההצעה (ואם אין - לפי עיר / כללי)
   const byCity = useMemo(() => {
     const m = new Map<string, Suggestion[]>()
     for (const s of items) {
-      const arr = m.get(s.city) || []
+      const key = s.page || (s.city ? `עיר: ${s.city}` : 'כללי')
+      const arr = m.get(key) || []
       arr.push(s)
-      m.set(s.city, arr)
+      m.set(key, arr)
     }
     return Array.from(m.entries()).sort((a, b) => b[1].length - a[1].length)
   }, [items])
@@ -142,7 +143,7 @@ export function AdminSuggestions() {
                         </div>
                         {s.details && <div style={{ fontSize: 14, color: '#5f574c', marginTop: 6, lineHeight: 1.5 }}>{s.details}</div>}
                         <div style={{ fontSize: 12.5, color: '#8a7c66', marginTop: 6 }}>
-                          {new Date(s.created_at).toLocaleDateString('he-IL')}
+                          {s.city ? `📍 ${s.city} · ` : ''}{s.page ? `${s.page} · ` : ''}{new Date(s.created_at).toLocaleDateString('he-IL')}
                         </div>
                       </div>
                       <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>

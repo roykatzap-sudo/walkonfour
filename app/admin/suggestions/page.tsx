@@ -14,7 +14,7 @@ export default function AdminSuggestionsPage() {
       <span className="section-tag">אדמין</span>
       <h1 className="page-title" style={{ fontSize: 34, marginBottom: 6 }}>הצעות מהקהילה</h1>
       <p className="page-sub" style={{ fontSize: 15.5, color: '#6a6155', marginBottom: 24 }}>
-        כל ההצעות למדריכי הערים, מקובצות לפי עיר. לכל הצעה מסומן הסוג (גינה / מסלול / דוג-פרנדלי).
+        כל ההצעות מהמשתמשים, מקובצות לפי העמוד שממנו נשלחו. לכל הצעה מסומן הסוג (גינה / מסלול / דוג-פרנדלי / גזע / כללי).
       </p>
       <AdminSuggestions />
     </main>

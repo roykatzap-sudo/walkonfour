@@ -24,7 +24,7 @@ export function SuggestMissing({ city }: { city: string }) {
       const res = await fetch('/api/suggestions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ city, type, name, details }),
+        body: JSON.stringify({ page: typeof window !== 'undefined' ? window.location.pathname : null, city, type, name, details }),
       })
       const data = await res.json()
       if (data.ok) setState('done')
