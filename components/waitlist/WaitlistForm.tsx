@@ -16,6 +16,7 @@ export function WaitlistForm({ initialCount }: { initialCount: number }) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [city, setCity] = useState('')
+  const [consent, setConsent] = useState(false)
   const [state, setState] = useState<'idle' | 'sending' | 'done' | 'dup' | 'error' | 'badEmail'>('idle')
   const [count, setCount] = useState(initialCount)
 
@@ -27,7 +28,7 @@ export function WaitlistForm({ initialCount }: { initialCount: number }) {
       const res = await fetch('/api/waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, city }),
+        body: JSON.stringify({ name, email, city, consent }),
       })
       const data = await res.json()
       if (data.ok) {
@@ -104,6 +105,19 @@ export function WaitlistForm({ initialCount }: { initialCount: number }) {
           נפתח קודם בערים עם הכי הרבה ביקוש - סמנו איזו עיר מעניינת אתכם.
         </span>
       </div>
+      {/* opt-in מפורש לדיוור (חוק הספאם) - לא מסומן מראש, לא חובה */}
+      <label style={{ display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.55, cursor: 'pointer', textAlign: 'start' }}>
+        <input
+          type="checkbox"
+          checked={consent}
+          onChange={(e) => setConsent(e.target.checked)}
+          style={{ marginTop: 3, width: 18, height: 18, flexShrink: 0, accentColor: 'var(--brand)', cursor: 'pointer' }}
+        />
+        <span>
+          אני מאשר/ת קבלת עדכונים והצעות מקהילה על ארבע במייל. אפשר להסיר בכל עת בקליק.{' '}
+          <a href="/privacy" style={{ color: 'var(--brand-dark)', fontWeight: 700 }}>מדיניות הפרטיות</a>
+        </span>
+      </label>
       <div style={{ textAlign: 'center', fontSize: 15, fontWeight: 800, color: 'var(--brand-dark)' }}>
         ✓ ההצטרפות חינמית לחלוטין, לתמיד
       </div>

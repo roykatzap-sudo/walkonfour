@@ -29,7 +29,9 @@ export async function POST(req: Request) {
   const city = typeof body?.city === 'string' && body.city.trim() ? body.city.trim().slice(0, 60) : null
   // שם פרטי/כינוי בלבד, אופציונלי, מוגבל ל-40 תווים (לא שם מלא - לפי מדיניות הפרטיות)
   const name = typeof body?.name === 'string' && body.name.trim() ? body.name.trim().slice(0, 40) : null
-  const result = await waitlistAdd(email, name, city)
+  // הסכמה מפורשת לדיוור שיווקי (opt-in) - חוק הספאם. ברירת מחדל false.
+  const consent = body?.consent === true
+  const result = await waitlistAdd(email, name, city, consent)
   if (result === 'err') return NextResponse.json({ ok: false, error: 'server' }, { status: 500 })
   return NextResponse.json({ ok: true, configured: true, dup: result === 'dup', count: await waitlistCount() })
 }

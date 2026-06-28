@@ -38,8 +38,11 @@ const CREATE_SQL = `
     email text not null unique,
     name text,
     city text,
+    marketing_consent boolean not null default false,
     created_at timestamptz default now()
   )`
+// לטבלאות קיימות - מוסיף את עמודת ההסכמה אם חסרה (idempotent)
+const ALTER_SQL = `alter table waitlist add column if not exists marketing_consent boolean not null default false`
 
 /** ספירת נרשמים אמיתית (0 אם לא מוגדר / טבלה עוד לא קיימת). */
 export async function waitlistCount(): Promise<number> {
@@ -61,20 +64,41 @@ export async function waitlistAdd(
   email: string,
   name: string | null,
   city: string | null,
+  consent = false,
 ): Promise<'ok' | 'dup' | 'err'> {
   if (!waitlistConfigured()) return 'err'
   const client = makeClient()
   try {
     await client.connect()
     await client.query(CREATE_SQL) // יצירת הטבלה אם עוד לא קיימת (idempotent)
+    await client.query(ALTER_SQL)  // הוספת עמודת ההסכמה לטבלאות ישנות
     const res = await client.query(
-      `insert into waitlist (email, name, city) values ($1, $2, $3)
+      `insert into waitlist (email, name, city, marketing_consent) values ($1, $2, $3, $4)
        on conflict (email) do nothing returning id`,
-      [email, name, city],
+      [email, name, city, consent],
     )
     return (res.rowCount ?? 0) > 0 ? 'ok' : 'dup'
   } catch {
     return 'err'
+  } finally {
+    try { await client.end() } catch {}
+  }
+}
+
+/** הסרה מדיוור (חוק הספאם): מבטל את ההסכמה לשיווק. מחזיר true אם נמצא ועודכן. */
+export async function waitlistUnsubscribe(email: string): Promise<boolean> {
+  if (!waitlistConfigured()) return false
+  const client = makeClient()
+  try {
+    await client.connect()
+    await client.query(ALTER_SQL)
+    const res = await client.query(
+      'update waitlist set marketing_consent = false where lower(email) = lower($1)',
+      [email],
+    )
+    return (res.rowCount ?? 0) > 0
+  } catch {
+    return false
   } finally {
     try { await client.end() } catch {}
   }
