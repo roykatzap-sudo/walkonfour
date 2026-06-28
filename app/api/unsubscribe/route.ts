@@ -11,6 +11,9 @@ export async function POST(req: Request) {
   if (rateLimited(`${clientIp(req)}:unsub`, 10, 60_000)) {
     return NextResponse.json({ ok: false, error: 'rate' }, { status: 429 })
   }
+  if (Number(req.headers.get('content-length') || 0) > 2000) {
+    return NextResponse.json({ ok: false, error: 'too_large' }, { status: 413 })
+  }
   if (!waitlistConfigured()) return NextResponse.json({ ok: false, configured: false })
   const body = await req.json().catch(() => ({}))
   const email = String(body?.email ?? '').trim().toLowerCase()

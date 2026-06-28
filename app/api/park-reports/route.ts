@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { reportsConfigured, addParkReport, approvedParkReports } from '@/lib/parkReports'
+import { clientIp, rateLimited } from '@/lib/rateLimit'
 
 export const dynamic = 'force-dynamic'
 
@@ -11,6 +12,12 @@ export async function GET() {
 
 /** ציבורי: שליחת דיווח על גינה חסרה (נשמר כ-pending). */
 export async function POST(req: Request) {
+  if (rateLimited(`${clientIp(req)}:parkreport`, 5, 60_000)) {
+    return NextResponse.json({ ok: false, error: 'rate' }, { status: 429 })
+  }
+  if (Number(req.headers.get('content-length') || 0) > 3000) {
+    return NextResponse.json({ ok: false, error: 'too_large' }, { status: 413 })
+  }
   if (!reportsConfigured()) {
     return NextResponse.json({ ok: false, configured: false })
   }

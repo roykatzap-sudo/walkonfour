@@ -17,7 +17,7 @@ export function WaitlistForm({ initialCount }: { initialCount: number }) {
   const [email, setEmail] = useState('')
   const [city, setCity] = useState('')
   const [consent, setConsent] = useState(false)
-  const [state, setState] = useState<'idle' | 'sending' | 'done' | 'dup' | 'error' | 'badEmail'>('idle')
+  const [state, setState] = useState<'idle' | 'sending' | 'done' | 'dup' | 'error' | 'badEmail' | 'rate'>('idle')
   const [count, setCount] = useState(initialCount)
 
   async function submit(e: React.FormEvent) {
@@ -36,6 +36,8 @@ export function WaitlistForm({ initialCount }: { initialCount: number }) {
         setState(data.dup ? 'dup' : 'done')
       } else if (data.error === 'email') {
         setState('badEmail')
+      } else if (data.error === 'rate') {
+        setState('rate')
       } else {
         setState('error')
       }
@@ -127,6 +129,11 @@ export function WaitlistForm({ initialCount }: { initialCount: number }) {
       {state === 'badEmail' && (
         <div role="alert" style={{ fontSize: 14, fontWeight: 700, color: '#a23c2e', textAlign: 'center', lineHeight: 1.5 }}>
           כתובת האימייל לא נראית תקינה. בדקו ונסו שוב.
+        </div>
+      )}
+      {state === 'rate' && (
+        <div role="alert" style={{ fontSize: 14, fontWeight: 700, color: '#a23c2e', textAlign: 'center', lineHeight: 1.5 }}>
+          יותר מדי ניסיונות. נסו שוב בעוד דקה.
         </div>
       )}
       {state === 'error' && (

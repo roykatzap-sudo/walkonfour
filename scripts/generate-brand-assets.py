@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-מחולל נכסי המותג של כלבניה - og-default.jpg ו-icon.png.
+מחולל נכסי המותג של קהילה על ארבע - og-default.jpg ו-icon.png.
 
 מפיק שני קבצים תחת public/:
   • og-default.jpg  (1200×630)  - תמונת Open Graph / Twitter card לכל עמוד.
@@ -169,9 +169,9 @@ def build_og(ss=4):
                  outline=ACCENT, width=4 * ss)
     draw_paw(base, coin_cx, coin_cy - 0.0475 * 95 * ss, 95 * ss, BG)
 
-    # wordmark "כלבניה"
+    # wordmark "קהילה על ארבע"
     f_word = ImageFont.truetype(FONT_PATH, 158 * ss)
-    draw_centered(draw, W / 2, 250 * ss, "כלבניה", f_word, DARK,
+    draw_centered(draw, W / 2, 250 * ss, "קהילה על ארבע", f_word, DARK,
                   stroke=2 * ss)
 
     # קו זהב מפריד
@@ -184,11 +184,11 @@ def build_og(ss=4):
     # tagline
     f_tag = ImageFont.truetype(FONT_PATH, 50 * ss)
     draw_centered(draw, W / 2, 462 * ss,
-                  "קהילת בעלי הכלבים הגדולה בישראל", f_tag, TEXT)
+                  "קהילת בעלי הכלבים ", f_tag, TEXT)
 
     # כתובת האתר (לטינית, LTR) - פונט לטיני נפרד + ריווח אותיות קל
     f_url = ImageFont.truetype(LATIN_FONT_PATH, 30 * ss)
-    url = "kelvanya.co.il"
+    url = "walkonfour.org"
     tracking = 4 * ss
     widths = [f_url.getbbox(ch)[2] for ch in url]
     total = sum(widths) + tracking * (len(url) - 1)
