@@ -13,8 +13,9 @@ import { usePathname } from 'next/navigation'
 const FB_GROUP = 'https://www.facebook.com/share/g/18wnLhr9tn/'
 const LS_KEY = 'kv-fb-cta-dismissed'
 
-// בדפים האלה הרשמה לרשימת ההמתנה היא המטרה - לא מנדנדים עם פייסבוק.
-const SUPPRESS_ON = ['/', '/waitlist']
+// בדפים האלה לא מקפיצים פופ-אפ פייסבוק: עמודי המרה (/, /waitlist) ועמוד המפה
+// האינטראקטיבי (/map) - שם הפופ-אפ מכסה את המפה.
+const SUPPRESS_ON = ['/', '/waitlist', '/map']
 
 export function FacebookCTA() {
   const pathname = usePathname()

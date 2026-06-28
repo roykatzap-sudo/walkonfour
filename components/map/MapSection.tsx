@@ -38,6 +38,11 @@ export function MapSection() {
 
   return (
     <section className="map-section">
+      {/* padding רספונסיבי - במובייל המפה כמעט full-width במקום צרה */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        .map-canvas-wrap { padding: 0 52px; max-width: 1200px; margin: 0 auto; }
+        @media (max-width: 720px) { .map-canvas-wrap { padding: 0 10px; } }
+      ` }} />
       <div className="map-section-inner">
         <div className="map-header r on">
           <div>
@@ -51,7 +56,7 @@ export function MapSection() {
           </p>
         </div>
       </div>
-      <div ref={ref} style={{ padding: '0 52px', maxWidth: 1200, margin: '0 auto' }}>
+      <div ref={ref} className="map-canvas-wrap">
         {inView ? (
           <DogParksMap />
         ) : (
