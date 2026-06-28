@@ -7,8 +7,15 @@
 
 export function getDbUrl(): string | undefined {
   const env = process.env
-  // שמות מפורשים נפוצים, לפי סדר עדיפות (pooled לפני unpooled)
-  for (const k of ['DATABASE_URL', 'POSTGRES_URL', 'POSTGRES_PRISMA_URL', 'DATABASE_URL_UNPOOLED']) {
+  // מעדיפים חיבור ישיר (non-pooling) - הכי תואם ל-pg עם שאילתות פרמטריות.
+  // מכסה Railway (DATABASE_URL), Neon (DATABASE_URL_UNPOOLED), Supabase (POSTGRES_URL_NON_POOLING).
+  for (const k of [
+    'DATABASE_URL_UNPOOLED',
+    'POSTGRES_URL_NON_POOLING',
+    'DATABASE_URL',
+    'POSTGRES_URL',
+    'POSTGRES_PRISMA_URL',
+  ]) {
     if (env[k]) return env[k]
   }
   // fallback: כל משתנה שהערך שלו נראה כמו postgres://... (מכסה prefix מותאם של Vercel)
