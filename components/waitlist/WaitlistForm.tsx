@@ -92,16 +92,16 @@ export function WaitlistForm({ initialCount }: { initialCount: number }) {
         <select
           value={city}
           onChange={(e) => setCity(e.target.value)}
-          aria-label="העיר שלכם (לא חובה)"
+          aria-label="באיזו עיר תרצו שנפתח (לא חובה)"
           style={{ padding: '14px 16px', borderRadius: 14, border: '1.5px solid rgba(201,154,91,.35)', fontSize: 16, width: '100%', background: '#fff', color: city ? 'var(--ink)' : 'var(--text-muted)' }}
         >
-          <option value="">העיר שלכם (לא חובה)</option>
+          <option value="">באיזו עיר תרצו שנפתח? (לא חובה)</option>
           {CITIES.map((c) => (
             <option key={c} value={c}>{c}</option>
           ))}
         </select>
         <span style={{ fontSize: 14, color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.5 }}>
-          נפתח קודם בערים עם הכי הרבה נרשמים - ספרו לנו איפה אתם.
+          נפתח קודם בערים עם הכי הרבה ביקוש - סמנו איזו עיר מעניינת אתכם.
         </span>
       </div>
       <div style={{ textAlign: 'center', fontSize: 15, fontWeight: 800, color: 'var(--brand-dark)' }}>
@@ -121,7 +121,7 @@ export function WaitlistForm({ initialCount }: { initialCount: number }) {
         </div>
       )}
       <p style={{ fontSize: 14, color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.55 }}>
-        רק שם פרטי ומייל. בלי דיוור שיווקי ובלי שיתוף עם אף אחד - נשלח עדכון אחד כשנפתחים בעיר שלכם.{' '}
+        רק שם פרטי ומייל. בלי דיוור שיווקי ובלי שיתוף עם אף אחד - נשלח עדכון אחד כשנפתחים בעיר שבחרתם.{' '}
         <a href="/privacy" style={{ color: 'var(--brand-dark)', fontWeight: 700 }}>מדיניות הפרטיות</a>
       </p>
     </form>
