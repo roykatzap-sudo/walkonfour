@@ -17,7 +17,8 @@
 
 import { Client } from 'pg'
 
-const DB = process.env.DATABASE_URL
+// תומך גם ב-Railway (DATABASE_URL) וגם ב-Postgres המובנה של Vercel (POSTGRES_URL) - מה שמחובר
+const DB = process.env.DATABASE_URL || process.env.POSTGRES_URL
 
 /** האם מסד הנתונים מוגדר באמת (לא placeholder)? */
 export function waitlistConfigured(): boolean {
