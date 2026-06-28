@@ -7,13 +7,14 @@
 
 export function getDbUrl(): string | undefined {
   const env = process.env
-  // מעדיפים חיבור ישיר (non-pooling) - הכי תואם ל-pg עם שאילתות פרמטריות.
-  // מכסה Railway (DATABASE_URL), Neon (DATABASE_URL_UNPOOLED), Supabase (POSTGRES_URL_NON_POOLING).
+  // מעדיפים חיבור POOLED (IPv4) - חיבור ישיר של Supabase הוא IPv6-בלבד ו-Vercel
+  // לא תומך ב-IPv6 יוצא, אז הישיר נכשל. ה-pooler עובד על Vercel.
+  // Railway: DATABASE_URL (IPv4 ישיר) · Neon: DATABASE_URL (pooled) · Supabase: POSTGRES_URL (pooler).
   for (const k of [
-    'DATABASE_URL_UNPOOLED',
-    'POSTGRES_URL_NON_POOLING',
     'DATABASE_URL',
     'POSTGRES_URL',
+    'DATABASE_URL_UNPOOLED',
+    'POSTGRES_URL_NON_POOLING',
     'POSTGRES_PRISMA_URL',
   ]) {
     if (env[k]) return env[k]
