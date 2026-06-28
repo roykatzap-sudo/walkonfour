@@ -168,7 +168,7 @@ export function referralCode(seed: string | null | undefined): string {
 
 /** בונה קישור שיתוף מלא לקוד המלצה נתון. */
 export function referralLink(code: string, origin = ''): string {
-  const o = origin || (typeof window !== 'undefined' ? window.location.origin : 'https://kelvanya.co.il')
+  const o = origin || (typeof window !== 'undefined' ? window.location.origin : 'https://walkonfour.org')
   return `${o}/auth/register?${REFERRAL_PARAM}=${encodeURIComponent(code)}`
 }
 

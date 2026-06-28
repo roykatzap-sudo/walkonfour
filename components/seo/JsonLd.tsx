@@ -51,8 +51,8 @@ export function organizationSchema(): JsonLdObject {
     logo: absoluteUrl('/icon.png'),
     // E-E-A-T: זיהוי ישות חזק יותר דרך פרופילים חברתיים ואזור שירות.
     sameAs: [
-      'https://www.instagram.com/kelvanya',
-      'https://www.facebook.com/kelvanya',
+      // הפרופיל החברתי האמיתי - קבוצת הפייסבוק (לא להוסיף פרופילים שלא קיימים)
+      'https://www.facebook.com/share/g/18wnLhr9tn/',
     ],
     areaServed: { '@type': 'Country', name: 'ישראל' },
   }

@@ -63,7 +63,7 @@ function ReferralDashboard({
     () => (dbCode && dbCode.trim()) || referralCode(userId || name),
     [dbCode, userId, name],
   )
-  const [link, setLink] = useState(() => referralLink(code, 'https://kelvanya.co.il'))
+  const [link, setLink] = useState(() => referralLink(code, 'https://walkonfour.org'))
 
   // נתוני דאשבורד. במצב אמיתי מוזרמים מ-DB; במצב דמו מתחילים מאפס.
   const referrals = Math.max(0, dbReferrals ?? 0)
