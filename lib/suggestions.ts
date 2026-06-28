@@ -11,8 +11,10 @@ import { SUGGESTION_TYPES, type Suggestion } from './suggestionTypes'
 // re-export הטיפוסים/קבועים כדי שאימפורטים קיימים מ-lib/suggestions ימשיכו לעבוד
 export * from './suggestionTypes'
 
-// תומך גם ב-Railway (DATABASE_URL) וגם ב-Postgres המובנה של Vercel (POSTGRES_URL)
-const DB = process.env.DATABASE_URL || process.env.POSTGRES_URL
+import { getDbUrl } from './dbUrl'
+
+// מאתר את ה-DB בכל שם משתנה (Railway / Vercel-Neon / prefix מותאם)
+const DB = getDbUrl()
 
 export function suggestionsConfigured(): boolean {
   return Boolean(DB && /^postgres(ql)?:\/\//.test(DB) && !DB.includes('your-') && !DB.includes('placeholder'))
