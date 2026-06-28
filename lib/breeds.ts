@@ -63,7 +63,7 @@ export const breedFace = (id: string, w = 600) => {
   const clean = id.replace(/\s/g, '')
   if (clean.startsWith('/breeds-wc/') && !clean.includes('/face/')) {
     // ?v= מבטיח שדפדפנים/CDN לא יגישו גרסת פנים ישנה מה-cache
-    return clean.replace('/breeds-wc/', '/breeds-wc/face/') + '?v=4'
+    return clean.replace('/breeds-wc/', '/breeds-wc/face/') + '?v=5'
   }
   return breedImg(id, w)
 }
