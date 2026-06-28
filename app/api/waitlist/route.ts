@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { waitlistConfigured, waitlistCount, waitlistAdd } from '@/lib/waitlist'
+import { clientIp, rateLimited } from '@/lib/rateLimit'
 
 export const dynamic = 'force-dynamic'
 
@@ -12,6 +13,14 @@ export async function GET() {
 export async function POST(req: Request) {
   if (!waitlistConfigured()) {
     return NextResponse.json({ ok: false, configured: false })
+  }
+  // rate limit: עד 5 הרשמות לדקה לכל IP (מונע ספאם/הצפת רשימה)
+  if (rateLimited(`${clientIp(req)}:waitlist`, 5, 60_000)) {
+    return NextResponse.json({ ok: false, error: 'rate' }, { status: 429 })
+  }
+  // הגבלת גודל body (מונע payload ענק)
+  if (Number(req.headers.get('content-length') || 0) > 2000) {
+    return NextResponse.json({ ok: false, error: 'too_large' }, { status: 413 })
   }
   const body = await req.json().catch(() => ({}))
   const email = String(body?.email ?? '').trim().toLowerCase()

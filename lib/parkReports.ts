@@ -19,6 +19,8 @@
      );
    ════════════════════════════════════════════════════════════ */
 
+import { timingSafeEqual } from 'crypto'
+
 const URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const SERVICE = process.env.SUPABASE_SERVICE_ROLE_KEY
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN
@@ -52,11 +54,17 @@ export function reportCoord(r: ParkReport): [number, number] | null {
 export function reportsConfigured(): boolean {
   return Boolean(URL && SERVICE && URL.includes('supabase.co') && !SERVICE.startsWith('your-'))
 }
+// דורש טוקן אקראי של 32+ תווים (לא ניתן ל-brute-force בפועל).
 export function adminConfigured(): boolean {
-  return reportsConfigured() && Boolean(ADMIN_TOKEN && ADMIN_TOKEN.length >= 6)
+  return reportsConfigured() && Boolean(ADMIN_TOKEN && ADMIN_TOKEN.length >= 32)
 }
+// השוואת constant-time (timingSafeEqual) - מונעת timing side-channel; נכשל מיד באורך שונה.
 export function checkAdmin(token: string | null | undefined): boolean {
-  return adminConfigured() && !!token && token === ADMIN_TOKEN
+  if (!adminConfigured() || !token) return false
+  const a = Buffer.from(token)
+  const b = Buffer.from(ADMIN_TOKEN!)
+  if (a.length !== b.length) return false
+  return timingSafeEqual(a, b)
 }
 
 function sb(path: string, init?: RequestInit) {
@@ -79,8 +87,10 @@ export async function addParkReport(data: { name: string; city: string | null; n
 
 export async function listParkReports(status?: string): Promise<ParkReport[]> {
   if (!reportsConfigured()) return []
+  // allowlist - לא נותנים לפרמטר חופשי להיכנס ל-URL של PostgREST (מניעת הזרקה)
+  const safe = status && ['pending', 'approved', 'rejected'].includes(status) ? status : null
   try {
-    const q = status ? `park_reports?status=eq.${status}&order=created_at.desc` : `park_reports?order=created_at.desc`
+    const q = safe ? `park_reports?status=eq.${safe}&order=created_at.desc` : `park_reports?order=created_at.desc`
     const res = await sb(q)
     return res.ok ? await res.json() : []
   } catch {
