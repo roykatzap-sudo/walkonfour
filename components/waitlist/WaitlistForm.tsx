@@ -104,8 +104,11 @@ export function WaitlistForm({ initialCount }: { initialCount: number }) {
           נפתח קודם בערים עם הכי הרבה נרשמים - ספרו לנו איפה אתם.
         </span>
       </div>
+      <div style={{ textAlign: 'center', fontSize: 15, fontWeight: 800, color: 'var(--brand-dark)' }}>
+        ✓ ההצטרפות חינמית לחלוטין, לתמיד
+      </div>
       <button type="submit" className="btn btn-primary" disabled={state === 'sending'} style={{ fontSize: 16, padding: '14px' }}>
-        {state === 'sending' ? 'רושם...' : 'הצטרפו לרשימת ההמתנה'}
+        {state === 'sending' ? 'רושם...' : 'הצטרפו בחינם לרשימת ההמתנה'}
       </button>
       {state === 'badEmail' && (
         <div role="alert" style={{ fontSize: 14, fontWeight: 700, color: '#a23c2e', textAlign: 'center', lineHeight: 1.5 }}>

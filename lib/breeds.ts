@@ -61,9 +61,11 @@ export const breedImg = (id: string, w = 700) => {
 // אם אין תמונה מקומית מתאימה - נופל חזרה לתמונה הרגילה.
 export const breedFace = (id: string, w = 600) => {
   const clean = id.replace(/\s/g, '')
-  if (clean.startsWith('/breeds-wc/') && !clean.includes('/face/')) {
-    // ?v= מבטיח שדפדפנים/CDN לא יגישו גרסת פנים ישנה מה-cache
-    return clean.replace('/breeds-wc/', '/breeds-wc/face/') + '?v=5'
+  if (clean.startsWith('/breeds-wc/')) {
+    // מציגים את התמונה המלאה (לא חיתוך) - הכלב השלם נראה בדיוק כמו במקור, בלי ראש חתוך.
+    // ?v= מבטיח שדפדפנים/CDN לא יגישו גרסה ישנה מה-cache.
+    const full = clean.includes('/face/') ? clean.replace('/breeds-wc/face/', '/breeds-wc/') : clean
+    return full + '?v=7'
   }
   return breedImg(id, w)
 }

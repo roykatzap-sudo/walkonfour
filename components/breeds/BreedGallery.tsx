@@ -298,7 +298,7 @@ const BreedFlipCard = memo(function BreedFlipCard({ breed }: { breed: Breed }) {
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              objectPosition: 'center top',
+              objectPosition: 'center',
               display: 'block',
             }}
           />
@@ -316,13 +316,13 @@ const BreedFlipCard = memo(function BreedFlipCard({ breed }: { breed: Breed }) {
             }}
           />
 
-          {/* צ'יפ גודל בפינה */}
+          {/* צ'יפ גודל - פינה תחתונה-סוף (לא על הראש של הכלב) */}
           <span
             className="chip3d-dark"
             style={{
               position: 'absolute',
-              top: 12,
-              insetInlineStart: 12,
+              bottom: 12,
+              insetInlineEnd: 12,
               backdropFilter: 'blur(6px)',
               background: 'rgba(42,32,24,.55)',
               color: '#fff',
