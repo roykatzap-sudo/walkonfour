@@ -3,16 +3,28 @@
 import { useEffect } from 'react'
 
 /**
+ * האם יש להפחית תנועה. מכבד גם את הגדרת מערכת ההפעלה (prefers-reduced-motion)
+ * וגם את מתג "הפחתת תנועה" שבתפריט הנגישות באתר (data-reduce-motion / class על <html>).
+ */
+function reduceMotionActive(): boolean {
+  if (typeof window === 'undefined') return false
+  const root = document.documentElement
+  if (root.dataset.reduceMotion === '1' || root.classList.contains('kv-a11y-reduce-motion')) return true
+  return !!window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
+/**
  * פיצוץ כפות קטן בכל לחיצה על כפתור ראשי / CTA - אפקט "פופ" משמח.
- * גלובלי: מאזין ל-pointerdown, לא דורש לגעת בכפתורים. מכבד reduced-motion.
+ * גלובלי: מאזין ל-pointerdown, לא דורש לגעת בכפתורים.
+ * מכבד הפחתת-תנועה (הגדרת מערכת + מתג נגישות) ונבדק בכל לחיצה כדי שמתג
+ * הנגישות ישפיע מיד, בלי צורך ברענון העמוד.
  */
 export function ClickBurst() {
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-
     const PAWS = ['🐾', '🐾', '🐾', '✨', '🦴']
 
     function onDown(e: PointerEvent) {
+      if (reduceMotionActive()) return
       const t = e.target as HTMLElement
       // רק על כפתורי פעולה - לא על כל קליק בעמוד
       if (!t.closest('.btn-primary, .hbm, .pc-fill, .kv-nav-btn, .gc-btn, .ev-btn, .live-pop, .magnetic')) return

@@ -44,6 +44,8 @@ export const MAP_CITIES = [
   { label: 'ראשל״צ', value: 'ראשון לציון' },
   { label: 'הרצליה', value: 'הרצליה' },
   { label: 'רעננה', value: 'רעננה' },
+  { label: 'באר שבע', value: 'באר שבע' },
+  { label: 'מודיעין', value: 'מודיעין' },
 ]
 
 /**
@@ -59,6 +61,8 @@ const CITY_CENTERS: { city: string; lat: number; lng: number }[] = [
   { city: 'ראשון לציון', lat: 31.973, lng: 34.7925 },
   { city: 'הרצליה', lat: 32.1624, lng: 34.8443 },
   { city: 'רעננה', lat: 32.1847, lng: 34.8707 },
+  { city: 'באר שבע', lat: 31.2518, lng: 34.7913 },
+  { city: 'מודיעין', lat: 31.8928, lng: 35.0103 },
 ]
 
 /** מרחק מקורב בק״מ בין שתי נקודות (קו ישר, מספיק לסינון עירוני). */

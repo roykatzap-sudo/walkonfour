@@ -9,8 +9,8 @@ import { ToastProvider } from '@/components/shared/Toast'
 import { CursorFX } from '@/components/shared/CursorFX'
 import { SkipLink } from '@/components/a11y/SkipLink'
 import { AccessibilityMenu } from '@/components/a11y/AccessibilityMenu'
-import { LivePops } from '@/components/fx/LivePops'
 import { ClickBurst } from '@/components/fx/ClickBurst'
+import { FacebookCTA } from '@/components/fx/FacebookCTA'
 import { RouteProgress } from '@/components/fx/RouteProgress'
 import { JsonLd, organizationSchema, websiteSchema } from '@/components/seo/JsonLd'
 import { Analytics } from '@vercel/analytics/next'
@@ -41,12 +41,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   alternates: { canonical: SITE_URL },
   icons: { icon: '/icon.png', shortcut: '/icon.png', apple: '/icon.png' },
-  title: 'כלבניה - גזעי כלבים, אילוף וקהילת בעלי הכלבים בישראל',
+  title: 'קהילה על ארבע - גזעי כלבים, אילוף וקהילת בעלי הכלבים בישראל',
   description:
     'מדריך גזעי כלבים, חידון "איזה כלב מתאים לי", מדריכי אילוף, מחשבונים, מפת גינות כלבים, אימוץ וקהילות לפי עיר - כל מה שבעל כלב בישראל צריך, במקום אחד.',
   keywords: ['גזעי כלבים', 'איזה כלב מתאים לי', 'אילוף כלבים', 'גינות כלבים', 'אימוץ כלבים', 'כלבים בישראל'],
   openGraph: {
-    title: 'כלבניה - קהילת בעלי הכלבים הגדולה בישראל',
+    title: `קהילה על ארבע - ${SITE_TAGLINE}`,
     description: SITE_TAGLINE,
     type: 'website',
     url: SITE_URL,
@@ -55,13 +55,13 @@ export const metadata: Metadata = {
     images: [
       {
         url: DEFAULT_OG_IMAGE,
-        alt: 'כלבניה - קהילת בעלי הכלבים הגדולה בישראל',
+        alt: `קהילה על ארבע - ${SITE_TAGLINE}`,
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'כלבניה - קהילת בעלי הכלבים הגדולה בישראל',
+    title: `קהילה על ארבע - ${SITE_TAGLINE}`,
     description: SITE_TAGLINE,
     images: [DEFAULT_OG_IMAGE],
   },
@@ -74,6 +74,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="he" dir="rtl" className={`${heebo.variable} ${fredoka.variable}`}>
+      <head>
+        {/* פתיחת חיבור מוקדמת ל-CDN של התמונות (Unsplash) - חוסך DNS+TLS לפני ה-LCP */}
+        <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+      </head>
       <body className={heebo.className}>
         <JsonLd data={[organizationSchema(), websiteSchema()]} />
         <ToastProvider>
@@ -84,8 +89,8 @@ export default function RootLayout({
           <main id="main">{children}</main>
           <Footer />
           <AccessibilityMenu />
-          <LivePops />
           <ClickBurst />
+          <FacebookCTA />
         </ToastProvider>
         <Analytics />
       </body>

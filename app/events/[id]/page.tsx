@@ -45,12 +45,12 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     demoMatch
   )
 
-  if (!event) return { title: 'אירוע לא נמצא · כלבניה' }
+  if (!event) return { title: 'אירוע לא נמצא · קהילה על ארבע' }
 
   const description = event.description || `אירוע בקטגוריית ${CATEGORY_LABEL[event.category]}`
   const ogImage = absoluteUrl(ogImageUrl({ title: event.title, subtitle: CATEGORY_LABEL[event.category], tag: 'אירוע' }))
   return {
-    title: `${event.title} · כלבניה`,
+    title: `${event.title} · קהילה על ארבע`,
     description,
     openGraph: { title: event.title, description, type: 'website', images: [{ url: ogImage, width: 1200, height: 630, alt: event.title }] },
     twitter: { card: 'summary_large_image', title: event.title, description, images: [ogImage] },

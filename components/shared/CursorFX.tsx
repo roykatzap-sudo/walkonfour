@@ -3,8 +3,19 @@
 import { useEffect, useRef } from 'react'
 
 /**
+ * האם יש להפחית תנועה. מכבד גם את הגדרת מערכת ההפעלה (prefers-reduced-motion)
+ * וגם את מתג "הפחתת תנועה" שבתפריט הנגישות באתר (data-reduce-motion / class על <html>).
+ */
+function reduceMotionActive(): boolean {
+  const root = document.documentElement
+  if (root.dataset.reduceMotion === '1' || root.classList.contains('kv-a11y-reduce-motion')) return true
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
+/**
  * סמן כף-רגל של כלב 🐾 - קל מאוד: רק transform על תזוזת עכבר, בלי rAF ובלי קנבס.
  * נטען רק בדסקטופ עם עכבר. בזום (pinch) מחזיר את סמן המערכת כדי שלעולם לא ייעלם.
+ * מכבד הפחתת-תנועה (מערכת + מתג נגישות) ומדליק/מכבה בזמן אמת.
  */
 export function CursorFX() {
   const cursorRef = useRef<HTMLDivElement>(null)
@@ -12,9 +23,43 @@ export function CursorFX() {
   useEffect(() => {
     const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches
     if (!fine) return
-    // כיבוד prefers-reduced-motion - לא מפעילים את סמן כף-הרגל העוקב; נשאר סמן המערכת.
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
+    let teardown: (() => void) | null = null
+
+    // הפעלת סמן כף-הרגל העוקב. מופרד לפונקציה כדי שנוכל להדליק/לכבות
+    // בתגובה לשינוי מתג "הפחתת תנועה" בזמן אמת.
+    function enable() {
+      if (teardown) return
+      teardown = start()
+    }
+    function disable() {
+      if (teardown) {
+        teardown()
+        teardown = null
+      }
+    }
+    function sync() {
+      if (reduceMotionActive()) disable()
+      else enable()
+    }
+
+    // מאזינים לשינוי מתג הנגישות (class / data-attr על <html>) ולשינוי הגדרת המערכת.
+    const mo = new MutationObserver(sync)
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-reduce-motion'] })
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const onMq = () => sync()
+    mq.addEventListener?.('change', onMq)
+
+    sync()
+
+    return () => {
+      mo.disconnect()
+      mq.removeEventListener?.('change', onMq)
+      disable()
+    }
+  }, [])
+
+  function start(): () => void {
     document.body.classList.add('kv-paw-on')
     const cursor = cursorRef.current!
     let ready = false
@@ -68,7 +113,7 @@ export function CursorFX() {
         vv.removeEventListener('scroll', onZoom)
       }
     }
-  }, [])
+  }
 
   return (
     <div className="kv-cursor" ref={cursorRef} aria-hidden>

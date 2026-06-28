@@ -3,9 +3,16 @@
 import Link from 'next/link'
 import { useRef } from 'react'
 
-/** האם המשתמש ביקש להפחית תנועה (prefers-reduced-motion). בטוח ל-SSR. */
+/**
+ * האם יש להפחית תנועה. בטוח ל-SSR.
+ * מכבד גם את הגדרת מערכת ההפעלה (prefers-reduced-motion) וגם את מתג
+ * "הפחתת תנועה" שבתפריט הנגישות באתר (data-reduce-motion / class על <html>).
+ */
 function prefersReducedMotion(): boolean {
-  if (typeof window === 'undefined' || !window.matchMedia) return false
+  if (typeof window === 'undefined') return false
+  const root = document.documentElement
+  if (root.dataset.reduceMotion === '1' || root.classList.contains('kv-a11y-reduce-motion')) return true
+  if (!window.matchMedia) return false
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 

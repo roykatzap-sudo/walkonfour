@@ -65,12 +65,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/businesses', priority: 0.7, changeFrequency: 'weekly' },
     { path: '/wall', priority: 0.5, changeFrequency: 'daily' },
     { path: '/premium', priority: 0.6, changeFrequency: 'monthly' },
+    { path: '/waitlist', priority: 0.7, changeFrequency: 'monthly' },
     { path: '/start', priority: 0.6, changeFrequency: 'monthly' },
     { path: '/faq', priority: 0.6, changeFrequency: 'monthly' },
     { path: '/about', priority: 0.5, changeFrequency: 'yearly' },
     { path: '/contact', priority: 0.5, changeFrequency: 'yearly' },
     { path: '/privacy', priority: 0.3, changeFrequency: 'yearly' },
     { path: '/terms', priority: 0.3, changeFrequency: 'yearly' },
+    { path: '/cookies', priority: 0.3, changeFrequency: 'yearly' },
   ]
   const staticEntries: MetadataRoute.Sitemap = staticPages.map((e) => ({
     url: join(e.path),

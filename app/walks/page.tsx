@@ -5,7 +5,7 @@ import { FloatingPaws } from '@/components/fx/FloatingPaws'
 import { demoWalks, walkCities, fencedCount, totalKm } from '@/lib/walks'
 
 export const metadata = {
-  title: 'איפה מטיילים עם הכלב · כלבניה',
+  title: 'איפה מטיילים עם הכלב · קהילה על ארבע',
   description:
     'חופים, נחלים, יערות מוצלים ומתחמים מגודרים בכל הארץ. סננו לפי עיר ורמת קושי, בדקו אם יש צל ומים בדרך, ולחצו ניווט ישר לנקודת ההתחלה.',
 }

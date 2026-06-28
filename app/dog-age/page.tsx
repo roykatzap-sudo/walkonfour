@@ -3,7 +3,7 @@ import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { JsonLd, softwareAppSchema } from '@/components/seo/JsonLd'
 
 export const metadata = {
-  title: 'בן כמה הכלב באמת · כלבניה',
+  title: 'בן כמה הכלב באמת · קהילה על ארבע',
   description:
     '"להכפיל בשבע" זו אגדה. כלב גדול מזדקן אחרת מכלב קטן, והמחשבון יודע את ההבדל - מהיר, ומותאם לגודל הגזע.',
 }

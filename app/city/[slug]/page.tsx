@@ -4,6 +4,7 @@ import { buildMetadata, SITE_URL } from '@/lib/seo'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { getCityHub, cityHubSlugs, allCityHubs } from '@/lib/cityHubs'
+import { CityParksList } from '@/components/city/CityParksList'
 
 export function generateStaticParams() {
   return cityHubSlugs().map((slug) => ({ slug }))
@@ -20,13 +21,11 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
   })
 }
 
-const DIFF_LABEL: Record<string, string> = { easy: 'קל', moderate: 'בינוני', hard: 'מאתגר' }
-
 function Stat({ n, label }: { n: number; label: string }) {
   return (
     <div style={{ textAlign: 'center', padding: '12px 18px', background: 'rgba(201,154,91,.08)', borderRadius: 16, minWidth: 96 }}>
       <div style={{ fontSize: 30, fontWeight: 900, color: 'var(--brand)', lineHeight: 1 }}>{n}</div>
-      <div style={{ fontSize: 13, color: '#6a6155', marginTop: 4 }}>{label}</div>
+      <div style={{ fontSize: 13.5, color: '#5b4d3c', marginTop: 4 }}>{label}</div>
     </div>
   )
 }
@@ -57,7 +56,7 @@ export default function CityPage({ params }: { params: { slug: string } }) {
           <h1 className="page-title" style={{ fontSize: 44 }}>
             כלבים ב<span className="grad-text">{community.name}</span>
           </h1>
-          <p className="page-sub" style={{ maxWidth: 600, fontSize: 17.5, color: '#6a6155', lineHeight: 1.7 }}>
+          <p className="page-sub" style={{ maxWidth: 600, fontSize: 17.5, color: '#5b4d3c', lineHeight: 1.7 }}>
             כל מה שבעל כלב ב{community.name} צריך במקום אחד - איפה משחררים רצועה, לאן יוצאים לטייל,
             ואיפה מקבלים אתכם עם הכלב.
           </p>
@@ -75,17 +74,10 @@ export default function CityPage({ params }: { params: { slug: string } }) {
           <h2 style={{ fontSize: 26, fontWeight: 900, color: 'var(--ink)', margin: '0 0 6px' }}>
             🐕 {parks.length} גינות כלבים ב{community.name}
           </h2>
-          <p style={{ color: '#6a6155', fontSize: 15.5, margin: '0 0 16px' }}>
+          <p style={{ color: '#5b4d3c', fontSize: 15.5, margin: '0 0 16px' }}>
             מקומות לשחרר רצועה ולתת לכלב לרוץ חופשי. הקרובות למרכז {community.name}:
           </p>
-          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 10 }}>
-            {parks.slice(0, 12).map((p) => (
-              <li key={p.id} style={{ background: '#fff', border: '1px solid rgba(201,154,91,.18)', borderRadius: 14, padding: '12px 14px' }}>
-                <div style={{ fontWeight: 800, color: 'var(--ink)', fontSize: 15 }}>{p.name || 'גינת כלבים'}</div>
-                {p.opening_hours && <div style={{ fontSize: 13, color: '#8a7c66', marginTop: 3 }}>🕐 {p.opening_hours}</div>}
-              </li>
-            ))}
-          </ul>
+          <CityParksList parks={parks} city={community.name} />
           <Link href="/map" className="btn btn-ghost" style={{ marginTop: 16, display: 'inline-block' }}>
             לכל הגינות על המפה →
           </Link>
@@ -98,7 +90,7 @@ export default function CityPage({ params }: { params: { slug: string } }) {
           <h2 style={{ fontSize: 26, fontWeight: 900, color: 'var(--ink)', margin: '0 0 6px' }}>
             ☕ מקומות שמקבלים כלבים ב{community.name}
           </h2>
-          <p style={{ color: '#6a6155', fontSize: 15.5, margin: '0 0 16px' }}>
+          <p style={{ color: '#5b4d3c', fontSize: 15.5, margin: '0 0 16px' }}>
             מסעדות, בתי קפה, חופים וחנויות שמזמינים אתכם יחד עם הכלב.
           </p>
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 10 }}>
@@ -106,9 +98,9 @@ export default function CityPage({ params }: { params: { slug: string } }) {
               <li key={d.id} style={{ background: '#fff', border: '1px solid rgba(201,154,91,.18)', borderRadius: 14, padding: '13px 16px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }}>
                   <span style={{ fontWeight: 800, color: 'var(--ink)', fontSize: 15.5 }}>{d.name}</span>
-                  <span style={{ fontSize: 12.5, color: 'var(--brand)', fontWeight: 700 }}>{d.category}</span>
+                  <span style={{ fontSize: 14, color: 'var(--brand)', fontWeight: 800 }}>{d.category}</span>
                 </div>
-                {d.note && <div style={{ fontSize: 13.5, color: '#8a7c66', marginTop: 4, lineHeight: 1.5 }}>{d.note}</div>}
+                {d.note && <div style={{ fontSize: 14.5, color: '#5b4d3c', marginTop: 4, lineHeight: 1.55 }}>{d.note}</div>}
               </li>
             ))}
           </ul>
@@ -128,8 +120,8 @@ export default function CityPage({ params }: { params: { slug: string } }) {
             {walks.slice(0, 8).map((w) => (
               <li key={w.id} style={{ background: '#fff', border: '1px solid rgba(201,154,91,.18)', borderRadius: 14, padding: '13px 16px' }}>
                 <div style={{ fontWeight: 800, color: 'var(--ink)', fontSize: 15.5 }}>{w.name}</div>
-                <div style={{ fontSize: 13, color: '#8a7c66', marginTop: 3 }}>
-                  📍 {w.city} · {w.lengthKm} ק״מ · {DIFF_LABEL[w.difficulty] ?? w.difficulty}
+                <div style={{ fontSize: 14, color: '#5b4d3c', marginTop: 3 }}>
+                  📍 {w.city} · {w.lengthKm} ק״מ · {w.difficulty}
                   {w.shade ? ' · צל' : ''}{w.water ? ' · מים' : ''}
                 </div>
               </li>
@@ -155,8 +147,21 @@ export default function CityPage({ params }: { params: { slug: string } }) {
         </section>
       )}
 
+      {/* קישור לקהילה המקבילה - מחבר את "מדריך" ל"קהילה" */}
+      <section style={{ marginTop: 44, background: '#fbf7ef', border: '1px solid #efe2cd', borderRadius: 20, padding: '22px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
+        <div>
+          <div style={{ fontSize: 18, fontWeight: 900, color: 'var(--ink)' }}>🐾 קהילת בעלי הכלבים ב{community.name}</div>
+          <div style={{ fontSize: 14.5, color: '#5b4d3c', marginTop: 4, lineHeight: 1.5 }}>
+            טיולים משותפים, אירועים וקבוצות רכישה עם שכנים מ{community.name}.
+          </div>
+        </div>
+        <Link href={`/community/${community.slug}`} className="btn btn-primary" style={{ whiteSpace: 'nowrap' }}>
+          לקהילת {community.name} ←
+        </Link>
+      </section>
+
       {/* CTA */}
-      <div style={{ marginTop: 40, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+      <div style={{ marginTop: 24, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
         <Link href="/match" className="btn btn-primary">איזה כלב מתאים לכם?</Link>
         <Link href="/breeds" className="btn btn-ghost">לכל גזעי הכלבים</Link>
       </div>

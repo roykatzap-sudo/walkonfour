@@ -1,53 +1,12 @@
 'use client'
 
-import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { Reveal3D } from '@/components/fx/Reveal3D'
 import { Tilt3D } from '@/components/fx/Tilt3D'
-import { useToast } from '@/components/shared/Toast'
-import { RankRow } from '@/components/leaderboard/RankRow'
-import {
-  POINT_RULES,
-  RANK_TIERS,
-  citiesWithLeaders,
-  cityLeaderboard,
-  nationalLeaderboard,
-  type RankedLeader,
-} from '@/lib/leaderboard'
-
-/** הסתרה ויזואלית תוך שמירה על נגישות לקוראי מסך (אין class גלובלי כזה כאן). */
-const VISUALLY_HIDDEN: React.CSSProperties = {
-  position: 'absolute',
-  width: 1,
-  height: 1,
-  padding: 0,
-  margin: -1,
-  overflow: 'hidden',
-  clip: 'rect(0 0 0 0)',
-  whiteSpace: 'nowrap',
-  border: 0,
-}
-
-/** מדליות הפודיום לפי מקום. קישוט בלבד - תמיד aria-hidden. */
-const PODIUM_ICON = ['🥇', '🥈', '🥉'] as const
-/** סדר תצוגה ויזואלי לפודיום: שני, ראשון (מוגבה), שלישי. */
-const PODIUM_ORDER = [1, 0, 2] as const
+import { POINT_RULES, RANK_TIERS } from '@/lib/leaderboard'
 
 export default function LeaderboardPage() {
-  // 'all' = ארצי · אחרת slug של עיר מ-communities.ts
-  const [scope, setScope] = useState<string>('all')
-
-  const cities = useMemo(() => citiesWithLeaders(), [])
-  const board = useMemo<RankedLeader[]>(
-    () => (scope === 'all' ? nationalLeaderboard() : cityLeaderboard(scope)),
-    [scope]
-  )
-
-  const podium = board.slice(0, 3)
-  const rest = board.slice(3)
-  const scopeName = scope === 'all' ? 'ארצי' : cities.find((c) => c.slug === scope)?.name ?? ''
-
   return (
     <main className="page">
       {/* ── HERO ── */}
@@ -66,7 +25,7 @@ export default function LeaderboardPage() {
       >
         <FloatingShapes />
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 720, margin: '0 auto' }}>
-          <span className="section-tag">לוח המובילים</span>
+          <span className="section-tag">לוח המובילים · בהקמה</span>
           <h1
             id="lb-title"
             className="grad-text"
@@ -81,8 +40,8 @@ export default function LeaderboardPage() {
             החברים שמניעים את הקהילה
           </h1>
           <p style={{ fontSize: 18, lineHeight: 1.6, color: '#5b4d3c', maxWidth: 560, margin: '0 auto' }}>
-            אלה האנשים שעונים לשאלה שלכם בפורום ב-11 בלילה, ומארגנים את המפגש בירקון בשישי.
-            כל עזרה צוברת נקודות. הנה מי שמוביל, ארצית ובעיר שלכם.
+            כשהקהילה תתחיל, כאן יופיעו האנשים שעונים לשאלה שלכם בפורום ב-11 בלילה
+            ומארגנים את המפגש בירקון בשישי. כל עזרה תצבור נקודות - וכך זה יעבוד.
           </p>
         </div>
       </section>
@@ -90,50 +49,53 @@ export default function LeaderboardPage() {
       {/* ── איך צוברים נקודות ── */}
       <PointsExplainer />
 
-      {/* ── בורר היקף: ארצי / עיר ── */}
-      <ScopePicker
-        scope={scope}
-        onChange={setScope}
-        cities={cities.map((c) => ({ slug: c.slug, name: c.name }))}
-      />
-
-      {/* ── פודיום ── */}
-      {podium.length > 0 && (
-        <section aria-labelledby="podium-title" style={{ marginBottom: 44 }}>
-          <h2 id="podium-title" style={VISUALLY_HIDDEN}>
-            שלושת המובילים - דירוג {scopeName}
-          </h2>
-          <Podium podium={podium} />
-        </section>
-      )}
-
-      {/* ── שאר הטבלה ── */}
-      {rest.length > 0 ? (
-        <section aria-labelledby="rest-title">
-          <h2
-            id="rest-title"
-            className="page-title"
-            style={{ fontSize: 22, marginBottom: 16 }}
-          >
-            המקומות הבאים
-          </h2>
-          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {rest.map((l, i) => (
-              <Reveal3D as="li" key={l.id} delay={((i % 4) + 1) as 1 | 2 | 3 | 4}>
-                <RankRow leader={l} />
-              </Reveal3D>
-            ))}
-          </ul>
-        </section>
-      ) : (
-        <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: 15, padding: '8px 0 24px' }}>
-          זו עיר קטנה ומגובשת - כל המובילים שלה כבר על הפודיום.
-        </p>
-      )}
+      {/* ── מצב טרום-השקה: הלוח ייפתח עם הקהילה ── */}
+      <ComingSoonBoard />
 
       {/* ── קריאה לפעולה ── */}
       <JoinCallout />
     </main>
+  )
+}
+
+/* ───────────────────────── מצב טרום-השקה ───────────────────────── */
+
+function ComingSoonBoard() {
+  return (
+    <section
+      aria-labelledby="board-soon-title"
+      style={{
+        marginBottom: 48,
+        padding: '44px 28px',
+        borderRadius: 24,
+        textAlign: 'center',
+        background: 'linear-gradient(160deg, #ffffff 0%, #fbf7ef 100%)',
+        border: '1px dashed #e0cfb0',
+      }}
+    >
+      <span aria-hidden style={{ fontSize: 40, lineHeight: 1, display: 'block', marginBottom: 12 }}>
+        🏆
+      </span>
+      <h2
+        id="board-soon-title"
+        style={{ margin: '0 0 10px', fontSize: 24, fontWeight: 900, letterSpacing: '-0.5px' }}
+      >
+        הלוח ייפתח כשהקהילה תתחיל
+      </h2>
+      <p
+        style={{
+          margin: '0 auto',
+          maxWidth: 520,
+          fontSize: 16,
+          lineHeight: 1.65,
+          color: 'var(--text-muted)',
+        }}
+      >
+        עדיין לא צברנו מספיק פעילות אמיתית כדי להציג לוח מובילים. אנחנו לא ממציאים
+        חברים ולא ממציאים נקודות - ברגע שתהיה קהילה פעילה, המקומות הראשונים יופיעו
+        כאן, עם שמות אמיתיים.
+      </p>
+    </section>
   )
 }
 
@@ -235,180 +197,6 @@ function PointsExplainer() {
   )
 }
 
-/* ───────────────────────── בורר היקף ───────────────────────── */
-
-function ScopePicker({
-  scope,
-  onChange,
-  cities,
-}: {
-  scope: string
-  onChange: (s: string) => void
-  cities: { slug: string; name: string }[]
-}) {
-  const options = [{ slug: 'all', name: 'ארצי' }, ...cities]
-  return (
-    <nav aria-label="סינון לוח המובילים לפי היקף" style={{ marginBottom: 28 }}>
-      <ul
-        style={{
-          listStyle: 'none',
-          margin: 0,
-          padding: 0,
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 8,
-        }}
-      >
-        {options.map((o) => {
-          const active = scope === o.slug
-          return (
-            <li key={o.slug}>
-              <button
-                type="button"
-                onClick={() => onChange(o.slug)}
-                aria-pressed={active}
-                style={{
-                  padding: '9px 18px',
-                  minHeight: 42,
-                  borderRadius: 100,
-                  fontSize: 14,
-                  fontWeight: 800,
-                  fontFamily: 'inherit',
-                  cursor: 'pointer',
-                  transition: 'all .2s',
-                  border: active ? '1.5px solid var(--brand)' : '1.5px solid #e6dcc9',
-                  background: active ? 'var(--brand)' : '#fff',
-                  color: active ? '#fff' : 'var(--text)',
-                  boxShadow: active ? '0 6px 18px rgba(201,154,91,.28)' : 'none',
-                }}
-              >
-                {o.name}
-              </button>
-            </li>
-          )
-        })}
-      </ul>
-    </nav>
-  )
-}
-
-/* ───────────────────────── פודיום ───────────────────────── */
-
-function Podium({ podium }: { podium: RankedLeader[] }) {
-  const toast = useToast()
-  // מסדרים ל-[שני, ראשון, שלישי] אך מדלגים על מקומות חסרים (עיר קטנה).
-  const ordered = PODIUM_ORDER.map((idx) => podium[idx]).filter(Boolean) as RankedLeader[]
-
-  return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${ordered.length}, minmax(0, 1fr))`,
-        alignItems: 'end',
-        gap: 14,
-        maxWidth: 720,
-        margin: '0 auto',
-      }}
-    >
-      {ordered.map((l) => {
-        const place = l.rank // 1 / 2 / 3
-        const first = place === 1
-        return (
-          <Tilt3D key={l.id} className="sweep" max={9} style={{ display: 'block' }}>
-            <button
-              type="button"
-              onClick={() =>
-                toast(
-                  `מקום ${place} ${PODIUM_ICON[place - 1]} · ${l.name} ו${l.dog} · ${l.points.toLocaleString(
-                    'he-IL'
-                  )} נקודות`
-                )
-              }
-              className="lift-3d"
-              aria-label={`מקום ${place}: ${l.name}, ${l.points.toLocaleString('he-IL')} נקודות, דרגת ${l.tier.name}`}
-              style={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 10,
-                padding: first ? '26px 16px 30px' : '20px 14px 22px',
-                borderRadius: 22,
-                cursor: 'pointer',
-                fontFamily: 'inherit',
-                color: first ? '#fff' : 'var(--text)',
-                background: first
-                  ? 'linear-gradient(160deg, #e8c887 0%, #c99a5b 100%)'
-                  : 'linear-gradient(160deg, #ffffff 0%, #fbf7ef 100%)',
-                border: first ? '1px solid #c99a5b' : '1px solid #efe2cd',
-                boxShadow: first
-                  ? '0 22px 48px rgba(201,154,91,.34)'
-                  : '0 12px 30px rgba(42,32,24,.10)',
-                marginBottom: first ? 22 : 0,
-              }}
-            >
-              <span aria-hidden style={{ fontSize: first ? 34 : 28, lineHeight: 1 }}>
-                {PODIUM_ICON[place - 1]}
-              </span>
-
-              <span
-                aria-hidden
-                style={{
-                  width: first ? 76 : 60,
-                  height: first ? 76 : 60,
-                  borderRadius: '50%',
-                  display: 'grid',
-                  placeItems: 'center',
-                  fontSize: first ? 30 : 24,
-                  fontWeight: 900,
-                  color: first ? 'var(--brand-dark)' : '#fff',
-                  background: first
-                    ? 'rgba(255,255,255,.92)'
-                    : 'linear-gradient(135deg, #e8c887, #c99a5b)',
-                  boxShadow: 'inset 0 0 0 3px rgba(255,255,255,.5)',
-                }}
-              >
-                {l.name.charAt(0)}
-              </span>
-
-              <strong style={{ fontSize: first ? 20 : 17, fontWeight: 900, textAlign: 'center', lineHeight: 1.15 }}>
-                {l.name}
-              </strong>
-              <span style={{ fontSize: 13, opacity: 0.9, textAlign: 'center' }}>
-                ו{l.dog} · {l.community?.name ?? '-'}
-              </span>
-
-              <span
-                style={{
-                  marginTop: 2,
-                  fontSize: first ? 26 : 21,
-                  fontWeight: 900,
-                  letterSpacing: '-0.5px',
-                }}
-              >
-                {l.points.toLocaleString('he-IL')}
-                <span style={{ fontSize: 12, fontWeight: 700, marginInlineStart: 5, opacity: 0.85 }}>נק׳</span>
-              </span>
-
-              <span
-                className={first ? 'chip3d-dark chip3d' : 'chip3d'}
-                style={
-                  first
-                    ? { background: 'rgba(255,255,255,.22)', color: '#fff', borderColor: 'rgba(255,255,255,.4)' }
-                    : undefined
-                }
-              >
-                <span aria-hidden>{l.tier.icon}</span>
-                {l.tier.name}
-              </span>
-            </button>
-          </Tilt3D>
-        )
-      })}
-    </div>
-  )
-}
-
 /* ───────────────────────── קריאה לפעולה ───────────────────────── */
 
 function JoinCallout() {
@@ -428,14 +216,15 @@ function JoinCallout() {
         רוצים לראות את עצמכם כאן?
       </h2>
       <p style={{ margin: '0 auto 20px', maxWidth: 520, fontSize: 16, lineHeight: 1.6, color: 'rgba(255,255,255,.85)' }}>
-        מישהו בפורום שואל עכשיו על גור שלא אוכל. אתם יודעים את התשובה? תענו. ככה זה מתחיל.
+        כשהקהילה תתחיל, מי שעוזר בפורום, מארגן מפגשים ומשתתף - יוביל את הלוח.
+        הצטרפו לרשימה ותהיו מהראשונים שצוברים נקודות.
       </p>
       <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-        <Link href="/forum" className="btn btn-primary">
-          לפורום הקהילה
+        <Link href="/waitlist" className="btn btn-primary">
+          הצטרפו לרשימה
         </Link>
-        <Link href="/events" className="btn btn-ghost" style={{ color: '#fff', borderColor: 'rgba(255,255,255,.35)' }}>
-          לאירועים הקרובים
+        <Link href="/forum" className="btn btn-ghost" style={{ color: '#fff', borderColor: 'rgba(255,255,255,.35)' }}>
+          הציצו בפורום
         </Link>
       </div>
     </section>

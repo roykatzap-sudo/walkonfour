@@ -14,7 +14,7 @@ export function ContactSeller({ seller }: { seller: string }) {
 
   function contact() {
     setSent(true)
-    toast(`ההודעה נשלחה אל ${seller}. תקבלו תשובה כאן בכלבניה, בלי לחשוף טלפון.`)
+    toast(`ההודעה נשלחה אל ${seller}. תקבלו תשובה כאן בקהילה על ארבע, בלי לחשוף טלפון.`)
   }
 
   function report() {

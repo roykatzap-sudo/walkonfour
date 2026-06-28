@@ -1,10 +1,11 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useToast } from '@/components/shared/Toast'
 import { Tilt3D } from '@/components/fx/Tilt3D'
 import { Reveal3D } from '@/components/fx/Reveal3D'
 import { MagneticButton } from '@/components/fx/MagneticButton'
+import { useFavorites } from '@/lib/useFavorites'
 import {
   DOG_NAMES,
   GENDER_LABELS,
@@ -16,85 +17,54 @@ import {
   type DogNameStyle,
 } from '@/lib/dogNames'
 
-const STORAGE_KEY = 'kalbaniya:fav-names'
-
 type GenderFilter = DogGender | 'any'
 type StyleFilter = DogNameStyle | 'any'
 
 const GENDERS: GenderFilter[] = ['any', 'male', 'female']
 const STYLES: StyleFilter[] = ['any', 'cute', 'tough', 'funny', 'classic']
 
-/** סוג תקלת אחסון: ללא / גישה חסומה (מצב פרטי) / אחסון מלא (מכסה). */
-type StorageError = 'none' | 'access' | 'quota'
-
-/** סיווג חריגת localStorage לסוג תקלה ידידותי למשתמש. */
-function classifyStorageError(err: unknown): StorageError {
-  if (err instanceof DOMException) {
-    // 22 = QuotaExceededError, 1014 = NS_ERROR_DOM_QUOTA_REACHED (Firefox).
-    if (err.code === 22 || err.code === 1014 || err.name === 'QuotaExceededError') {
-      return 'quota'
-    }
-    return 'access'
-  }
-  return 'access'
-}
-
-/**
- * קריאה בטוחה של מועדפים מ-localStorage (גם אם הדפדפן חוסם / JSON שבור).
- * מחזיר את הרשימה ואת סוג התקלה (אם הייתה) כדי שה-UI יוכל להציג חיווי.
- */
-function readFavs(): { favs: DogName[]; error: StorageError } {
-  if (typeof window === 'undefined') return { favs: [], error: 'none' }
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY)
-    if (!raw) return { favs: [], error: 'none' }
-    const parsed = JSON.parse(raw)
-    return {
-      favs: Array.isArray(parsed) ? (parsed as DogName[]) : [],
-      error: 'none',
-    }
-  } catch (err) {
-    // JSON שבור הוא לא תקלת אחסון - אין צורך להפחיד את המשתמש.
-    if (err instanceof SyntaxError) return { favs: [], error: 'none' }
-    return { favs: [], error: classifyStorageError(err) }
-  }
-}
+/** טבלת חיפוש מהירה: שם → DogName מהמאגר, לשחזור מטא-דאטה של מועדף שמור. */
+const NAMES_BY_NAME: Record<string, DogName> = DOG_NAMES.reduce(
+  (acc, n) => {
+    acc[n.name] = n
+    return acc
+  },
+  {} as Record<string, DogName>,
+)
 
 export function NameGenerator() {
   const toast = useToast()
 
+  // מקור אמת יחיד למועדפים - חולק עם /saved ועם כל שאר האתר.
+  const { list, isFav: isFavGlobal, toggle } = useFavorites()
+
   const [gender, setGender] = useState<GenderFilter>('any')
   const [style, setStyle] = useState<StyleFilter>('any')
   const [current, setCurrent] = useState<DogName | null>(null)
-  const [favs, setFavs] = useState<DogName[]>([])
-  const [storageError, setStorageError] = useState<StorageError>('none')
   const [rolling, setRolling] = useState(false)
   const [bump, setBump] = useState(0) // טריגר לאנימציית pop-in בכל הגרלה
   const rollTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // טעינת מועדפים פעם אחת בצד הלקוח (נמנע מ-hydration mismatch).
-  useEffect(() => {
-    const { favs: loaded, error } = readFavs()
-    setFavs(loaded)
-    setStorageError(error)
-  }, [])
+  // השמות השמורים (מזהים) משוחזרים לאובייקטי DogName מלאים מהמאגר.
+  // שם שלא נמצא במאגר (תיאורטית) זוכה ל-fallback מינימלי כדי לא לאבד אותו.
+  const favs = useMemo<DogName[]>(
+    () =>
+      list('name').map(
+        (name) =>
+          NAMES_BY_NAME[name] ?? {
+            name,
+            meaning: '',
+            gender: 'male' as DogGender,
+            style: 'classic' as DogNameStyle,
+          },
+      ),
+    [list],
+  )
 
   // ניקוי טיימר ההגרלה אם הרכיב יורד מהמסך.
   useEffect(() => {
     return () => {
       if (rollTimer.current) clearTimeout(rollTimer.current)
-    }
-  }, [])
-
-  const persist = useCallback((next: DogName[]) => {
-    setFavs(next)
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
-      // הצליח - מנקים חיווי תקלה קודם אם היה.
-      setStorageError('none')
-    } catch (err) {
-      // מצב פרטי / אחסון מלא - ה-UI ממשיך לעבוד בזיכרון, אך מציגים חיווי.
-      setStorageError(classifyStorageError(err))
     }
   }, [])
 
@@ -124,32 +94,30 @@ export function NameGenerator() {
     tick()
   }, [rolling, gender, style, roll])
 
-  const isFav = current ? favs.some((f) => f.name === current.name) : false
+  const isFav = current ? isFavGlobal('name', current.name) : false
 
   const toggleFav = useCallback(() => {
     if (!current) return
-    if (favs.some((f) => f.name === current.name)) {
-      persist(favs.filter((f) => f.name !== current.name))
-      toast(`${current.name} הוסר מהמועדפים`)
-    } else {
-      persist([current, ...favs])
-      toast(`${current.name} נשמר במועדפים`)
-    }
-  }, [current, favs, persist, toast])
+    const wasSaved = isFavGlobal('name', current.name)
+    toggle('name', current.name)
+    toast(wasSaved ? `${current.name} הוסר מהמועדפים` : `${current.name} נשמר במועדפים`)
+  }, [current, isFavGlobal, toggle, toast])
 
   const removeFav = useCallback(
     (name: string) => {
-      persist(favs.filter((f) => f.name !== name))
+      if (isFavGlobal('name', name)) toggle('name', name)
       toast(`${name} הוסר מהמועדפים`)
     },
-    [favs, persist, toast],
+    [isFavGlobal, toggle, toast],
   )
 
   const clearFavs = useCallback(() => {
     if (favs.length === 0) return
-    persist([])
+    favs.forEach((f) => {
+      if (isFavGlobal('name', f.name)) toggle('name', f.name)
+    })
     toast('רשימת המועדפים נוקתה')
-  }, [favs.length, persist, toast])
+  }, [favs, isFavGlobal, toggle, toast])
 
   const copyName = useCallback(
     async (n: DogName) => {
@@ -166,7 +134,7 @@ export function NameGenerator() {
 
   const shareName = useCallback(
     async (n: DogName) => {
-      const text = `מצאתי שם מושלם לכלב: ${n.name} - ${n.meaning} 🐾 (דרך מחולל השמות של כלבניה)`
+      const text = `מצאתי שם מושלם לכלב: ${n.name} - ${n.meaning} 🐾 (דרך מחולל השמות של קהילה על ארבע)`
       // Web Share API איפה שיש; אחרת נופלים להעתקה ללוח.
       if (typeof navigator !== 'undefined' && 'share' in navigator) {
         try {
@@ -188,39 +156,6 @@ export function NameGenerator() {
 
   return (
     <div>
-      {/* ── חיווי תקלת אחסון (מצב פרטי / אחסון מלא) ── */}
-      {storageError !== 'none' && (
-        <div
-          role="alert"
-          style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: 10,
-            marginBottom: 20,
-            padding: '14px 18px',
-            borderRadius: 14,
-            background: '#fdf6e9',
-            border: '1.5px solid var(--brand)',
-            color: 'var(--ink)',
-            fontSize: 15,
-            fontWeight: 600,
-            lineHeight: 1.6,
-          }}
-        >
-          <span
-            aria-hidden="true"
-            style={{ fontSize: 18, lineHeight: 1.4, flex: '0 0 auto' }}
-          >
-            ⚠️
-          </span>
-          <span>
-            {storageError === 'quota'
-              ? 'האחסון בדפדפן מלא, ולכן לא ניתן לשמור מועדפים חדשים. הרשימה הנוכחית עדיין עובדת בזיכרון עד לסגירת הדף.'
-              : 'המועדפים אינם נשמרים בדפדפן (מצב גלישה פרטי או אחסון חסום). אפשר להמשיך להשתמש, אך הרשימה תתאפס בסגירת הדף.'}
-          </span>
-        </div>
-      )}
-
       {/* ── מסננים ── */}
       <Reveal3D as="section" className="card" aria-labelledby="ng-filters-h">
         <h2 id="ng-filters-h" style={{ fontSize: 20, fontWeight: 900, marginBottom: 4 }}>

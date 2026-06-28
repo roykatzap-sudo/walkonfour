@@ -3,7 +3,7 @@ import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { JsonLd, softwareAppSchema } from '@/components/seo/JsonLd'
 
 export const metadata = {
-  title: 'איזה גזע מתאים לכם · כלבניה',
+  title: 'איזה גזע מתאים לכם · קהילה על ארבע',
   description:
     'שש שאלות על הבית, הילדים, הזמן והסבלנות שלכם, ובסוף שלושה גזעים שיסתדרו אצלכם באמת - עם הסבר כן למה דווקא הם, ולא רק אחוז.',
 }

@@ -20,11 +20,9 @@ export function CommunitiesMap() {
     const glow = sel
       ? `0 0 0 4px ${c.accent}33, 0 0 28px ${c.accent}cc`
       : `0 4px 16px ${c.accent}55`
-    const label = c.members >= 1000 ? '🐾' : String(c.members)
-    const fs = c.members >= 1000 ? 18 : c.members >= 100 ? 13 : 14
     return L.divIcon({
       className: '',
-      html: `<div style="width:${size}px;height:${size}px;background:rgba(42,32,24,0.92);border:2.5px solid ${c.accent};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:${fs}px;font-weight:800;color:${c.accent};box-shadow:${glow};cursor:pointer;transition:all .2s;font-family:Heebo,sans-serif">${label}</div>`,
+      html: `<div style="width:${size}px;height:${size}px;background:rgba(42,32,24,0.92);border:2.5px solid ${c.accent};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:${sel ? 20 : 17}px;font-weight:800;color:${c.accent};box-shadow:${glow};cursor:pointer;transition:all .2s;font-family:Heebo,sans-serif">🐾</div>`,
       iconSize: [size, size],
       iconAnchor: [size / 2, size / 2],
     })
@@ -57,9 +55,8 @@ export function CommunitiesMap() {
             </div>
           </div>
           <hr class="pp-divider">
-          <div class="pp-row"><span>👥</span><span>${c.members.toLocaleString('he-IL')} חברים בקהילה</span></div>
-          <div class="pp-row"><span>📅</span><span>${c.events} אירועים קרובים</span></div>
-          <div class="pp-row"><span>💬</span><span>${c.groups} קבוצות פעילות</span></div>
+          <div class="pp-row"><span>✨</span><span>קהילה חדשה - הצטרפו ראשונים</span></div>
+          <div class="pp-row"><span>🐾</span><span>טיולים, אירועים וקבוצות רכישה ב${c.district}</span></div>
           <a class="pp-btn" href="/community/${c.slug}" aria-label="עבור לקהילת ${c.name}" style="display:block;text-align:center;text-decoration:none;background:${c.accent};color:#fff">לקהילת ${c.name}</a>
         </div>
       `)
@@ -159,7 +156,7 @@ export function CommunitiesMap() {
           </div>
         )}
         <div className="map-bottom-bar">
-          <div className="map-count-chip">🐾 {communities.length} קהילות · {communities.reduce((s, c) => s + c.members, 0).toLocaleString('he-IL')} חברים</div>
+          <div className="map-count-chip">🐾 {communities.length} קהילות ברחבי הארץ</div>
         </div>
       </div>
 

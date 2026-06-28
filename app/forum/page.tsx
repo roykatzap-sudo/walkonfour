@@ -10,7 +10,7 @@ import { buildMetadata } from '@/lib/seo'
 export const metadata = buildMetadata({
   title: 'פורום הקהילה',
   description:
-    'שאלות, תשובות והמלצות מקהילה גדולה של בעלי כלבים.',
+    'שאלות, תשובות והמלצות בין בעלי כלבים. הקהילה בהקמה - הצטרפו ותהיו מהראשונים.',
   path: '/forum',
 })
 export const dynamic = 'force-dynamic'
@@ -44,7 +44,7 @@ export default async function ForumPage() {
         <div>
           <span className="section-tag">קהילה</span>
           <h1 className="page-title">פורום הקהילה</h1>
-          <p className="page-sub" style={{ marginBottom: 0 }}>שאלות, תשובות והמלצות שמגיעות מקהילה גדולה של בעלי כלבים.</p>
+          <p className="page-sub" style={{ marginBottom: 0 }}>המקום לשאול, לענות ולהמליץ - בין בעלי כלבים. הקהילה בהקמה.</p>
         </div>
         <Link href="/forum/new" className="btn btn-dark">+ פוסט חדש</Link>
       </div>

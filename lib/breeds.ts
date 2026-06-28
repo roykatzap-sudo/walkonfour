@@ -57,6 +57,17 @@ export const breedImg = (id: string, w = 700) => {
   return `https://images.unsplash.com/${clean}?w=${w}&auto=format&fit=crop&q=55`
 }
 
+// גרסת "פנים" - חיתוך מתוך תיקיית face/ שמתמקד בראש/פנים של הכלב (להצגה בכרטיסים).
+// אם אין תמונה מקומית מתאימה - נופל חזרה לתמונה הרגילה.
+export const breedFace = (id: string, w = 600) => {
+  const clean = id.replace(/\s/g, '')
+  if (clean.startsWith('/breeds-wc/') && !clean.includes('/face/')) {
+    // ?v= מבטיח שדפדפנים/CDN לא יגישו גרסת פנים ישנה מה-cache
+    return clean.replace('/breeds-wc/', '/breeds-wc/face/') + '?v=4'
+  }
+  return breedImg(id, w)
+}
+
 export const getBreed = (slug: string) => breeds.find((b) => b.slug === slug) ?? null
 
 export const BREED_SIZES: BreedSize[] = ['קטן', 'בינוני', 'גדול', 'ענק']

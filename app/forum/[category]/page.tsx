@@ -15,8 +15,8 @@ export function generateMetadata({ params }: { params: { category: string } }): 
   const cat = demoCategories.find((c) => c.slug === params.category)
   if (!cat) return buildMetadata({ title: 'פורום הקהילה', path: '/forum' })
   return buildMetadata({
-    title: `${cat.name} - פורום כלבניה`,
-    description: `${cat.description}. דיונים, שאלות ותשובות מקהילת בעלי הכלבים של כלבניה.`,
+    title: `${cat.name} - פורום קהילה על ארבע`,
+    description: `${cat.description}. דיונים, שאלות ותשובות מקהילת בעלי הכלבים של קהילה על ארבע.`,
     path: `/forum/${cat.slug}`,
   })
 }

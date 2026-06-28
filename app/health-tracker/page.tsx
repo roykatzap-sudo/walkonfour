@@ -5,7 +5,7 @@ import { HealthTracker } from '@/components/healthtracker/HealthTracker'
 import '../health/health.css'
 
 export const metadata = {
-  title: 'מעקב בריאות אישי לכלב · כלבניה',
+  title: 'מעקב בריאות אישי לכלב · קהילה על ארבע',
   description:
     'נהלו את תיק הבריאות של הכלב במקום אחד: חיסונים, ביקורי וטרינר, תילוע וטיפולים, עם ציר זמן ותזכורות קרובות מחושבות. הכול נשמר בדפדפן בלבד. מידע כללי - אין תחליף לייעוץ וטרינר.',
 }

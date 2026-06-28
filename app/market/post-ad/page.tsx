@@ -315,7 +315,7 @@ export default function PostAdPage() {
         </div>
         <p style={{ marginTop: 14, fontSize: 12.5, color: '#7a6c58', lineHeight: 1.6, width: '100%' }}>
           בפרסום המודעה אתם מאשרים שהפריט באחריותכם ומסכימים{' '}
-          <Link href="/terms" className="link">לתקנון</Link>. כלבניה היא לוח מודעות ואינה צד לעסקה.
+          <Link href="/terms" className="link">לתקנון</Link>. קהילה על ארבע היא לוח מודעות ואינה צד לעסקה.
         </p>
       </form>
     </main>

@@ -6,7 +6,7 @@ import { Reveal3D } from '@/components/fx/Reveal3D'
 import { demoSitters } from '@/lib/petsitting'
 
 export const metadata = {
-  title: 'פינסיטינג קהילתי · כלבניה',
+  title: 'פינסיטינג קהילתי · קהילה על ארבע',
   description: 'מצאו שומר כלבים מאומת מתוך הקהילה - לינה, טיולים, דוג ווקינג וביקורי בית. דירוגים אמיתיים ומחירים הוגנים.',
 }
 

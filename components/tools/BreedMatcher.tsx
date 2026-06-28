@@ -2,12 +2,14 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { breedImg } from '@/lib/breeds'
+import { breedFace } from '@/lib/breeds'
 import { hasArticle } from '@/lib/articles'
 import { QUESTIONS, topMatches, type Answers, type MatchResult } from '@/lib/matcher'
 import { Reveal3D } from '@/components/fx/Reveal3D'
 import { MagneticButton } from '@/components/fx/MagneticButton'
 import { useToast } from '@/components/shared/Toast'
+import { FavButton } from '@/components/shared/FavButton'
+import { useFavorites } from '@/lib/useFavorites'
 
 // מקור אמת יחיד: משתני ה-CSS מ-globals.css (--brand / --brand-light / --ink / --text).
 // אין כאן ליטרלי צבע - שינוי פלטה במקום אחד מתפשט לכל הרכיב אוטומטית.
@@ -16,8 +18,13 @@ const ACCENT = 'var(--brand-light)'
 const DARK = 'var(--ink)'
 const TEXT = 'var(--text)'
 
+// צ'יפ נושא-מידע (גודל/אנרגיה/ידידותי-לילדים): גודל מעל סף הקריאות
+// לקהל ה-40+. עוקף את ברירת המחדל של .chip3d (12px) מבלי לגעת ב-CSS המשותף.
+const CHIP_DATA: React.CSSProperties = { fontSize: 14, padding: '6px 13px' }
+
 export function BreedMatcher() {
   const toast = useToast()
+  const { toggle, isFav } = useFavorites()
   const [step, setStep] = useState(0) // 0..QUESTIONS.length-1, ואז === length = תוצאות
   const [answers, setAnswers] = useState<Answers>({})
 
@@ -26,7 +33,9 @@ export function BreedMatcher() {
   // step תמיד < QUESTIONS.length כש-!isResults; ה-null מונע גישה ל-undefined אם ירופקטר.
   const current = step < total ? QUESTIONS[step]! : null
   const answeredCount = Object.values(answers).filter(Boolean).length
-  const progress = isResults ? 100 : Math.round((step / total) * 100)
+  // התקדמות מבוססת מיקום-בחידון: שאלה 1 מתוך 6 כבר מציגה ~14% (לא 0%)
+  // ברגע הנטישה הגבוה ביותר, ו-100% שמור למסך התוצאות בלבד.
+  const progress = isResults ? 100 : Math.round(((step + 1) / (total + 1)) * 100)
 
   const results = useMemo<MatchResult[]>(
     () => (isResults ? topMatches(answers, 3) : []),
@@ -58,8 +67,8 @@ export function BreedMatcher() {
       typeof window !== 'undefined'
         ? `${window.location.origin}/breeds/${top.breed.slug}`
         : `/breeds/${top.breed.slug}`
-    const title = `ההתאמה שלי בכלבניה: ${top.breed.name}`
-    const text = `עשיתי את מתאם הגזע של כלבניה וקיבלתי ${top.breed.name} (${top.score}% התאמה). 3 ההתאמות שלי: ${names}.`
+    const title = `ההתאמה שלי בקהילה על ארבע: ${top.breed.name}`
+    const text = `עשיתי את מתאם הגזע של קהילה על ארבע וקיבלתי ${top.breed.name} (${top.score}% התאמה). 3 ההתאמות שלי: ${names}.`
 
     // שיתוף נייטיב (פותח וואטסאפ/הודעות עם תצוגה מקדימה של כרטיס ה-OG) - עם נפילה להעתקה
     if (typeof navigator !== 'undefined' && (navigator as any).share) {
@@ -75,6 +84,24 @@ export function BreedMatcher() {
       toast('הקישור הועתק - אפשר להדביק בוואטסאפ')
     } else {
       toast('התוצאה מוכנה לשיתוף')
+    }
+  }
+
+  // האם כל שלוש ההתאמות כבר שמורות (קובע את מצב כפתור "שמרו את שלושתן").
+  const allSaved =
+    results.length > 0 && results.every((r) => isFav('breed', r.breed.slug))
+
+  function saveAll() {
+    if (results.length === 0) return
+    // אם כולן שמורות - הכפתור הופך ל"הסרת שלושתן"; אחרת שומרים את החסרות.
+    if (allSaved) {
+      results.forEach((r) => toggle('breed', r.breed.slug))
+      toast('שלוש ההתאמות הוסרו מהשמורים')
+    } else {
+      results.forEach((r) => {
+        if (!isFav('breed', r.breed.slug)) toggle('breed', r.breed.slug)
+      })
+      toast('שלוש ההתאמות נשמרו - אפשר לחזור אליהן ב"מה ששמרתי"')
     }
   }
 
@@ -307,16 +334,28 @@ export function BreedMatcher() {
               marginTop: 32,
             }}
           >
-            <MagneticButton onClick={share} className="btn btn-primary">
-              שתפו את התוצאה
+            <MagneticButton onClick={saveAll} className="btn btn-primary">
+              {allSaved ? '★ שלוש ההתאמות שמורות' : '☆ שמרו את שלוש ההתאמות'}
             </MagneticButton>
-            <button type="button" className="btn btn-dark" onClick={restart}>
+            <button type="button" className="btn btn-dark" onClick={share}>
+              שתפו את התוצאה
+            </button>
+            <button type="button" className="btn btn-ghost" onClick={restart}>
               למילוי החידון מחדש
             </button>
             <Link href="/breeds" className="btn btn-ghost">
               לכל גזעי הכלבים
             </Link>
           </div>
+
+          {/* קישור הקשרי לאזור השמורים אחרי שמירה */}
+          {allSaved && (
+            <p style={{ textAlign: 'center', marginTop: 16, fontSize: 15.5 }}>
+              <Link href="/saved" style={{ color: PRIMARY, fontWeight: 800, textDecoration: 'none' }}>
+                לצפייה בכל מה ששמרתם ←
+              </Link>
+            </p>
+          )}
         </div>
       )}
     </div>
@@ -354,7 +393,7 @@ function ResultCard({ result, rank }: { result: MatchResult; rank: number }) {
           }}
         >
           <img
-            src={breedImg(breed.photo, 500)}
+            src={breedFace(breed.photo, 500)}
             alt={`${breed.name} (${breed.en})`}
             loading="lazy"
             decoding="async"
@@ -384,6 +423,14 @@ function ResultCard({ result, rank }: { result: MatchResult; rank: number }) {
           >
             {rank === 1 ? 'ההתאמה הטובה ביותר' : `מקום ${rank}`}
           </span>
+
+          {/* שמירה מהירה של הגזע - אותו לב שמופיע בכל האתר */}
+          <FavButton
+            type="breed"
+            id={breed.slug}
+            label={breed.name}
+            style={{ position: 'absolute', top: 12, insetInlineEnd: 12, zIndex: 2 }}
+          />
         </div>
 
         {/* תוכן */}
@@ -426,11 +473,11 @@ function ResultCard({ result, rank }: { result: MatchResult; rank: number }) {
             />
           </div>
 
-          {/* צ'יפים: מאפיינים */}
+          {/* צ'יפים: מאפיינים - אלה תוכן (לא קישוט), לכן מוגדלים מעל סף הקריאות */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-            <span className="chip3d">{breed.size}</span>
-            <span className="chip3d">אנרגיה {breed.energy}/5</span>
-            {breed.goodWithKids && <span className="chip3d">ידידותי לילדים</span>}
+            <span className="chip3d" style={CHIP_DATA}>{breed.size}</span>
+            <span className="chip3d" style={CHIP_DATA}>אנרגיה {breed.energy}/5</span>
+            {breed.goodWithKids && <span className="chip3d" style={CHIP_DATA}>ידידותי לילדים</span>}
           </div>
 
           {/* סיבות ההתאמה */}

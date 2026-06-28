@@ -6,6 +6,7 @@ import type * as L from 'leaflet'
 import type { DogPark } from '@/types'
 import { fallbackParks, fetchParksFromOSM, MAP_CITIES, withCities } from '@/lib/dogParks'
 import { bakedParks } from '@/lib/dogParksBaked'
+import { allDogParks, withManual } from '@/lib/dogParksAll'
 import { dogFriendlyGeo } from '@/lib/dogFriendlyGeo'
 
 /** אייקון לפי קטגוריה למקומות הדוג-פרנדלי. */
@@ -41,12 +42,20 @@ export function DogParksMap() {
   const dfMarkersRef = useRef<L.Marker[]>([])
   const userMarkerRef = useRef<L.Marker | null>(null)
   const allParks = useRef<DogPark[]>([])
+  const approvedMarkersRef = useRef<L.Marker[]>([])
+  const reportModeRef = useRef(false)
 
   const [search, setSearch] = useState('')
   const [city, setCity] = useState('all')
   const [showDF, setShowDF] = useState(true)
   const [mapReady, setMapReady] = useState(false)
   const [count, setCount] = useState(0)
+  // דיווח על גינה חסרה
+  const [reportMode, setReportMode] = useState(false)
+  const [reportPoint, setReportPoint] = useState<{ lat: number; lng: number } | null>(null)
+  const [rName, setRName] = useState('')
+  const [rNote, setRNote] = useState('')
+  const [rState, setRState] = useState<'idle' | 'sending' | 'done' | 'err' | 'noconfig'>('idle')
   const [notif, setNotif] = useState('')
   const [notifShow, setNotifShow] = useState(false)
   const notifTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -78,16 +87,24 @@ export function DogParksMap() {
 
     const parkName = escapeHtml(park.name ?? 'גינת כלבים')
     const cityTxt = park.city ? `📍 ${escapeHtml(park.city)}` : '📍 ישראל'
-    const openingHours = escapeHtml(park.opening_hours ?? 'לא ידוע')
+    const openingHours = park.opening_hours ? escapeHtml(park.opening_hours) : null
     const surface = park.surface ? escapeHtml(park.surface) : null
     const navUrl = `https://www.google.com/maps/dir/?api=1&destination=${park.lat},${park.lng}`
     const websiteUrl = safeUrl(park.website)
     const websiteRow = websiteUrl
-      ? `<div class="pp-row"><a href="${escapeHtml(websiteUrl)}" target="_blank" rel="noopener noreferrer" style="color:#e8c887;font-size:12px">🔗 אתר רשמי</a></div>`
+      ? `<div class="pp-row"><a href="${escapeHtml(websiteUrl)}" target="_blank" rel="noopener noreferrer" style="color:#e8c887;font-size:13px">🔗 אתר רשמי</a></div>`
+      : ''
+    const hoursRow = openingHours
+      ? `<div class="pp-row"><span>🕐</span><span>${openingHours}</span></div>`
       : ''
     const surfaceRow = surface
       ? `<div class="pp-row"><span>🌿</span><span>משטח: ${surface}</span></div>`
       : ''
+    // אם אין מידע נוסף מעבר לעיר - מציגים שורת עידוד במקום פופאפ ריק.
+    const detailRows = `${hoursRow}${surfaceRow}${websiteRow}`
+    const body = detailRows
+      ? `<hr class="pp-divider">${detailRows}`
+      : `<hr class="pp-divider"><div class="pp-row"><span>🐕</span><span>גינה לשחרור רצועה - נווטו והגיעו</span></div>`
 
     const popup = L.popup({ className: 'dp', closeButton: true, maxWidth: 260 })
       .setLatLng([park.lat, park.lng])
@@ -100,11 +117,7 @@ export function DogParksMap() {
               <div class="pp-city">${cityTxt}</div>
             </div>
           </div>
-          <hr class="pp-divider">
-          <div class="pp-row"><span>🕐</span><span>${openingHours}</span></div>
-          ${surfaceRow}
-          ${websiteRow}
-          <div class="pp-row"><span>🗺️</span><span style="font-size:11px;opacity:.5">${park.lat.toFixed(4)}, ${park.lng.toFixed(4)}</span></div>
+          ${body}
           <a class="pp-btn" href="${escapeHtml(navUrl)}" target="_blank" rel="noopener noreferrer" aria-label="נווט עם Google Maps">🗺️ נווט עם Google Maps</a>
         </div>
       `)
@@ -142,16 +155,27 @@ export function DogParksMap() {
         L.control.zoom({ position: 'bottomright' }).addTo(map)
         setMapReady(true)
 
+        // מצב דיווח: לחיצה על המפה לוכדת את המיקום של הגינה החסרה
+        map.on('click', (e: { latlng: { lat: number; lng: number } }) => {
+          if (!reportModeRef.current) return
+          reportModeRef.current = false
+          setReportMode(false)
+          setReportPoint({ lat: e.latlng.lat, lng: e.latlng.lng })
+          setRName('')
+          setRNote('')
+          setRState('idle')
+        })
+
         // טוענים מיד את הדאטה הסטטי (288 גינות, אמין תמיד),
         // ואז מנסים לרענן מ-Overpass ברקע. לא מחליפים אם Overpass
         // מחזיר פחות (כדי שכשל/מענה חלקי לא יקטין את המפה).
-        allParks.current = withCities(bakedParks)
+        allParks.current = withCities(allDogParks)
         render(allParks.current)
-        showNotif(`${bakedParks.length} גינות כלבים בכל הארץ 🐕`)
+        showNotif(`${allDogParks.length} גינות כלבים בכל הארץ 🐕`)
         fetchParksFromOSM()
           .then((parks) => {
             if (cancelled || parks.length < bakedParks.length * 0.8) return
-            allParks.current = withCities(parks)
+            allParks.current = withCities(withManual(parks))
             render(allParks.current)
             showNotif(`עודכנו ${parks.length} גינות מ-OpenStreetMap 🐕`)
           })
@@ -229,6 +253,66 @@ export function DogParksMap() {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showDF, mapReady])
+
+  // שכבת גינות מאושרות מדיווחי משתמשים
+  useEffect(() => {
+    const L = LRef.current
+    const map = mapRef.current
+    if (!L || !map || !mapReady) return
+    let cancelled = false
+    fetch('/api/park-reports')
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled || !Array.isArray(data.parks)) return
+        approvedMarkersRef.current.forEach((m) => m.remove())
+        approvedMarkersRef.current = []
+        data.parks.forEach((p: { name: string; city: string | null; note: string | null; coord: [number, number] }) => {
+          const m = L.marker(p.coord, {
+            icon: L.divIcon({
+              className: '',
+              html: `<div style="width:32px;height:32px;background:#a97c46;border:2px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 3px 10px rgba(0,0,0,.35);cursor:pointer">🐕</div>`,
+              iconSize: [32, 32],
+              iconAnchor: [16, 16],
+            }),
+          }).addTo(map)
+          m.bindPopup(
+            `<div class="pp"><div class="pp-top"><div class="pp-ico">🐕</div><div><div class="pp-name">${escapeHtml(p.name)}</div><div class="pp-city">📍 ${escapeHtml(p.city ?? 'ישראל')} · נוסף ע״י הקהילה</div></div></div></div>`,
+            { className: 'dp', maxWidth: 240 }
+          )
+          approvedMarkersRef.current.push(m)
+        })
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [mapReady])
+
+  // שליחת דיווח על גינה חסרה
+  async function submitReport() {
+    if (!reportPoint || rName.trim().length < 2 || rState === 'sending') return
+    setRState('sending')
+    try {
+      const res = await fetch('/api/park-reports', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: rName.trim(), note: rNote.trim() || null, lat: reportPoint.lat, lng: reportPoint.lng }),
+      })
+      const data = await res.json()
+      if (data.ok) setRState('done')
+      else if (data.configured === false) setRState('noconfig')
+      else setRState('err')
+    } catch {
+      setRState('err')
+    }
+  }
+
+  function startReport() {
+    reportModeRef.current = true
+    setReportMode(true)
+    setReportPoint(null)
+    showNotif('לחצו על המפה במקום שבו נמצאת הגינה החסרה 📍')
+  }
 
   function locateMe() {
     if (!navigator.geolocation) {
@@ -311,12 +395,127 @@ export function DogParksMap() {
         >
           📍 מצא גינות קרובות אלי
         </button>
+        <button
+          type="button"
+          onClick={startReport}
+          aria-pressed={reportMode}
+          style={{ background: reportMode ? '#a97c46' : 'rgba(42,32,24,.82)', color: '#fff', border: '1px solid rgba(255,255,255,.25)', borderRadius: 999, padding: '10px 16px', fontSize: 13.5, fontWeight: 800, cursor: 'pointer' }}
+        >
+          🚩 {reportMode ? 'לחצו על המפה…' : 'דווח על גינה חסרה'}
+        </button>
         <div className="map-count-chip" aria-live="polite">🐕 {count} גינות</div>
       </div>
 
       <div className={`map-notif${notifShow ? ' show' : ''}`} role="status" aria-live="polite">
         {notif}
       </div>
+
+      {/* רספונסיביות למובייל: סרגל בקרה ברוחב מלא + סינון ערים גליל אופקי, כדי שהמפה לא תיחנק */}
+      <style>{`
+        @media (max-width: 720px) {
+          .map-controls {
+            position: absolute;
+            top: 10px;
+            left: 12px;
+            right: 12px;
+            inset-inline: 12px;
+            max-width: none;
+            width: auto;
+            gap: 8px;
+          }
+          .map-controls .map-search {
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 16px; /* מונע zoom אוטומטי ב-iOS */
+          }
+          .map-controls .map-city-btns {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            gap: 6px;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+          }
+          .map-controls .map-city-btns::-webkit-scrollbar { display: none; }
+          .map-controls .mcb {
+            flex: 0 0 auto;
+            white-space: nowrap;
+            font-size: 13px;
+          }
+          .map-controls .df-toggle {
+            width: 100%;
+            text-align: center;
+          }
+          .map-bottom-bar {
+            gap: 6px;
+            flex-wrap: wrap;
+          }
+        }
+      `}</style>
+
+      {/* ── מודאל דיווח על גינה חסרה ── */}
+      {reportPoint && (
+        <div
+          onClick={() => setReportPoint(null)}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(20,14,8,.55)', display: 'grid', placeItems: 'center', zIndex: 1000, padding: 16 }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-label="דיווח על גינה חסרה"
+            style={{ background: '#fff', borderRadius: 20, padding: '24px 22px', width: '100%', maxWidth: 380, boxShadow: '0 24px 60px rgba(0,0,0,.3)' }}
+          >
+            {rState === 'done' ? (
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 40, marginBottom: 8 }}>🐾</div>
+                <div style={{ fontSize: 19, fontWeight: 900, color: '#241a12' }}>תודה על הדיווח!</div>
+                <p style={{ fontSize: 14.5, color: '#6a6155', marginTop: 6, lineHeight: 1.6 }}>
+                  נבדוק את הגינה ונוסיף אותה למפה אחרי אימות.
+                </p>
+                <button type="button" className="btn btn-primary" style={{ marginTop: 16 }} onClick={() => setReportPoint(null)}>סגירה</button>
+              </div>
+            ) : rState === 'noconfig' ? (
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 36, marginBottom: 8 }}>🛠️</div>
+                <div style={{ fontSize: 18, fontWeight: 900, color: '#241a12' }}>הדיווחים ייפתחו בקרוב</div>
+                <p style={{ fontSize: 14, color: '#6a6155', marginTop: 6, lineHeight: 1.6 }}>אנחנו מסיימים את ההכנות. תודה על הסבלנות!</p>
+                <button type="button" className="btn btn-ghost" style={{ marginTop: 16 }} onClick={() => setReportPoint(null)}>סגירה</button>
+              </div>
+            ) : (
+              <>
+                <div style={{ fontSize: 19, fontWeight: 900, color: '#241a12', marginBottom: 4 }}>דיווח על גינה חסרה</div>
+                <p style={{ fontSize: 13.5, color: '#8a7c66', marginBottom: 16 }}>
+                  📍 סימנתם: {reportPoint.lat.toFixed(4)}, {reportPoint.lng.toFixed(4)}
+                </p>
+                <input
+                  value={rName}
+                  onChange={(e) => setRName(e.target.value)}
+                  placeholder="שם הגינה / מיקום (למשל: גינת כלבים רחוב הרצל)"
+                  aria-label="שם הגינה"
+                  style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: '1.5px solid rgba(201,154,91,.35)', fontSize: 15, marginBottom: 10 }}
+                />
+                <textarea
+                  value={rNote}
+                  onChange={(e) => setRNote(e.target.value)}
+                  placeholder="פרטים נוספים (לא חובה): שעות, מגודר, כל מה שיעזור לנו לאמת"
+                  aria-label="פרטים נוספים"
+                  rows={3}
+                  style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: '1.5px solid rgba(201,154,91,.35)', fontSize: 14.5, resize: 'vertical', fontFamily: 'inherit' }}
+                />
+                {rState === 'err' && <div style={{ color: '#b04a3a', fontSize: 13, marginTop: 8 }}>משהו השתבש. נסו שוב.</div>}
+                <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+                  <button type="button" className="btn btn-primary" disabled={rName.trim().length < 2 || rState === 'sending'} onClick={submitReport} style={{ flex: 1 }}>
+                    {rState === 'sending' ? 'שולח…' : 'שליחת דיווח'}
+                  </button>
+                  <button type="button" className="btn btn-ghost" onClick={() => setReportPoint(null)}>ביטול</button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

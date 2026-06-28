@@ -7,6 +7,7 @@ import { Reveal3D } from '@/components/fx/Reveal3D'
 import { MagneticButton } from '@/components/fx/MagneticButton'
 import { FloatingPaws } from '@/components/fx/FloatingPaws'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
+import { CostCalculator } from '@/components/tools/CostCalculator'
 
 const ENERGY_LABEL: Record<number, string> = {
   1: 'רגוע מאוד',
@@ -72,6 +73,39 @@ export function BreedProfile({ breed }: { breed: Breed }) {
 
   return (
     <main className="page" style={{ paddingTop: 0 }}>
+      {/* סגנון משולב-רכיב: hero רספונסיבי שמתקפל לעמודה אחת במובייל */}
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            .breed-hero-grid {
+              position: relative; z-index: 1;
+              display: grid;
+              grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+              gap: 0; align-items: stretch;
+            }
+            .breed-hero-img { position: relative; min-height: 460px; }
+            .breed-hero-fade {
+              position: absolute; inset: 0;
+              background: linear-gradient(to left, rgba(42,32,24,0) 55%, rgba(42,32,24,.92) 100%);
+            }
+            .breed-hero-body {
+              padding: clamp(28px, 5vw, 52px) clamp(24px, 5vw, 48px);
+              display: flex; flex-direction: column; justify-content: center; color: #fff;
+            }
+            .breed-hero-title {
+              font-size: clamp(34px, 7vw, 56px);
+              font-weight: 900; letter-spacing: -2px; line-height: 1.02; margin: 4px 0 2px;
+            }
+            @media (max-width: 760px) {
+              .breed-hero-grid { grid-template-columns: 1fr; }
+              .breed-hero-img { min-height: 0; aspect-ratio: 4 / 3; }
+              .breed-hero-fade {
+                background: linear-gradient(to top, rgba(42,32,24,.92) 0%, rgba(42,32,24,0) 55%);
+              }
+            }
+          `,
+        }}
+      />
       {/* ===== HERO ===== */}
       <section
         className="glass-dark"
@@ -84,21 +118,16 @@ export function BreedProfile({ breed }: { breed: Breed }) {
         }}
       >
         <FloatingShapes dark />
-        <div
-          style={{
-            position: 'relative',
-            zIndex: 1,
-            display: 'grid',
-            gridTemplateColumns: 'minmax(0, 1.05fr) minmax(0, 1fr)',
-            gap: 0,
-            alignItems: 'stretch',
-          }}
-        >
+        <div className="breed-hero-grid">
           {/* תמונה */}
-          <div style={{ position: 'relative', minHeight: 460 }}>
+          <div className="breed-hero-img">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img loading="lazy" decoding="async"
+            <img
+              fetchPriority="high"
+              decoding="async"
               src={breedImg(breed.photo, 1400)}
+              srcSet={`${breedImg(breed.photo, 700)} 700w, ${breedImg(breed.photo, 1100)} 1100w, ${breedImg(breed.photo, 1400)} 1400w`}
+              sizes="(max-width: 760px) 100vw, 55vw"
               alt={`כלב מגזע ${breed.name}`}
               style={{
                 position: 'absolute',
@@ -106,43 +135,18 @@ export function BreedProfile({ breed }: { breed: Breed }) {
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
-                objectPosition: 'center top',
+                objectPosition: 'center 15%',
               }}
             />
-            <div
-              aria-hidden
-              style={{
-                position: 'absolute',
-                inset: 0,
-                background:
-                  'linear-gradient(to left, rgba(42,32,24,0) 55%, rgba(42,32,24,.92) 100%)',
-              }}
-            />
+            <div aria-hidden className="breed-hero-fade" />
           </div>
 
           {/* מידע */}
-          <div
-            style={{
-              padding: '52px 48px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              color: '#fff',
-            }}
-          >
+          <div className="breed-hero-body">
             <span className="section-tag" style={{ color: '#e8c887' }}>
               מדריך הגזע
             </span>
-            <h1
-              className="grad-text"
-              style={{
-                fontSize: 56,
-                fontWeight: 900,
-                letterSpacing: '-2px',
-                lineHeight: 1.02,
-                margin: '4px 0 2px',
-              }}
-            >
+            <h1 className="grad-text breed-hero-title">
               {breed.name}
             </h1>
             <div
@@ -256,8 +260,12 @@ export function BreedProfile({ breed }: { breed: Breed }) {
             <div className="lift-3d" style={{ padding: 26 }}>
               <div style={{ fontSize: 32 }} aria-hidden>⚡</div>
               <h3 style={{ fontWeight: 800, fontSize: 18, margin: '8px 0 4px' }}>אנרגיה</h3>
-              <div className="muted" style={{ marginBottom: 14 }}>
-                {ENERGY_LABEL[breed.energy]}
+              <div
+                className="muted"
+                style={{ marginBottom: 14, fontSize: 14, display: 'flex', alignItems: 'baseline', gap: 8 }}
+              >
+                <span>{ENERGY_LABEL[breed.energy]}</span>
+                <strong style={{ color: '#c99a5b', fontSize: 15 }}>{breed.energy}/5</strong>
               </div>
               <div style={{ display: 'flex', gap: 6 }} aria-label={`${breed.energy} מתוך 5`}>
                 {[1, 2, 3, 4, 5].map((n) => (
@@ -281,8 +289,14 @@ export function BreedProfile({ breed }: { breed: Breed }) {
             <div className="lift-3d" style={{ padding: 26 }}>
               <div style={{ fontSize: 32 }} aria-hidden>🛡️</div>
               <h3 style={{ fontWeight: 800, fontSize: 18, margin: '8px 0 4px' }}>נטייה לתוקפנות</h3>
-              <div className="muted" style={{ marginBottom: 14 }}>
-                {AGGRESSION_LABEL[breed.aggression]}
+              <div
+                className="muted"
+                style={{ marginBottom: 14, fontSize: 14, display: 'flex', alignItems: 'baseline', gap: 8 }}
+              >
+                <span>{AGGRESSION_LABEL[breed.aggression]}</span>
+                <strong style={{ color: aggColor(breed.aggression, breed.aggression), fontSize: 15 }}>
+                  {breed.aggression}/5
+                </strong>
               </div>
               <div style={{ display: 'flex', gap: 6 }} aria-label={`${breed.aggression} מתוך 5`}>
                 {[1, 2, 3, 4, 5].map((n) => (
@@ -345,9 +359,9 @@ export function BreedProfile({ breed }: { breed: Breed }) {
         <p
           className="muted"
           style={{
-            marginTop: -44,
+            marginTop: 0,
             marginBottom: 64,
-            fontSize: 13,
+            fontSize: 14,
             lineHeight: 1.7,
             background: 'rgba(180,80,46,.06)',
             border: '1px solid rgba(180,80,46,.18)',
@@ -456,6 +470,21 @@ export function BreedProfile({ breed }: { breed: Breed }) {
               ))}
             </ul>
           </div>
+        </div>
+      </Reveal3D>
+
+      {/* ===== כמה עולה לגדל את הגזע? ===== */}
+      <Reveal3D as="section">
+        <div style={{ marginBottom: 64 }}>
+          <span className="section-tag">מחשבון עלות</span>
+          <h2 style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-1px', margin: '2px 0 6px' }}>
+            כמה עולה לגדל {breed.name}?
+          </h2>
+          <p style={{ fontSize: 16, color: '#6a6155', lineHeight: 1.7, marginBottom: 22, maxWidth: 640 }}>
+            מחשבון אישי שמותאם לגודל ולמשקל של {breed.name}. שחקו עם סוג המזון, הווטרינר
+            והשנים - וראו את העלות המצטברת לאורך כל חיי הכלב.
+          </p>
+          <CostCalculator presetBreed={breed.slug} />
         </div>
       </Reveal3D>
 

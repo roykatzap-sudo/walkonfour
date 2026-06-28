@@ -73,8 +73,8 @@ export function Navbar() {
   return (
     <>
       <nav className="kv-nav" aria-label="ניווט ראשי">
-        <Link href="/" className="kv-logo" aria-label="כלבניה - לדף הבית">
-          כלב<em>ניה</em>
+        <Link href="/" className="kv-logo" aria-label="קהילה על ארבע - לדף הבית">
+          קהילה על <em>ארבע</em>
         </Link>
         <div className="kv-nav-r">
           {PRIMARY_LINKS.map((l) => (
@@ -150,8 +150,8 @@ export function Navbar() {
         aria-hidden={!menuOpen}
       >
         <div className="kv-drawer-head">
-          <Link href="/" className="kv-logo" onClick={() => setMenuOpen(false)} aria-label="כלבניה - לדף הבית">
-            כלב<em>ניה</em>
+          <Link href="/" className="kv-logo" onClick={() => setMenuOpen(false)} aria-label="קהילה על ארבע - לדף הבית">
+            קהילה על <em>ארבע</em>
           </Link>
           <button
             type="button"

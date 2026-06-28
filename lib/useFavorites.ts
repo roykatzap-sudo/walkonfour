@@ -12,12 +12,23 @@
 import { useCallback, useEffect, useState } from 'react'
 
 /** הסוגים שאפשר לשמור - כל סוג מתאים לאוסף נתונים אחר ב-lib. */
-export type FavType = 'breed' | 'listing' | 'adopt'
+export type FavType = 'breed' | 'listing' | 'adopt' | 'name'
 
 /** פריט מועדף בודד - צמד סוג+מזהה. */
 export type Favorite = { type: FavType; id: string }
 
+/** כל הסוגים החוקיים - מקור אמת יחיד לוולידציה ב-readStore. */
+const FAV_TYPES: readonly FavType[] = ['breed', 'listing', 'adopt', 'name']
+
+/* ──────────────────────────────────────────────────────────────
+   namespace אחסון - "kalbaniya:" הוא ה-prefix המוקפא מלפני המיתוג
+   מחדש. אסור לשנותו בלי שלב מיגרציה, אחרת כל המועדפים השמורים אצל
+   המשתמשים יתייתמו. ראו migrateLegacyNames() למיגרציית מפתח-השמות.
+   ────────────────────────────────────────────────────────────── */
 const STORAGE_KEY = 'kalbaniya:favs'
+
+/** מפתח legacy של מחולל השמות - מהוגר חד-פעמית פנימה ל-STORAGE_KEY. */
+const LEGACY_NAMES_KEY = 'kalbaniya:fav-names'
 
 /** שם אירוע פנימי לסנכרון רכיבים באותו טאב (storage לא נורה באותו טאב). */
 const SYNC_EVENT = 'kalbaniya:favs-changed'
@@ -38,11 +49,57 @@ function readStore(): Favorite[] {
         f &&
         typeof f === 'object' &&
         typeof f.id === 'string' &&
-        (f.type === 'breed' || f.type === 'listing' || f.type === 'adopt'),
+        FAV_TYPES.includes(f.type),
     )
   } catch {
     return []
   }
+}
+
+/**
+ * מיגרציה חד-פעמית: שמות שנשמרו בעבר תחת המפתח הנפרד
+ * 'kalbaniya:fav-names' (מערך אובייקטי DogName) מועברים פנימה
+ * לאוסף המאוחד כפריטי { type:'name', id: <שם> }. נקרא פעם אחת
+ * בעליית ה-hook; אם המפתח הישן ריק/לא קיים - no-op מלא.
+ */
+function migrateLegacyNames(current: Favorite[]): Favorite[] {
+  if (typeof window === 'undefined') return current
+  let raw: string | null = null
+  try {
+    raw = window.localStorage.getItem(LEGACY_NAMES_KEY)
+  } catch {
+    return current
+  }
+  if (!raw) return current
+
+  let legacyNames: string[] = []
+  try {
+    const parsed = JSON.parse(raw)
+    if (Array.isArray(parsed)) {
+      legacyNames = parsed
+        .map((n) => (n && typeof n === 'object' ? n.name : n))
+        .filter((n): n is string => typeof n === 'string' && n.length > 0)
+    }
+  } catch {
+    /* JSON שבור - נתעלם, רק ננקה את המפתח הישן בהמשך */
+  }
+
+  const have = new Set(current.filter((f) => f.type === 'name').map((f) => f.id))
+  const merged = [
+    ...current,
+    ...legacyNames
+      .filter((name) => !have.has(name))
+      .map((name): Favorite => ({ type: 'name', id: name })),
+  ]
+
+  // מוחקים את המפתח הישן וכותבים את האוסף המאוחד כדי שהמיגרציה לא תחזור.
+  try {
+    window.localStorage.removeItem(LEGACY_NAMES_KEY)
+  } catch {
+    /* לא קריטי - אם נכשל, ה-have יסנן כפילויות בפעם הבאה */
+  }
+  if (merged.length !== current.length) writeStore(merged)
+  return merged
 }
 
 /** כתיבה בטוחה + שידור אירוע סנכרון לכל הרכיבים בטאב. */
@@ -73,7 +130,8 @@ export function useFavorites() {
 
   // טעינה ראשונית בלקוח בלבד - נמנעים מאי-התאמת hydration.
   useEffect(() => {
-    setFavorites(readStore())
+    // מיגרציה חד-פעמית של שמות שנשמרו במפתח הישן הנפרד.
+    setFavorites(migrateLegacyNames(readStore()))
     setReady(true)
 
     // סנכרון: עדכון מרכיב אחר באותו טאב, או משינוי בטאב אחר.

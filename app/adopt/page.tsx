@@ -5,7 +5,7 @@ import { FloatingPaws } from '@/components/fx/FloatingPaws'
 import { adoptDogs, adoptCities, urgentCount } from '@/lib/adopt'
 
 export const metadata = {
-  title: 'לוח אימוץ קהילתי · כלבניה',
+  title: 'לוח אימוץ קהילתי · קהילה על ארבע',
   description:
     'כלבים מעמותות ופונדקים בכל הארץ שמחכים לבית. סננו לפי גודל ועיר, קראו על כל אחד בכנות, והביעו עניין באימוץ.',
 }

@@ -8,9 +8,9 @@ import type { Event } from '@/types'
 import { buildMetadata } from '@/lib/seo'
 
 export const metadata = buildMetadata({
-  title: 'מפגשים אמיתיים',
+  title: 'מפגשים בקהילה',
   description:
-    '18 אירועים חברתיים בחודש ברחבי הארץ - הצטרפו וכירו בעלי כלבים מהקהילה.',
+    'מפגשים, הרצאות וסדנאות לבעלי כלבים ברחבי הארץ. הקהילה בהקמה - הצטרפו ותהיו מהראשונים.',
   path: '/events',
 })
 export const dynamic = 'force-dynamic'
@@ -51,7 +51,7 @@ export default async function EventsPage() {
       <div className="ev-head" style={{ marginBottom: 36 }}>
         <div>
           <span className="section-tag">אירועים</span>
-          <h1 className="page-title">מפגשים אמיתיים</h1>
+          <h1 className="page-title">מפגשים בקהילה</h1>
         </div>
         <Link href="/events/create" className="btn btn-dark" aria-label="צור אירוע חדש">
           <span aria-hidden="true">+ </span>צור אירוע

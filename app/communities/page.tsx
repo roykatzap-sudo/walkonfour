@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import { CommunityCard } from '@/components/community/CommunityCard'
 import { Reveal3D } from '@/components/fx/Reveal3D'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
-import { communities, totalMembers } from '@/lib/communities'
+import { communities } from '@/lib/communities'
 
-export const metadata: Metadata = { title: 'קהילות · כלבניה' }
+export const metadata: Metadata = { title: 'קהילות · קהילה על ארבע' }
 
 export default function CommunitiesPage() {
   return (
@@ -51,8 +51,8 @@ export default function CommunitiesPage() {
               margin: '0 auto',
             }}
           >
-            {totalMembers.toLocaleString('he-IL')} בעלי כלבים ב-{communities.length} ערים, וכל אחת עם הפינה
-            והשעה שלה. בחרו את העיר שלכם, תראו איפה נפגשים, ובואו לטיול הקרוב.
+            קהילות בעלי כלבים ב-{communities.length} ערים, וכל אחת עם הפינה והשעה שלה.
+            בחרו את העיר שלכם, תראו איפה נפגשים, ובואו לטיול הקרוב.
           </p>
         </div>
       </section>

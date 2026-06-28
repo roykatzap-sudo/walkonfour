@@ -13,8 +13,8 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const g = getGuide(params.slug)
-  if (!g) return { title: 'מדריך · כלבניה' }
-  return { title: `${g.title} · כלבניה`, description: g.excerpt }
+  if (!g) return { title: 'מדריך · קהילה על ארבע' }
+  return { title: `${g.title} · קהילה על ארבע`, description: g.excerpt }
 }
 
 export default function GuidePage({ params }: { params: { slug: string } }) {

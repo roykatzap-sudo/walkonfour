@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { NewPostForm } from '@/components/forum/NewPostForm'
 
-export const metadata = { title: 'פוסט חדש · כלבניה' }
+export const metadata = { title: 'פוסט חדש · קהילה על ארבע' }
 
 export default function NewPostPage() {
   return (

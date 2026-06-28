@@ -51,8 +51,8 @@ export default function CanaanDogPage() {
     '@type': 'Article',
     headline: 'הכלב הכנעני: הסיפור של הגזע הישראלי היחיד',
     image: `${SITE_URL}/breeds-wc/canaan.png`,
-    author: { '@type': 'Organization', name: 'כלבניה' },
-    publisher: { '@type': 'Organization', name: 'כלבניה' },
+    author: { '@type': 'Organization', name: 'קהילה על ארבע' },
+    publisher: { '@type': 'Organization', name: 'קהילה על ארבע' },
     description:
       'הסיפור של הכלב הכנעני - הגזע הלאומי של ישראל: מכלב מדבר פראי, דרך ההצלה מהכחדה, ועד כלבי המוקשים ויחידת עוקץ.',
     mainEntityOfPage: `${SITE_URL}/canaan-dog`,

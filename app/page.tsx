@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { Counter } from '@/components/shared/Counter'
 import { MapSection } from '@/components/map/MapSection'
 import { Reveal3D } from '@/components/fx/Reveal3D'
@@ -10,17 +10,16 @@ import { MagneticButton } from '@/components/fx/MagneticButton'
 import { FloatingPaws } from '@/components/fx/FloatingPaws'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { Carousel } from '@/components/fx/Carousel'
-import { LiveNow } from '@/components/home/LiveNow'
 import { FounderNote } from '@/components/home/FounderNote'
 import { communities, img } from '@/lib/communities'
 import { breeds, getBreed, breedImg } from '@/lib/breeds'
 
 const MARQUEE = [
-  '18 מפגשים החודש',
-  'שק רויאל קנין ב-198 במקום 290',
-  'וטרינר שעונה תוך 24 שעות',
-  'פינסיטינג שאפשר לסמוך עליו',
-  '78 בעלי כלבים בקבוצת הרכישה הקרובה',
+  '29 מדריכי גזעים בלי לייפות',
+  '288 גינות כלבים על המפה',
+  '59 מקומות דוג-פרנדלי בכל הארץ',
+  '17 מדריכי ערים לבעלי כלבים',
+  'מחירון מזון מעודכן + מחשבון עלויות',
 ]
 
 const PHOTOS = [
@@ -35,25 +34,15 @@ const REEL = ['photo-1552053831-71594a27632d', 'photo-1587300003388-59208cc962cb
 const REEL_LABELS = ['לברדור', 'גולדן', 'שפיץ', 'בולדוג', 'חברים', 'גור']
 
 const FEATURES = [
-  { icon: '🛒', title: 'קונים יחד', sub: 'שק של 15 ק"ג יורד מ-290 ל-198. אותו מזון, פחות כסף', d: 1 as const },
-  { icon: '🎉', title: 'נפגשים', sub: '18 מפגשים החודש. הקרוב - שישי בירקון, 7:30 בבוקר', d: 2 as const },
-  { icon: '🏠', title: 'שומרים אחד על הכלב של השני', sub: 'נוסעים לחו"ל? יש בקהילה מי שכבר עשה את זה', d: 3 as const },
+  { icon: '🛒', title: 'קונים יחד', sub: 'מתאחדים על שק מזון או ציוד - וכשקונים בכמות, המחיר יורד', d: 1 as const },
+  { icon: '🎉', title: 'נפגשים', sub: 'מפגשי בוקר בפארק, ערבי אילוף ויריד יד שנייה - מתארגנים יחד', d: 2 as const },
+  { icon: '🏠', title: 'שומרים אחד על הכלב של השני', sub: 'נוסעים לחו"ל? בקהילה יש מי שכבר עשה את זה', d: 3 as const },
   { icon: '💬', title: 'שואלים בלי בושה', sub: 'את השאלות שלא נעים לשאול את הווטרינר. עונים אנשים שעברו את זה', d: 2 as const },
-  { icon: '🔄', title: 'יד שנייה', sub: 'רתמה כמעט חדשה ב-120 במקום 280. כלבים גדלים מהר', d: 3 as const },
-  { icon: '🩺', title: 'וטרינר במנוי', sub: 'הכלב הקיא בלילה ואתם לא בטוחים? תשובה תוך 24 שעות', d: 4 as const },
+  { icon: '🔄', title: 'יד שנייה', sub: 'רתמה כמעט חדשה במקום לזרוק - כלבים גדלים מהר', d: 3 as const },
+  { icon: '🩺', title: 'שאלות לווטרינר', sub: 'הכלב הקיא בלילה ואתם לא בטוחים? שואלים בלי לרוץ למרפאה', d: 4 as const },
 ]
 
-const GROUPS = [
-  { name: 'Royal Canin', size: 'שק 15 ק"ג', tag: 'כמעט סגורה', tagCls: 'tl', neu: 198, old: 290, save: 32, w: 78, joined: '78 מתוך 100', left: 'נותרו 4 ימים', hot: true, d: 1 as const },
-  { name: "Hill's Science Diet", size: '9 ק"ג', tag: 'פעילה', tagCls: 'tl', neu: 230, old: 340, save: 32, w: 45, joined: '45 מתוך 100', left: 'נותרו 8 ימים', hot: false, d: 2 as const },
-  { name: 'Ruffwear', size: 'רתמה + רצועה', tag: 'מתמלאת', tagCls: 'tw', neu: 280, old: 420, save: 33, w: 30, joined: '30 מתוך 100', left: 'נותרו 12 ימים', hot: false, d: 3 as const },
-]
 
-const EVENTS = [
-  { type: 'מפגש בוקר', title: 'קפה וכלבים בגדות הירקון', loc: 'תל אביב · 7:30 בבוקר · 64 נרשמו', price: '₪45', badge: 'שישי · 14.3', img: 'photo-1601758228041-f3b2795255f1', btn: 'אני בא', d: 1 as const },
-  { type: 'הרצאה', title: 'מה באמת שמים בקערה - תזונה בלי שטויות', loc: 'זום · 38 נרשמו', price: '₪60', badge: 'ראשון · 16.3', img: 'photo-1628009368231-7bb7cfcb0def', btn: 'לשמור מקום', d: 2 as const },
-  { type: 'יריד', title: 'יריד יד שנייה - רתמות, כלובים, צעצועים', loc: 'גן סאקר, ירושלים · 91 נרשמו', price: 'חינם', badge: 'שבת · 22.3', img: 'photo-1548199973-03cce0bbc87b', btn: 'לפרטים', d: 3 as const },
-]
 
 const TOOLS = [
   { href: '/match', icon: '🧭', title: 'מתאם הגזע', sub: 'שש שאלות, ונגיד לכם בכנות אילו שלושה גזעים יסתדרו עם הסלון והילדים', d: 1 as const },
@@ -64,11 +53,6 @@ const TOOLS = [
   { href: '/tools', icon: '🧰', title: 'כל הכלים', sub: 'שישה כלים חינמיים, בלי הרשמה. בוחרים ומתחילים', d: 2 as const },
 ]
 
-const TESTIMONIALS = [
-  { q: '"חצי שנה בקבוצות, ועשיתי את החשבון: 800 שקל שנשארו לי בכיס. כבר לא קונה שק לבד."', name: 'מיכל כהן', role: 'בעלת לברדור · תל אביב', img: 'photo-1544005313-94ddf0286df2', d: 1 as const },
-  { q: '"באדי הפסיק לאכול יומיים ונכנס לי הלב לתחת. שאלתי בפורום ב-11 בלילה, וקיבלתי תשובה מבן אדם שעבר בדיוק את זה."', name: 'דני לוי', role: 'בעל גולדן · ירושלים', img: 'photo-1507003211169-0a1dd7228f2d', d: 2 as const },
-  { q: '"נסעתי עשרה ימים לחו"ל בפעם הראשונה בלי לדאוג. מישהי מהקהילה שמרה על לונה כאילו זה הכלב שלה."', name: 'שירה ברק', role: 'בעלת האסקי · חיפה', img: 'photo-1438761681033-6461ffad8d80', d: 3 as const },
-]
 
 // ערים נבחרות לרצועת "קהילה בכל עיר"
 const CITY_SLUGS = ['tel-aviv', 'jerusalem', 'haifa', 'rishon', 'netanya', 'beer-sheva', 'herzliya', 'ramat-gan']
@@ -92,7 +76,6 @@ const srcSetFor = (id: string, widths: number[]) =>
 
 export default function Home() {
   const heroImgRef = useRef<HTMLDivElement>(null)
-  const [videoOpen, setVideoOpen] = useState(false)
 
   // פרלקס ישירות על ה-DOM דרך ref - בלי setState, בלי re-render לכל תזוזת עכבר.
   // throttle עם requestAnimationFrame + כיבוד prefers-reduced-motion.
@@ -106,21 +89,6 @@ export default function Home() {
       if (heroRaf.current !== null) cancelAnimationFrame(heroRaf.current)
     }
   }, [])
-
-  // מודאל וידאו: סגירה ב-Escape + נעילת גלילת הרקע כל עוד הוא פתוח
-  useEffect(() => {
-    if (!videoOpen) return
-    function onKey(ev: KeyboardEvent) {
-      if (ev.key === 'Escape') setVideoOpen(false)
-    }
-    document.addEventListener('keydown', onKey)
-    const prevOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.removeEventListener('keydown', onKey)
-      document.body.style.overflow = prevOverflow
-    }
-  }, [videoOpen])
 
   function onHeroMove(e: React.MouseEvent<HTMLElement>) {
     if (reduceMotion.current) return
@@ -155,26 +123,22 @@ export default function Home() {
           <div className="hero-content">
             <div className="hero-eyebrow">
               <span className="ey-dot" />
-              4,823 בעלי כלבים בישראל
+              הקהילה לבעלי כלבים בישראל · בהקמה
             </div>
             <h1 className="hero-h1 display">
-              לכלב שלך מגיע<em className="grad-text">חבר'ה כמוך</em>
+              לכלב שלך מגיע<em className="grad-text">יותר מגוגל</em>
             </h1>
             <p className="hero-sub">
-              חוסכים יחד על מזון, נפגשים בירקון בשישי בבוקר, ושואלים את כל השאלות
-              שלא נעים לשאול את הווטרינר. ההצטרפות בחינם.
+              מוצאים גינות ומקומות דוג-פרנדלי, מגלים מה יש בעיר שלכם, ושואלים את הדברים
+              שלא תמיד נעים לשאול. קבוצות הרכישה והמפגשים בהקמה - הצטרפו מההתחלה.
             </p>
             <div className="hero-btns">
-              <MagneticButton href="/auth/register" className="hbm">
-                בואו להכיר
+              <MagneticButton href="/waitlist" className="hbm">
+                הצטרפו לרשימת ההמתנה
               </MagneticButton>
-              <button
-                className="hbg"
-                onClick={() => setVideoOpen(true)}
-                aria-label="צפו בסרטון קצר על מה קורה בקהילה"
-              >
-                ▶ דקה וחצי, ותבינו
-              </button>
+              <Link className="hbg" href="/cities" style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
+                תראו לי מה יש בעיר שלי
+              </Link>
             </div>
             <FounderNote />
           </div>
@@ -186,21 +150,21 @@ export default function Home() {
               loading="eager"
               fetchPriority="high"
               decoding="async"
-              src="/breeds-wc/golden.png"
-              alt="איור צבעי-מים של גולדן רטריבר מחייך"
+              src="/hero-opener.png"
+              width={1122}
+              height={1402}
+              sizes="(max-width: 900px) 100vw, 50vw"
+              alt="משפחות וכלבים נפגשות בפארק עירוני - קהילת קהילה על ארבע"
             />
           </div>
         </div>
         <div className="hero-stats">
-          <div className="hs"><div className="hs-val"><Counter to={4823} /></div><div className="hs-lbl">חברי קהילה</div></div>
-          <div className="hs"><div className="hs-val">₪<Counter to={340} /></div><div className="hs-lbl">חיסכון חודשי ממוצע</div></div>
-          <div className="hs"><div className="hs-val"><Counter to={18} /></div><div className="hs-lbl">אירועים בחודש</div></div>
-          <div className="hs"><div className="hs-val"><Counter to={96} />%</div><div className="hs-lbl">שביעות רצון</div></div>
+          <div className="hs"><div className="hs-val"><Counter to={29} /></div><div className="hs-lbl">מדריכי גזעים</div></div>
+          <div className="hs"><div className="hs-val"><Counter to={288} /></div><div className="hs-lbl">גינות כלבים</div></div>
+          <div className="hs"><div className="hs-val"><Counter to={59} /></div><div className="hs-lbl">מקומות דוג-פרנדלי</div></div>
+          <div className="hs"><div className="hs-val"><Counter to={17} /></div><div className="hs-lbl">מדריכי ערים</div></div>
         </div>
       </section>
-
-      {/* מה קורה עכשיו בכלבניה - רצועה חיה */}
-      <LiveNow />
 
       {/* MARQUEE */}
       <div className="mq-wrap">
@@ -218,18 +182,18 @@ export default function Home() {
         <Reveal3D className="ev-head">
           <div>
             <span className="section-tag">קרוב לבית</span>
-            <h2 id="cities-heading" className="section-title display">יש חבר'ה גם בעיר שלכם</h2>
+            <h2 id="cities-heading" className="section-title display">מדריך לכלב בעיר שלכם</h2>
           </div>
-          <Link href="/communities" className="btn btn-ghost">לכל הקהילות →</Link>
+          <Link href="/cities" className="btn btn-ghost">לכל מדריכי הערים →</Link>
         </Reveal3D>
         <Carousel ariaLabel="קהילות לפי עיר" itemMinWidth={230}>
           {CITY_CARDS.map((c, i) => (
             <Reveal3D as="div" key={c.slug} delay={((i % 4) + 1) as 1 | 2 | 3 | 4}>
               <Tilt3D max={9} className="kv-fill-h">
                 <Link
-                  href={`/community/${c.slug}`}
+                  href={`/city/${c.slug}`}
                   className="lift-3d kv-card-link"
-                  aria-label={`קהילת ${c.name} - ${c.members.toLocaleString('he-IL')} חברים`}
+                  aria-label={`מדריך לבעלי כלבים ב${c.name}`}
                 >
                   <div className="kv-card">
                     <div className="kv-card-media">
@@ -246,7 +210,7 @@ export default function Home() {
                       <div className="kv-card-name">{c.name}</div>
                       <div className="kv-card-meta">{c.district}</div>
                       <div className="kv-pill">
-                        <span aria-hidden="true">👥</span> {c.members.toLocaleString('he-IL')} חברים
+                        <span aria-hidden="true">📍</span> מדריך עירוני
                       </div>
                     </div>
                   </div>
@@ -264,7 +228,7 @@ export default function Home() {
             <span className="section-tag">הקהילה שלנו</span>
             <h2 className="section-title display">כלבים אמיתיים,<br />אנשים אמיתיים</h2>
           </div>
-          <p className="pg-sub">מקס מתל אביב, לונה מחיפה, וכמה אלפים שעוד לא הכרתם. כולם פה בגלל כלב אחד.</p>
+          <p className="pg-sub">מקס מתל אביב, לונה מחיפה - והעיר שלכם בדרך. הקהילה נבנית עכשיו, סביב כלב אחד בכל פעם.</p>
         </Reveal3D>
         <div className="pg-grid">
           {PHOTOS.map((p) => (
@@ -301,9 +265,9 @@ export default function Home() {
           <img loading="lazy" decoding="async" src={u('photo-1587300003388-59208cc962cb', 900)} srcSet={srcSetFor('photo-1587300003388-59208cc962cb', [480, 720, 900])} sizes="(max-width: 900px) 100vw, 50vw" alt="גולדן רטריבר משחק בחוץ עם בעליו" />
         </div>
         <div className="split-content">
-          <Reveal3D as="span" className="section-tag">למה להישאר</Reveal3D>
-          <Reveal3D><h2 id="split-heading" className="split-title display">שש סיבות<br />שתישארו</h2></Reveal3D>
-          <Reveal3D><p className="split-sub">מקבוצת רכישה שחוסכת לכם מאתיים שקל בחודש, ועד מישהו שישמור על הכלב כשאתם בחו"ל.</p></Reveal3D>
+          <Reveal3D as="span" className="section-tag">מה מחכה בקהילה</Reveal3D>
+          <Reveal3D><h2 id="split-heading" className="split-title display">שש סיבות<br />להצטרף</h2></Reveal3D>
+          <Reveal3D><p className="split-sub">מקבוצות רכישה שמורידות מחירים, ועד מישהו שישמור על הכלב כשאתם בחו"ל. זה מה שאנחנו בונים.</p></Reveal3D>
           <div className="features-list">
             {FEATURES.map((f) => (
               <Reveal3D as="div" delay={f.d} key={f.title} className="feat-row">
@@ -318,118 +282,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* GROUPS */}
-      <section className="gr-section">
-        <div className="gr-inner">
-          <Reveal3D className="gr-top">
-            <h2 className="gr-title display">קונים יחד,<br />משלמים פחות</h2>
-            <p className="gr-sub">78 בעלי כלבים כבר בקבוצת הרויאל קנין. עוד 4 ימים, ושק של 15 ק"ג יורד מ-290 ל-198.</p>
-          </Reveal3D>
-          <div className="gr-grid">
-            {GROUPS.map((g) => (
-              <Reveal3D as="div" delay={g.d} key={g.name}>
-                <Tilt3D max={8} className="kv-fill-h">
-                  <div className={`gc${g.hot ? ' hot' : ''} lift-3d kv-fill-h`}>
-                    <div className="gc-h">
-                      <div className="gc-name">{g.name}<br />{g.size}</div>
-                      <span className={`gc-tag ${g.tagCls}`}>{g.tag}</span>
-                    </div>
-                    <div className="gc-pr">
-                      <span className="gc-new">₪{g.neu}</span>
-                      <span className="gc-old">₪{g.old}</span>
-                      <span className="gc-save">{g.save}%-</span>
-                    </div>
-                    <div className="gc-bar">
-                      <div className="gc-fill" style={{ width: `${g.w}%` }} />
-                    </div>
-                    <div className="gc-meta"><span>{g.joined}</span><span>{g.left}</span></div>
-                    <Link
-                      href="/groups"
-                      className="gc-btn kv-block-link"
-                      aria-label={`להצטרפות לקבוצת הרכישה ${g.name}`}
-                    >
-                      להצטרפות →
-                    </Link>
-                  </div>
-                </Tilt3D>
-              </Reveal3D>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* EVENTS */}
-      <section className="ev-section">
-        <div className="ev-inner">
-          <Reveal3D className="ev-head">
-            <div>
-              <span className="section-tag">יוצאים מהבית</span>
-              <h2 className="section-title display">נפגשים<br />פנים אל פנים</h2>
-            </div>
-            <Link href="/events" className="btn btn-ghost">לכל האירועים →</Link>
-          </Reveal3D>
-          <div className="ev-grid">
-            {EVENTS.map((e) => (
-              <Reveal3D as="div" delay={e.d} key={e.title}>
-                <Tilt3D max={8} className="kv-fill-h">
-                  <div className="ev lift-3d kv-fill-h">
-                    <div className="ev-img">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img loading="lazy" decoding="async" src={u(e.img, 700)} srcSet={srcSetFor(e.img, [360, 540, 700])} sizes="(max-width: 760px) 100vw, 33vw" alt={`${e.type} - ${e.title}`} />
-                      <div className="ev-badge">{e.badge}</div>
-                    </div>
-                    <div className="ev-body">
-                      <div className="ev-type">{e.type}</div>
-                      <div className="ev-title">{e.title}</div>
-                      <div className="ev-loc">{e.loc}</div>
-                    </div>
-                    <div className="ev-foot">
-                      <span className="ev-price">{e.price}</span>
-                      <Link
-                        href="/events"
-                        className="ev-btn kv-inline-link"
-                        aria-label={`${e.btn} - ${e.title}`}
-                      >
-                        {e.btn}
-                      </Link>
-                    </div>
-                  </div>
-                </Tilt3D>
-              </Reveal3D>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* MAP */}
       <MapSection />
-
-      {/* TESTIMONIALS */}
-      <section className="tc-section" aria-labelledby="tc-heading">
-        <div className="tc-inner">
-          <Reveal3D><h2 id="tc-heading" className="tc-title display">מה אומרים מי שכבר בפנים</h2></Reveal3D>
-          <div className="tc-grid">
-            {TESTIMONIALS.map((t) => (
-              <Reveal3D as="div" delay={t.d} key={t.name} className="tc">
-                <figure className="tc-fig">
-                  <div className="tc-top">
-                    <div className="tc-av">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img loading="lazy" decoding="async" src={u(t.img, 100)} srcSet={srcSetFor(t.img, [100, 200])} sizes="56px" alt={`תמונת הפרופיל של ${t.name}`} />
-                    </div>
-                    <div className="tc-stars" aria-label="דירוג חמישה כוכבים מתוך חמישה">★★★★★</div>
-                  </div>
-                  <blockquote className="tc-q">{t.q}</blockquote>
-                  <figcaption>
-                    <div className="tc-name">{t.name}</div>
-                    <div className="tc-role">{t.role}</div>
-                  </figcaption>
-                </figure>
-              </Reveal3D>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* גזעים פופולריים */}
       <section className="breeds-section kv-section kv-section--breeds" aria-labelledby="breeds-heading">
@@ -569,74 +423,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* VIDEO MODAL */}
-      {videoOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="סרטון הסבר - איך קהילת כלבניה עובדת"
-          onClick={() => setVideoOpen(false)}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 12000,
-            display: 'grid',
-            placeItems: 'center',
-            padding: 'clamp(16px, 4vw, 48px)',
-            background: 'rgba(42,32,24,.82)',
-            backdropFilter: 'blur(8px)',
-          }}
-        >
-          <div
-            onClick={(ev) => ev.stopPropagation()}
-            style={{
-              position: 'relative',
-              width: 'min(960px, 100%)',
-              aspectRatio: '16 / 9',
-              borderRadius: 20,
-              overflow: 'hidden',
-              background: '#000',
-              border: '1px solid rgba(232,200,135,.35)',
-              boxShadow: '0 32px 90px rgba(0,0,0,.55)',
-            }}
-          >
-            <button
-              type="button"
-              onClick={() => setVideoOpen(false)}
-              aria-label="סגירת הסרטון"
-              autoFocus
-              style={{
-                position: 'absolute',
-                top: 12,
-                insetInlineEnd: 12,
-                zIndex: 2,
-                width: 40,
-                height: 40,
-                display: 'grid',
-                placeItems: 'center',
-                borderRadius: 100,
-                border: '1px solid rgba(255,255,255,.25)',
-                background: 'rgba(42,32,24,.85)',
-                color: '#fff',
-                fontSize: 18,
-                fontWeight: 800,
-                cursor: 'pointer',
-                fontFamily: 'inherit',
-              }}
-            >
-              ✕
-            </button>
-            <iframe
-              src="https://www.youtube.com/embed/aTUojz9rfqM?rel=0&modestbranding=1"
-              title="קהילת כלבניה - איך זה עובד"
-              loading="lazy"
-              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              style={{ width: '100%', height: '100%', border: 0, display: 'block' }}
-            />
-          </div>
-        </div>
-      )}
     </>
   )
 }

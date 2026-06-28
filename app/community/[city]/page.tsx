@@ -12,18 +12,18 @@ export function generateStaticParams() {
 }
 
 /** תיאור מותאם-SEO-מקומי לעיר - מילות מפתח גיאוגרפיות. */
-function cityDescription(name: string, district: string, members: number) {
+function cityDescription(name: string, district: string) {
   return clampDescription(
     `קהילת בעלי הכלבים ב${name}: מפגשי כלבים, גינות כלבים, המלצות על וטרינרים, ` +
-      `קבוצות רכישה ושירותי פינסיטינג ב${district}. ${members}+ חברים שמטיילים, חוסכים ועוזרים זה לזה.`,
+      `קבוצות רכישה ושירותי פינסיטינג ב${district}. הצטרפו לחבורה המקומית שמטיילת, חוסכת ועוזרת זו לזו.`,
   )
 }
 
 export function generateMetadata({ params }: Props): Metadata {
   const c = getCommunity(params.city)
-  if (!c) return { title: 'קהילה לא נמצאה · כלבניה' }
+  if (!c) return { title: 'קהילה לא נמצאה · קהילה על ארבע' }
   const title = `כלבים ב${c.name} - קהילת בעלי הכלבים`
-  const description = cityDescription(c.name, c.district, c.members)
+  const description = cityDescription(c.name, c.district)
   const url = absoluteUrl(`/community/${c.slug}`)
   const ogImage = absoluteUrl(ogImageUrl({ title: `כלבים ב${c.name}`, subtitle: `קהילת בעלי הכלבים · ${c.district}`, tag: 'קהילה' }))
   return {
@@ -59,7 +59,7 @@ export default function CommunityCityPage({ params }: Props) {
       '@context': 'https://schema.org',
       '@type': 'Place',
       name: `קהילת בעלי הכלבים ב${c.name}`,
-      description: cityDescription(c.name, c.district, c.members),
+      description: cityDescription(c.name, c.district),
       url,
       address: {
         '@type': 'PostalAddress',

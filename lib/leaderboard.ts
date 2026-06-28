@@ -1,12 +1,17 @@
 import { communities, type Community } from '@/lib/communities'
 
 /**
- * לוח המובילים - שכבת נתונים (דמו).
+ * לוח המובילים - שכבת נתונים (דוגמה בלבד).
  *
- * אין backend אמיתי: רשימת 20 חברי הקהילה המובילים נשמרת כאן כדאטה סטטי,
- * והעמוד מחשב מתוכה דרגות, פודיום וסינון לפי עיר. הערים נגזרות מ-
- * `communities.ts` כך שאין כפילות מקור אמת - כל `citySlug` חייב להתאים
- * ל-slug קיים שם.
+ * אין backend אמיתי: רשימת 20 רשומות דוגמה נשמרת כאן כדאטה סטטי, והעמוד
+ * מחשב מתוכה דרגות, פודיום וסינון לפי עיר. הערים נגזרות מ-`communities.ts`
+ * כך שאין כפילות מקור אמת - כל `citySlug` חייב להתאים ל-slug קיים שם.
+ *
+ * חשוב: אלה אינם חברים אמיתיים. כל עוד אין קהילה פעילה, עמוד /leaderboard
+ * מציג מצב "ייפתח עם ההשקה" ולא מרנדר את הרשומות האלה כאנשים אמיתיים.
+ * השמות כאן הם תוויות גנריות ("חבר/ה בקהילה") בלי שמות פרטיים מומצאים,
+ * כך שגם אם הדאטה מוצגת היכן שהוא (למשל בתצוגה מקדימה של הדייג׳סט) היא
+ * נקראת כדוגמה ולא כהוכחה חברתית מומצאת.
  *
  * הצבירה נשענת על שלוש פעולות ערך בקהילה, וכל אחת שווה מספר נקודות קבוע
  * (ראו POINT_RULES). השדה `points` הוא הסכום המוצג, ו-`breakdown` מפרק
@@ -102,26 +107,26 @@ export type LeaderEntry = {
  * communities.ts.
  */
 export const leaderEntries: LeaderEntry[] = [
-  { id: 'l1',  name: 'מיכל כהן',     dog: 'מקס',    citySlug: 'tel-aviv',    posts: 142, helps: 318, events: 41, trend: 'same', trendBy: 0, badges: [{ label: 'חברה מייסדת', icon: '🏅' }, { label: 'מומחית לברדור', icon: '🎓' }] },
-  { id: 'l2',  name: 'דני לוי',      dog: 'באדי',   citySlug: 'jerusalem',   posts: 128, helps: 286, events: 38, trend: 'up',   trendBy: 2, badges: [{ label: 'חבר מייסד', icon: '🏅' }, { label: 'שכן טוב', icon: '🤝' }] },
-  { id: 'l3',  name: 'שירה ברק',     dog: 'לונה',   citySlug: 'haifa',       posts: 117, helps: 264, events: 33, trend: 'down', trendBy: 1, badges: [{ label: 'מומחית האסקי', icon: '🎓' }] },
-  { id: 'l4',  name: 'אורי שמש',     dog: "ג'ינג'ר", citySlug: 'tel-aviv',   posts: 104, helps: 231, events: 29, trend: 'up',   trendBy: 3, badges: [{ label: 'מארגן מפגשים', icon: '🎉' }] },
-  { id: 'l5',  name: 'נועה פרידמן',  dog: 'צ׳רלי',  citySlug: 'rishon',      posts: 96,  helps: 208, events: 27, trend: 'same', trendBy: 0, badges: [{ label: 'שכנה טובה', icon: '🤝' }] },
-  { id: 'l6',  name: 'יואב אזולאי',  dog: 'רקסי',   citySlug: 'beer-sheva',  posts: 88,  helps: 192, events: 24, trend: 'up',   trendBy: 1, badges: [{ label: 'מומחה גזע', icon: '🎓' }] },
-  { id: 'l7',  name: 'תמר גולן',     dog: 'בלה',    citySlug: 'netanya',     posts: 81,  helps: 176, events: 22, trend: 'down', trendBy: 2, badges: [{ label: 'חברה ותיקה', icon: '🏅' }] },
-  { id: 'l8',  name: 'איתי רוזן',    dog: 'נאצ׳ו',  citySlug: 'ramat-gan',   posts: 74,  helps: 158, events: 19, trend: 'up',   trendBy: 4, badges: [{ label: 'מארגן טיולים', icon: '🎉' }] },
-  { id: 'l9',  name: 'הדס מזרחי',    dog: 'דייזי',  citySlug: 'haifa',       posts: 68,  helps: 144, events: 18, trend: 'same', trendBy: 0, badges: [{ label: 'שכנה טובה', icon: '🤝' }] },
-  { id: 'l10', name: 'עמית בן דוד',  dog: 'שוקו',   citySlug: 'petah-tikva', posts: 61,  helps: 128, events: 16, trend: 'down', trendBy: 1, badges: [{ label: 'חבר פעיל', icon: '⭐' }] },
-  { id: 'l11', name: 'ליאת שרון',    dog: 'אלי',    citySlug: 'ashdod',      posts: 55,  helps: 114, events: 14, trend: 'up',   trendBy: 2, badges: [{ label: 'מומחית תזונה', icon: '🎓' }] },
-  { id: 'l12', name: 'רון כספי',     dog: 'טופי',   citySlug: 'herzliya',    posts: 49,  helps: 101, events: 13, trend: 'same', trendBy: 0, badges: [{ label: 'שכן טוב', icon: '🤝' }] },
-  { id: 'l13', name: 'יעל אדרי',     dog: 'מילה',   citySlug: 'kfar-saba',   posts: 44,  helps: 89,  events: 11, trend: 'up',   trendBy: 1, badges: [{ label: 'חברה פעילה', icon: '⭐' }] },
-  { id: 'l14', name: 'גיא שטרן',     dog: 'בוני',   citySlug: 'rehovot',     posts: 39,  helps: 78,  events: 10, trend: 'down', trendBy: 3, badges: [{ label: 'מארח מפגשים', icon: '🎉' }] },
-  { id: 'l15', name: 'דנה אביב',     dog: 'קוקו',   citySlug: 'holon',       posts: 35,  helps: 68,  events: 9,  trend: 'same', trendBy: 0, badges: [{ label: 'שכנה טובה', icon: '🤝' }] },
-  { id: 'l16', name: 'עומר פלד',     dog: 'ריקו',   citySlug: 'raanana',     posts: 31,  helps: 59,  events: 8,  trend: 'up',   trendBy: 2, badges: [{ label: 'כוכב עולה', icon: '🌱' }] },
-  { id: 'l17', name: 'מאיה כץ',      dog: 'אריאל',  citySlug: 'modiin',      posts: 27,  helps: 50,  events: 7,  trend: 'down', trendBy: 1, badges: [{ label: 'חברה חדשה', icon: '🌱' }] },
-  { id: 'l18', name: 'אלון נחום',    dog: 'בלק',    citySlug: 'bat-yam',     posts: 23,  helps: 42,  events: 6,  trend: 'up',   trendBy: 1, badges: [{ label: 'כוכב עולה', icon: '🌱' }] },
-  { id: 'l19', name: 'שני הרוש',     dog: 'פפר',    citySlug: 'givatayim',   posts: 19,  helps: 34,  events: 5,  trend: 'same', trendBy: 0, badges: [{ label: 'חברה חדשה', icon: '🌱' }] },
-  { id: 'l20', name: 'טל ביטון',     dog: 'אלסקה',  citySlug: 'eilat',       posts: 15,  helps: 26,  events: 4,  trend: 'up',   trendBy: 3, badges: [{ label: 'כוכב עולה', icon: '🌱' }] },
+  { id: 'l1',  name: 'חבר/ה בקהילה', dog: 'מקס',     citySlug: 'tel-aviv',    posts: 142, helps: 318, events: 41, trend: 'same', trendBy: 0, badges: [{ label: 'מומחה/ית לברדור', icon: '🎓' }] },
+  { id: 'l2',  name: 'חבר/ה בקהילה', dog: 'באדי',    citySlug: 'jerusalem',   posts: 128, helps: 286, events: 38, trend: 'up',   trendBy: 2, badges: [{ label: 'שכן/ה טוב/ה', icon: '🤝' }] },
+  { id: 'l3',  name: 'חבר/ה בקהילה', dog: 'לונה',    citySlug: 'haifa',       posts: 117, helps: 264, events: 33, trend: 'down', trendBy: 1, badges: [{ label: 'מומחה/ית האסקי', icon: '🎓' }] },
+  { id: 'l4',  name: 'חבר/ה בקהילה', dog: "ג'ינג'ר", citySlug: 'tel-aviv',   posts: 104, helps: 231, events: 29, trend: 'up',   trendBy: 3, badges: [{ label: 'מארגן/ת מפגשים', icon: '🎉' }] },
+  { id: 'l5',  name: 'חבר/ה בקהילה', dog: 'צ׳רלי',   citySlug: 'rishon',      posts: 96,  helps: 208, events: 27, trend: 'same', trendBy: 0, badges: [{ label: 'שכן/ה טוב/ה', icon: '🤝' }] },
+  { id: 'l6',  name: 'חבר/ה בקהילה', dog: 'רקסי',    citySlug: 'beer-sheva',  posts: 88,  helps: 192, events: 24, trend: 'up',   trendBy: 1, badges: [{ label: 'מומחה/ית גזע', icon: '🎓' }] },
+  { id: 'l7',  name: 'חבר/ה בקהילה', dog: 'בלה',     citySlug: 'netanya',     posts: 81,  helps: 176, events: 22, trend: 'down', trendBy: 2, badges: [{ label: 'חבר/ה פעיל/ה', icon: '⭐' }] },
+  { id: 'l8',  name: 'חבר/ה בקהילה', dog: 'נאצ׳ו',   citySlug: 'ramat-gan',   posts: 74,  helps: 158, events: 19, trend: 'up',   trendBy: 4, badges: [{ label: 'מארגן/ת טיולים', icon: '🎉' }] },
+  { id: 'l9',  name: 'חבר/ה בקהילה', dog: 'דייזי',   citySlug: 'haifa',       posts: 68,  helps: 144, events: 18, trend: 'same', trendBy: 0, badges: [{ label: 'שכן/ה טוב/ה', icon: '🤝' }] },
+  { id: 'l10', name: 'חבר/ה בקהילה', dog: 'שוקו',    citySlug: 'petah-tikva', posts: 61,  helps: 128, events: 16, trend: 'down', trendBy: 1, badges: [{ label: 'חבר/ה פעיל/ה', icon: '⭐' }] },
+  { id: 'l11', name: 'חבר/ה בקהילה', dog: 'אלי',     citySlug: 'ashdod',      posts: 55,  helps: 114, events: 14, trend: 'up',   trendBy: 2, badges: [{ label: 'מומחה/ית תזונה', icon: '🎓' }] },
+  { id: 'l12', name: 'חבר/ה בקהילה', dog: 'טופי',    citySlug: 'herzliya',    posts: 49,  helps: 101, events: 13, trend: 'same', trendBy: 0, badges: [{ label: 'שכן/ה טוב/ה', icon: '🤝' }] },
+  { id: 'l13', name: 'חבר/ה בקהילה', dog: 'מילה',    citySlug: 'kfar-saba',   posts: 44,  helps: 89,  events: 11, trend: 'up',   trendBy: 1, badges: [{ label: 'חבר/ה פעיל/ה', icon: '⭐' }] },
+  { id: 'l14', name: 'חבר/ה בקהילה', dog: 'בוני',    citySlug: 'rehovot',     posts: 39,  helps: 78,  events: 10, trend: 'down', trendBy: 3, badges: [{ label: 'מארח/ת מפגשים', icon: '🎉' }] },
+  { id: 'l15', name: 'חבר/ה בקהילה', dog: 'קוקו',    citySlug: 'holon',       posts: 35,  helps: 68,  events: 9,  trend: 'same', trendBy: 0, badges: [{ label: 'שכן/ה טוב/ה', icon: '🤝' }] },
+  { id: 'l16', name: 'חבר/ה בקהילה', dog: 'ריקו',    citySlug: 'raanana',     posts: 31,  helps: 59,  events: 8,  trend: 'up',   trendBy: 2, badges: [{ label: 'כוכב/ת עולה', icon: '🌱' }] },
+  { id: 'l17', name: 'חבר/ה בקהילה', dog: 'אריאל',   citySlug: 'modiin',      posts: 27,  helps: 50,  events: 7,  trend: 'down', trendBy: 1, badges: [{ label: 'כוכב/ת עולה', icon: '🌱' }] },
+  { id: 'l18', name: 'חבר/ה בקהילה', dog: 'בלק',     citySlug: 'bat-yam',     posts: 23,  helps: 42,  events: 6,  trend: 'up',   trendBy: 1, badges: [{ label: 'כוכב/ת עולה', icon: '🌱' }] },
+  { id: 'l19', name: 'חבר/ה בקהילה', dog: 'פפר',     citySlug: 'givatayim',   posts: 19,  helps: 34,  events: 5,  trend: 'same', trendBy: 0, badges: [{ label: 'כוכב/ת עולה', icon: '🌱' }] },
+  { id: 'l20', name: 'חבר/ה בקהילה', dog: 'אלסקה',   citySlug: 'eilat',       posts: 15,  helps: 26,  events: 4,  trend: 'up',   trendBy: 3, badges: [{ label: 'כוכב/ת עולה', icon: '🌱' }] },
 ]
 
 /** פירוק הנקודות של חבר לשלושת מקורות הצבירה. */

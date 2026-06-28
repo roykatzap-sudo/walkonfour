@@ -3,7 +3,7 @@ import { StartSteps, type StartStep } from '@/components/marketing/StartSteps'
 import { CtaBanner } from '@/components/marketing/CtaBanner'
 
 export const metadata = {
-  title: 'איך מתחילים · כלבניה',
+  title: 'איך מתחילים · קהילה על ארבע',
   description:
     'נרשמתם וזהו? לא בדיוק. ארבעה צעדים קצרים מההרשמה ועד הטיול הקבוצתי הראשון בירקון.',
 }

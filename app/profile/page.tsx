@@ -90,7 +90,7 @@ function ReferralDashboard({
   async function nativeShare() {
     try {
       await navigator.share({
-        title: 'כלבניה - קהילת בעלי הכלבים',
+        title: 'קהילה על ארבע - קהילת בעלי הכלבים',
         text: referralShareText(link),
         url: link,
       })
@@ -110,7 +110,7 @@ function ReferralDashboard({
         </h2>
       </div>
       <p style={{ color: '#5e5346', fontSize: 15, lineHeight: 1.7, margin: '0 0 18px' }}>
-        על כל חבר שמצטרף לכלבניה דרך הקישור שלכם תזוכו ב-{REFERRAL_REWARD} ₪ קרדיט
+        על כל חבר שמצטרף לקהילה על ארבע דרך הקישור שלכם תזוכו ב-{REFERRAL_REWARD} ₪ קרדיט
         (₪{REFERRAL_REWARD_RANGE.min}-{REFERRAL_REWARD_RANGE.max}), לניצול בקבוצות רכישה
         ובאירועים. ככה כולנו חוסכים יחד.
       </p>

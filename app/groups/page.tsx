@@ -14,7 +14,7 @@ type GroupPurchaseWithMembers = GroupPurchase & {
 export const metadata = buildMetadata({
   title: 'קבוצות רכישה',
   description:
-    'הצטרפו לקבוצות רכישה פעילות וחסכו עד 40% על מזון וציוד לכלבים.',
+    'קונים יחד, משלמים מחיר סיטונאי: שק רויאל קנין 15 ק"ג ב-198 ש"ח במקום 290. הקהילה בהקמה.',
   path: '/groups',
 })
 export const dynamic = 'force-dynamic'
@@ -41,8 +41,11 @@ export default async function GroupsPage() {
   return (
     <main className="page">
       <span className="section-tag">חיסכון קבוצתי</span>
-      <h1 className="page-title">קבוצות רכישה פעילות</h1>
-      <p className="page-sub">הצטרפו עכשיו ותחסכו מאות שקלים בחודש על מזון וציוד.</p>
+      <h1 className="page-title">קבוצות רכישה</h1>
+      <p className="page-sub">
+        כשקונים יחד, מקבלים מחיר סיטונאי: שק רויאל קנין 15 ק&quot;ג ב-198 ש&quot;ח
+        במקום 290. ככה זה יעבוד כשהקהילה תתחיל.
+      </p>
 
       {isDemo && <DemoBanner />}
 

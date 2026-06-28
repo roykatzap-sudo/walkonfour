@@ -6,11 +6,12 @@ import { FEED_MODES, calcFood } from '@/lib/foodCalc'
 export function FoodCalculator() {
   const [weight, setWeight] = useState(12)
   const [modeId, setModeId] = useState('adult')
-  const [kcal, setKcal] = useState(360)
+  const [kcal, setKcal] = useState('360') // נשמר כמחרוזת כדי לאפשר מצב ריק בזמן ההקלדה
   const [meals, setMeals] = useState(2)
 
   const mode = FEED_MODES.find((m) => m.id === modeId) ?? FEED_MODES[1]
-  const result = useMemo(() => calcFood(weight, mode.factor, kcal, meals), [weight, mode, kcal, meals])
+  const kcalNum = Number(kcal) > 0 ? Number(kcal) : 360
+  const result = useMemo(() => calcFood(weight, mode.factor, kcalNum, meals), [weight, mode, kcalNum, meals])
 
   return (
     <div className="card" style={{ padding: 28 }}>
@@ -69,8 +70,21 @@ export function FoodCalculator() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 16, marginBottom: 8 }}>
         <div className="field" style={{ marginBottom: 0 }}>
           <label htmlFor="fc-kcal">אנרגיית המזון (קק״ל ל-100 ג׳)</label>
-          <input id="fc-kcal" className="input" type="number" min={200} max={600} value={kcal} onChange={(e) => setKcal(Number(e.target.value) || 360)} dir="ltr" />
-          <span className="muted" style={{ fontSize: 12 }}>מופיע על שק המזון. ברירת מחדל: 360.</span>
+          <input
+            id="fc-kcal"
+            className="input"
+            type="number"
+            min={200}
+            max={600}
+            value={kcal}
+            onChange={(e) => setKcal(e.target.value)}
+            onBlur={(e) => {
+              const n = Number(e.target.value)
+              setKcal(String(n > 0 ? Math.min(600, Math.max(200, n)) : 360))
+            }}
+            dir="ltr"
+          />
+          <span className="muted" style={{ fontSize: 13.5 }}>מופיע על שק המזון. ברירת מחדל: 360.</span>
         </div>
         <div className="field" style={{ marginBottom: 0 }}>
           <label htmlFor="fc-meals">ארוחות ביום</label>
@@ -84,18 +98,18 @@ export function FoodCalculator() {
 
       {/* תוצאה */}
       <div style={{ marginTop: 22, background: 'var(--ink)', borderRadius: 18, padding: '24px', color: '#fff' }} aria-live="polite">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 18, textAlign: 'center' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 18, textAlign: 'center', alignItems: 'baseline' }}>
           <div>
-            <div style={{ fontSize: 44, fontWeight: 900, lineHeight: 1, color: '#e8c887' }}>{result.gramsPerDay}</div>
-            <div style={{ fontSize: 14, color: 'rgba(255,255,255,.8)', marginTop: 4 }}>גרם ביום</div>
+            <div style={{ fontSize: 52, fontWeight: 900, lineHeight: 1, color: '#e8c887' }}>{result.gramsPerDay}</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginTop: 5 }}>גרם ביום</div>
           </div>
           <div>
-            <div style={{ fontSize: 44, fontWeight: 900, lineHeight: 1 }}>{result.gramsPerMeal}</div>
-            <div style={{ fontSize: 14, color: 'rgba(255,255,255,.8)', marginTop: 4 }}>גרם לארוחה ({result.meals})</div>
+            <div style={{ fontSize: 34, fontWeight: 800, lineHeight: 1, color: 'rgba(255,255,255,.92)' }}>{result.gramsPerMeal}</div>
+            <div style={{ fontSize: 13.5, color: 'rgba(255,255,255,.7)', marginTop: 5 }}>גרם לארוחה ({result.meals})</div>
           </div>
           <div>
-            <div style={{ fontSize: 44, fontWeight: 900, lineHeight: 1 }}>{result.dailyKcal}</div>
-            <div style={{ fontSize: 14, color: 'rgba(255,255,255,.8)', marginTop: 4 }}>קק״ל ביום</div>
+            <div style={{ fontSize: 34, fontWeight: 800, lineHeight: 1, color: 'rgba(255,255,255,.92)' }}>{result.dailyKcal}</div>
+            <div style={{ fontSize: 13.5, color: 'rgba(255,255,255,.7)', marginTop: 5 }}>קק״ל ביום</div>
           </div>
         </div>
         <p style={{ margin: '18px auto 0', maxWidth: 520, fontSize: 14, lineHeight: 1.6, color: 'rgba(255,255,255,.8)', textAlign: 'center' }}>
@@ -103,7 +117,7 @@ export function FoodCalculator() {
         </p>
       </div>
 
-      <p className="muted" style={{ marginTop: 16, fontSize: 12.5, lineHeight: 1.6, textAlign: 'center' }}>
+      <p className="muted" style={{ marginTop: 16, fontSize: 14, lineHeight: 1.6, textAlign: 'center' }}>
         הערכה כללית המבוססת על נוסחת RER/MER. הכמות בפועל תלויה בגזע, בחילוף החומרים ובמזון הספציפי -
         עקבו אחר משקל הכלב והתייעצו עם הווטרינר.
       </p>

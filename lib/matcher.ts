@@ -342,8 +342,11 @@ export function matchBreeds(answers: Answers): MatchResult[] {
   }
 
   const maxTotal = answered.length * MAX_PER_QUESTION || 1
+  const completionRatio = answered.length / QUESTIONS.length
+  // רצפת תצוגה נעימה (לא להראות 12% מביך) - יורדת ככל שעונים על יותר שאלות.
+  const floor = 40 + (1 - completionRatio) * 12
 
-  const results = breeds.map<MatchResult>((b) => {
+  const scored = breeds.map((b) => {
     let raw = 0
     const reasons: string[] = []
 
@@ -353,18 +356,18 @@ export function matchBreeds(answers: Answers): MatchResult[] {
       if (reason && reasons.length < 3) reasons.push(reason)
     }
 
-    // נרמול ל-0-100. הרצפה תלוית-השלמה: ככל שעונים על יותר שאלות,
-    // הרצפה יורדת והדיפרנציאציה בין גזעים גדלה (1/6 → ~57, 6/6 → 38).
-    // כך אין תמריץ לעצור מוקדם ולקבל אחוזים מנופחים זהים.
-    const normalized = Math.round((raw / maxTotal) * 100)
-    const completionRatio = answered.length / QUESTIONS.length
-    const scaledFloor = Math.round(38 + (100 - 38) * (1 - completionRatio) * 0.3)
-    const score = Math.max(scaledFloor, Math.min(99, normalized + 55))
+    // ניקוד גולמי (float) הוא מקור האמת למיון - הוא מבדיל בין הגזעים.
+    // ה-score שמוצג נגזר ממנו אבל לא משמש למיון, כדי שתקרת-אחוזים
+    // לא תשטח את כולם לאותו ערך ותחזיר תמיד את אותו כלב.
+    const normalized = (raw / maxTotal) * 100 // יכול להיות שלילי לגזע לא מתאים
+    const score = Math.round(Math.max(floor, Math.min(98, normalized + 14)))
 
-    return { breed: b, score, reasons }
+    return { raw, result: { breed: b, score, reasons } as MatchResult }
   })
 
-  return results.sort((a, b) => b.score - a.score)
+  // מיון לפי הניקוד הגולמי - המנצח האמיתי משתנה לפי התשובות.
+  scored.sort((a, b) => b.raw - a.raw)
+  return scored.map((s) => s.result)
 }
 
 /** שלושת הגזעים המתאימים ביותר. */

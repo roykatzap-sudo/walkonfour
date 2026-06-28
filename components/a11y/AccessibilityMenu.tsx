@@ -62,6 +62,11 @@ function applyPrefs(prefs: Prefs) {
     root.classList.toggle(TOGGLE_CLASS[key], prefs[key])
   })
   for (let n = 1; n <= MAX_SCALE; n++) root.classList.toggle(`kv-a11y-text-${n}`, prefs.textScale === n)
+
+  // אות גלובלי לרכיבי ה-FX מבוססי-JS (Tilt3D / MagneticButton / CursorFX / ClickBurst):
+  // הפחתת תנועה דרך התפריט מכבה גם את התנועה שמונעת ב-JavaScript, לא רק את אנימציות ה-CSS.
+  if (prefs.reduceMotion) root.dataset.reduceMotion = '1'
+  else delete root.dataset.reduceMotion
 }
 
 export function AccessibilityMenu() {

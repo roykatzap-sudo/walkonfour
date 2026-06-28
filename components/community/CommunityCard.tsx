@@ -15,7 +15,7 @@ export function CommunityCard({ community }: { community: Community }) {
       <Link
         href={`/community/${c.slug}`}
         className="lift-3d"
-        aria-label={`קהילת ${c.name}, מחוז ${c.district} - ${c.members.toLocaleString('he-IL')} חברים, ${c.events} אירועים, ${c.groups} קבוצות`}
+        aria-label={`קהילת ${c.name}, מחוז ${c.district}`}
         style={{
           display: 'block',
           position: 'relative',
@@ -110,7 +110,7 @@ export function CommunityCard({ community }: { community: Community }) {
           <p
             style={{
               margin: 0,
-              fontSize: 14,
+              fontSize: 14.5,
               lineHeight: 1.5,
               color: 'rgba(255,255,255,.92)',
               minHeight: 38,
@@ -119,45 +119,25 @@ export function CommunityCard({ community }: { community: Community }) {
             {c.blurb}
           </p>
 
-          {/* שורת סטטיסטיקה */}
+          {/* שורת "קהילה חדשה" - בלי מספרים מומצאים */}
           <div
-            aria-hidden
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 16,
+              gap: 8,
               marginTop: 8,
               paddingTop: 12,
               borderTop: '1px solid rgba(255,255,255,.22)',
-              fontSize: 13,
+              fontSize: 13.5,
               fontWeight: 700,
+              color: c.accent,
             }}
           >
-            <Stat icon="👥" label="חברים" value={c.members.toLocaleString('he-IL')} accent={c.accent} />
-            <Stat icon="🎉" label="אירועים" value={String(c.events)} accent={c.accent} />
-            <Stat icon="🛒" label="קבוצות" value={String(c.groups)} accent={c.accent} />
+            <span aria-hidden style={{ fontSize: 15 }}>🐾</span>
+            <span>קהילה חדשה · הצטרפו ראשונים</span>
           </div>
         </div>
       </Link>
     </Tilt3D>
-  )
-}
-
-function Stat({
-  icon,
-  value,
-  label,
-  accent,
-}: {
-  icon: string
-  value: string
-  label: string
-  accent: string
-}) {
-  return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }} title={`${value} ${label}`}>
-      <span style={{ fontSize: 15 }}>{icon}</span>
-      <span style={{ color: accent }}>{value}</span>
-    </span>
   )
 }

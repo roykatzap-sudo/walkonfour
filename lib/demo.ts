@@ -1,8 +1,13 @@
 import type { Event, ForumCategory, ForumPost, GroupPurchase } from '@/types'
 
 /**
- * נתוני דמו - מוצגים כש-Supabase לא מוגדר (placeholder) או ריק.
- * ברגע שמחברים DB אמיתי עם נתונים, הם מחליפים את אלה אוטומטית.
+ * נתוני דוגמה - מוצגים כש-Supabase לא מוגדר (placeholder) או ריק, כדי
+ * שעמודי הקהילה לא יופיעו ריקים לפני ההשקה. ברגע שמחברים DB אמיתי עם
+ * נתונים, הם מחליפים את אלה אוטומטית.
+ *
+ * חשוב: אלה אינם אנשים אמיתיים. אסור לשבץ כאן שמות פרטיים שנראים כחברים
+ * אמיתיים (זו הפרה של כלל "אין הוכחה חברתית מומצאת"). הפוסטים מיוחסים
+ * לתוויות גנריות ("שאלה מהקהילה") והם מוצגים תמיד מתחת לבאנר תצוגה מקדימה.
  */
 
 export const demoEvents: Event[] = [
@@ -28,7 +33,7 @@ export const demoCategories: ForumCategory[] = [
 ]
 
 export const demoPosts: ForumPost[] = [
-  { id: 'p1', category_id: 'c1', author_id: 'u1', title: 'הכלב שלי מסרב לאכול כבר יומיים', content: 'שלום לכולם. יש לי לברדור בן ארבע שמהיום למחר הפסיק לגעת באוכל. הוא שותה כרגיל ומתנהג בדיוק כמו תמיד חוץ מזה, ואין סימן לכאב או למצוקה. מישהו התמודד עם משהו דומה, ומתי לדעתכם זה הזמן לרוץ לווטרינר?', image_url: null, views: 342, is_pinned: false, is_locked: false, created_at: '2025-03-01T10:00:00Z', updated_at: '2025-03-01T10:00:00Z', author: { id: 'u1', username: null, full_name: 'מיכל כהן', avatar_url: null, city: 'תל אביב', dog_name: 'מקס', dog_breed: 'לברדור', dog_age: 4, dog_photo_url: null, bio: null, is_premium: false, premium_until: null, created_at: '2025-01-01T00:00:00Z' }, comments_count: 12, likes_count: 8 },
-  { id: 'p2', category_id: 'c2', author_id: 'u2', title: 'איך הרגלתם את הגור להפסיק לנשוך?', content: 'הגור החדש שלי בן שלושה חודשים נושך כל מה שזז, כולל ידיים ורגליים. ניסיתי להחליף לצעצוע ולהפסיק את המשחק כשהוא נושך, אבל בינתיים בלי שינוי גדול. אשמח לשמוע מה עבד לכם מניסיון אישי.', image_url: null, views: 198, is_pinned: false, is_locked: false, created_at: '2025-03-03T14:00:00Z', updated_at: '2025-03-03T14:00:00Z', author: { id: 'u2', username: null, full_name: 'דני לוי', avatar_url: null, city: 'ירושלים', dog_name: 'באדי', dog_breed: 'גולדן', dog_age: 0, dog_photo_url: null, bio: null, is_premium: true, premium_until: null, created_at: '2025-01-01T00:00:00Z' }, comments_count: 23, likes_count: 15 },
-  { id: 'p3', category_id: 'c3', author_id: 'u3', title: 'מחפשת המלצה על מזון לכלבה עם רגישות לעוף', content: 'אובחנה אצל הכלבה שלי רגישות לעוף, והווטרינר המליץ לעבור למזון על בסיס חלבון אחר. מישהו מכיר מזון טוב על בסיס דג או טלה שעבד לכלב שלו? אשמח גם לשמוע כמה זמן לקח עד שראיתם שיפור.', image_url: null, views: 156, is_pinned: false, is_locked: false, created_at: '2025-03-05T09:00:00Z', updated_at: '2025-03-05T09:00:00Z', author: { id: 'u3', username: null, full_name: 'שירה ברק', avatar_url: null, city: 'חיפה', dog_name: 'לונה', dog_breed: 'האסקי', dog_age: 2, dog_photo_url: null, bio: null, is_premium: false, premium_until: null, created_at: '2025-01-01T00:00:00Z' }, comments_count: 7, likes_count: 5 },
+  { id: 'p1', category_id: 'c1', author_id: 'u1', title: 'הכלב שלי מסרב לאכול כבר יומיים', content: 'שלום לכולם. יש לי לברדור בן ארבע שמהיום למחר הפסיק לגעת באוכל. הוא שותה כרגיל ומתנהג בדיוק כמו תמיד חוץ מזה, ואין סימן לכאב או למצוקה. מישהו התמודד עם משהו דומה, ומתי לדעתכם זה הזמן לרוץ לווטרינר?', image_url: null, views: 342, is_pinned: false, is_locked: false, created_at: '2025-03-01T10:00:00Z', updated_at: '2025-03-01T10:00:00Z', author: { id: 'u1', username: null, full_name: 'שאלה מהקהילה', avatar_url: null, city: null, dog_name: null, dog_breed: 'לברדור', dog_age: 4, dog_photo_url: null, bio: null, is_premium: false, premium_until: null, created_at: '2025-01-01T00:00:00Z' }, comments_count: 12, likes_count: 8 },
+  { id: 'p2', category_id: 'c2', author_id: 'u2', title: 'איך הרגלתם את הגור להפסיק לנשוך?', content: 'הגור החדש שלי בן שלושה חודשים נושך כל מה שזז, כולל ידיים ורגליים. ניסיתי להחליף לצעצוע ולהפסיק את המשחק כשהוא נושך, אבל בינתיים בלי שינוי גדול. אשמח לשמוע מה עבד לכם מניסיון אישי.', image_url: null, views: 198, is_pinned: false, is_locked: false, created_at: '2025-03-03T14:00:00Z', updated_at: '2025-03-03T14:00:00Z', author: { id: 'u2', username: null, full_name: 'שאלה מהקהילה', avatar_url: null, city: null, dog_name: null, dog_breed: 'גולדן', dog_age: 0, dog_photo_url: null, bio: null, is_premium: false, premium_until: null, created_at: '2025-01-01T00:00:00Z' }, comments_count: 23, likes_count: 15 },
+  { id: 'p3', category_id: 'c3', author_id: 'u3', title: 'מחפשת המלצה על מזון לכלבה עם רגישות לעוף', content: 'אובחנה אצל הכלבה שלי רגישות לעוף, והווטרינר המליץ לעבור למזון על בסיס חלבון אחר. מישהו מכיר מזון טוב על בסיס דג או טלה שעבד לכלב שלו? אשמח גם לשמוע כמה זמן לקח עד שראיתם שיפור.', image_url: null, views: 156, is_pinned: false, is_locked: false, created_at: '2025-03-05T09:00:00Z', updated_at: '2025-03-05T09:00:00Z', author: { id: 'u3', username: null, full_name: 'שאלה מהקהילה', avatar_url: null, city: null, dog_name: null, dog_breed: 'האסקי', dog_age: 2, dog_photo_url: null, bio: null, is_premium: false, premium_until: null, created_at: '2025-01-01T00:00:00Z' }, comments_count: 7, likes_count: 5 },
 ]

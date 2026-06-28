@@ -3,7 +3,7 @@ import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { lostCount, foundCount } from '@/lib/lostfound'
 
 export const metadata = {
-  title: 'כלב אבד או נמצא · כלבניה',
+  title: 'כלב אבד או נמצא · קהילה על ארבע',
   description:
     'לוח קהילתי לכלבים שאבדו ונמצאו בישראל. פרסמו דיווח וקבלו עזרה מהקהילה כדי להחזיר כלבים הביתה.',
 }

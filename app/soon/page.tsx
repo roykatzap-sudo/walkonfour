@@ -3,7 +3,7 @@ import { buildMetadata } from '@/lib/seo'
 
 export const metadata = buildMetadata({
   title: 'הקהילה בדרך',
-  description: 'אזור הקהילה של כלבניה ייפתח בקרוב. בינתיים, כל התוכן והכלים פתוחים וחינמיים.',
+  description: 'אזור הקהילה של קהילה על ארבע ייפתח בקרוב. בינתיים, כל התוכן והכלים פתוחים וחינמיים.',
   path: '/soon',
   noindex: true,
 })

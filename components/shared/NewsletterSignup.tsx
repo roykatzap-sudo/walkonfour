@@ -9,7 +9,7 @@ type Status = 'idle' | 'loading' | 'success' | 'error'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 /**
- * הרשמה לניוזלטר השבועי של כלבניה - לכידת מייל ל-re-engagement.
+ * הרשמה לניוזלטר השבועי של קהילה על ארבע - לכידת מייל ל-re-engagement.
  * נכתב לטבלת `newsletter_subscribers` ב-Supabase. כשה-DB לא מוגדר (מצב דמו)
  * נכשל בעדינות ומציג אישור, כדי שה-CTA תמיד יעבוד ולא ישבור את הדף.
  *
@@ -60,7 +60,7 @@ export function NewsletterSignup({
     setStatus('success')
     setMessage('נרשמתם בהצלחה. הטיפים השבועיים בדרך אליכם.')
     setEmail('')
-    toast('נרשמתם לניוזלטר של כלבניה')
+    toast('נרשמתם לניוזלטר של קהילה על ארבע')
   }
 
   return (

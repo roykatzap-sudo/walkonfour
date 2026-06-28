@@ -17,7 +17,7 @@ function demoWhatsApp(seed: string): string {
 }
 
 export function SitterCard({ sitter, sharedBy }: { sitter: Sitter; sharedBy?: string }) {
-  const waMessage = `היי ${sitter.name}, ראיתי את הפרופיל שלך בכלבניה ואשמח לבדוק זמינות לשמירה על הכלב שלי.`
+  const waMessage = `היי ${sitter.name}, ראיתי את הפרופיל שלך בקהילה על ארבע ואשמח לבדוק זמינות לשמירה על הכלב שלי.`
   const waUrl = `https://wa.me/${demoWhatsApp(sitter.id)}?text=${encodeURIComponent(waMessage)}`
 
   return (

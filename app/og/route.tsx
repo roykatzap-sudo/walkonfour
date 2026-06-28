@@ -2,6 +2,7 @@ import { ImageResponse } from 'next/og'
 import { readFileSync } from 'fs'
 import { join } from 'path'
 import bidiFactory from 'bidi-js'
+import { SITE_TAGLINE } from '@/lib/seo'
 
 /**
  * מחולל תמונות שיתוף (Open Graph) דינמי וממותג.
@@ -78,7 +79,7 @@ function wrapVis(text: string, maxChars: number, maxLines: number): string[] {
 
 export function GET(req: Request) {
   const { searchParams } = new URL(req.url)
-  const title = clamp(searchParams.get('title') || 'קהילת בעלי הכלבים הגדולה בישראל', 60)
+  const title = clamp(searchParams.get('title') || SITE_TAGLINE, 60)
   const subtitle = clamp(searchParams.get('subtitle') || 'גזעים · מדריכים · אירועים · כלים', 90)
   const tag = clamp(searchParams.get('tag') || '', 22)
 
@@ -124,9 +125,9 @@ export function GET(req: Request) {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', direction: 'rtl', fontSize: '40px', fontWeight: 800, color: INK }}>
             <span style={{ fontSize: '46px', marginLeft: '14px' }}>🐾</span>
-            <span style={{ display: 'flex', direction: 'rtl' }}>
-              <span>{vis('כלב')}</span>
-              <span style={{ color: BRAND }}>{vis('ניה')}</span>
+            <span style={{ display: 'flex', direction: 'rtl', gap: '10px' }}>
+              <span>{vis('קהילה')}</span>
+              <span style={{ color: BRAND }}>{vis('על ארבע')}</span>
             </span>
           </div>
           {tag ? (
@@ -182,7 +183,7 @@ export function GET(req: Request) {
             <div style={{ display: 'flex', width: '16px', height: '16px', borderRadius: '16px', background: BRAND, marginLeft: '14px' }} />
             {vis('הכל על כלבים, במקום אחד')}
           </div>
-          <div style={{ display: 'flex', fontSize: '26px', color: BRAND, fontWeight: 700 }}>kelvanya.co.il</div>
+          <div style={{ display: 'flex', fontSize: '26px', color: BRAND, fontWeight: 700 }}>walkonfour.org</div>
         </div>
       </div>
     ),

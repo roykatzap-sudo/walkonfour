@@ -10,12 +10,12 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const b = getBreed(params.slug)
-  if (!b) return { title: 'גזע לא נמצא · כלבניה' }
+  if (!b) return { title: 'גזע לא נמצא · קהילה על ארבע' }
 
   // כותרת+תיאור עם מילות החיפוש הנפוצות: "[גזע]", "אופי", "מתאים לדירה/לילדים", "מחיר", "טיפוח", "אילוף".
   const apt = b.size === 'קטן' ? 'מתאים לדירה' : b.size === 'ענק' ? 'דורש מרחב' : 'מתאים לבית ולדירה'
   const kids = b.goodWithKids ? 'מתאים לילדים' : 'פחות מתאים לילדים קטנים'
-  const title = `${b.name} - אופי, התאמה ומדריך הגזע | כלבניה`
+  const title = `${b.name} - אופי, התאמה ומדריך הגזע | קהילה על ארבע`
   const description = clampDescription(
     `כל המידע על ${b.name} (${b.en}): אופי ומזג, ${apt}, ${kids}, גודל ${b.size}, ` +
       `נטייה לתוקפנות, בריאות, טיפוח ואילוף. תוחלת חיים ${b.lifespan} שנים.`,

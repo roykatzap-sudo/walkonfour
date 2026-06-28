@@ -6,7 +6,7 @@
 :root {
   --brand: #c99a5b;
   --brand-light: #e8c887;
-  --brand-dark: #a97c46;
+  --brand-dark: #8a5f2e;
   --ink: #2a2018;
   --cream: #fbf7ef;
 
@@ -75,7 +75,7 @@
   .hero-h1 { font-size: clamp(40px, 5vw, 80px); }
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+html { scroll-behavior: smooth; scroll-padding-top: 84px; overflow-x: clip; max-width: 100%; }
 
 /* ── מעבר עמודים חלק (Template) - fade + עלייה קלה בכל ניווט ── */
 .route-fade { animation: routeFade .42s cubic-bezier(.22,1,.36,1) both; }
@@ -272,7 +272,7 @@ body.kv-zoomed, body.kv-zoomed * { cursor: auto !important; }
   background: rgba(251,247,239,.94); backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(0,0,0,.07);
 }
-.kv-logo { font-size: 19px; font-weight: 900; color: #241a12; text-decoration: none; }
+.kv-logo { font-size: 19px; font-weight: 900; white-space: nowrap; color: #241a12; text-decoration: none; }
 .kv-logo em { color: var(--brand); font-style: normal; }
 .kv-nav-r { display: flex; gap: 20px; align-items: center; }
 @media (max-width: 1180px) { .kv-nav-r { gap: 15px; } .kv-nav-r a { font-size: 13px; } }
@@ -437,16 +437,16 @@ body.kv-zoomed, body.kv-zoomed * { cursor: auto !important; }
 .hero-eyebrow { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,.72); font-weight: 700; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
 .ey-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand-light); animation: blink 1.5s infinite; }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
-.hero-h1 { font-size: clamp(50px,5.5vw,80px); font-weight: 900; letter-spacing: -3px; line-height: .95; color: #fff; margin-bottom: 28px; }
+.hero-h1 { font-size: clamp(50px,5.5vw,80px); font-weight: 900; letter-spacing: -1.5px; line-height: .98; color: #fff; margin-bottom: 28px; }
 .hero-h1 em { display: block; color: var(--brand-light); font-style: normal; }
-.hero-sub { font-size: 16px; color: rgba(255,255,255,.82); line-height: 1.8; font-weight: 400; max-width: 360px; margin-bottom: 44px; }
+.hero-sub { font-size: 17.5px; color: rgba(255,255,255,.9); line-height: 1.8; font-weight: 400; max-width: 430px; margin-bottom: 44px; }
 .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
 .hbm { background: var(--brand-light); color: #000; padding: 15px 36px; min-height: 52px; display: inline-flex; align-items: center; justify-content: center; border-radius: 100px; font-size: 16px; font-weight: 800; border: none; font-family: inherit; transition: transform .3s, box-shadow .3s; box-shadow: 0 8px 32px rgba(232,200,135,.3); }
 .hbm:hover { transform: scale(1.06); box-shadow: 0 16px 48px rgba(232,200,135,.4); }
 .hbg { background: transparent; color: #fff; padding: 15px 36px; min-height: 52px; display: inline-flex; align-items: center; justify-content: center; border-radius: 100px; font-size: 16px; font-weight: 600; border: 1px solid rgba(255,255,255,.35); font-family: inherit; transition: border-color .3s; }
 .hbg:hover { border-color: rgba(255,255,255,.6); }
 .hero-right { position: relative; overflow: hidden; }
-.hero-right img { width: 100%; height: 100%; object-fit: cover; filter: brightness(.7) saturate(1.1); transition: transform 10s ease; }
+.hero-right img { width: 100%; height: 100%; object-fit: cover; object-position: center; filter: brightness(.94) saturate(1.05); transition: transform 10s ease; }
 .hero:hover .hero-right img { transform: scale(1.05); }
 .hero-right::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to right,var(--ink) 0%,transparent 50%); z-index: 1; }
 .hero-stats { position: absolute; bottom: 0; left: 0; right: 0; display: flex; background: rgba(0,0,0,.62); border-top: 1px solid rgba(255,255,255,.07); z-index: 3; }
@@ -456,12 +456,15 @@ body.kv-zoomed, body.kv-zoomed * { cursor: auto !important; }
 .hs-val em { color: var(--brand-light); font-style: normal; }
 .hs-lbl { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 4px; font-weight: 500; }
 @media (max-width: 900px) {
-  .hero { grid-template-columns: 1fr; }
-  .hero-right { display: none; }
-  .hero-left { padding: 120px 28px 140px; }
+  .hero { grid-template-columns: 1fr; min-height: auto; }
+  /* במקום להסתיר את התמונה - מציגים אותה כבאנר מעל הטקסט */
+  .hero-right { display: block; order: -1; height: 52vh; min-height: 320px; }
+  .hero-right::before { background: linear-gradient(to bottom, transparent 45%, var(--ink) 100%); }
+  .hero-left { padding: 36px 28px 130px; }
 }
 @media (max-width: 480px) {
-  .hero-left { padding: 60px 16px 80px; }
+  .hero-right { height: 44vh; min-height: 260px; }
+  .hero-left { padding: 28px 18px 120px; }
 }
 
 /* ── MARQUEE ── */

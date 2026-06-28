@@ -16,9 +16,10 @@ import { ListingCard } from '@/components/market/ListingCard'
 import { AdoptCard } from '@/components/adopt/AdoptCard'
 import { FavButton } from '@/components/shared/FavButton'
 import { useFavorites } from '@/lib/useFavorites'
-import { breeds, breedImg, type Breed } from '@/lib/breeds'
+import { breeds, breedFace, type Breed } from '@/lib/breeds'
 import { demoListings, type Listing } from '@/lib/market'
 import { adoptDogs, type AdoptDog } from '@/lib/adopt'
+import { DOG_NAMES, STYLE_LABELS, STYLE_EMOJI, type DogName } from '@/lib/dogNames'
 
 export default function SavedPage() {
   const { ready, list, count } = useFavorites()
@@ -37,6 +38,15 @@ export default function SavedPage() {
   const savedAdopt = useMemo<AdoptDog[]>(() => {
     const ids = new Set(list('adopt'))
     return adoptDogs.filter((d) => ids.has(d.id))
+  }, [list])
+
+  // שמות שמורים: מזהה = השם עצמו. משחזרים מטא-דאטה מהמאגר לפי סדר השמירה.
+  const savedNames = useMemo<DogName[]>(() => {
+    const byName = new Map(DOG_NAMES.map((n) => [n.name, n]))
+    return list('name').map(
+      (name) =>
+        byName.get(name) ?? { name, meaning: '', gender: 'male', style: 'classic' },
+    )
   }, [list])
 
   const isEmpty = ready && count === 0
@@ -75,6 +85,7 @@ export default function SavedPage() {
               marginTop: 22,
             }}
           >
+            <SummaryChip n={savedNames.length} label="שמות" />
             <SummaryChip n={savedBreeds.length} label="גזעים" />
             <SummaryChip n={savedListings.length} label="מודעות" />
             <SummaryChip n={savedAdopt.length} label="לאימוץ" />
@@ -91,6 +102,25 @@ export default function SavedPage() {
         <EmptyState />
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 44 }}>
+          {/* ── שמות ── */}
+          {savedNames.length > 0 && (
+            <SavedSection title="שמות ששמרתי" count={savedNames.length} browseHref="/names" browseLabel="עוד שמות">
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+                  gap: 16,
+                }}
+              >
+                {savedNames.map((n, i) => (
+                  <Reveal3D key={n.name} delay={((i % 4) + 1) as 1 | 2 | 3 | 4}>
+                    <SavedNameCard dogName={n} />
+                  </Reveal3D>
+                ))}
+              </div>
+            </SavedSection>
+          )}
+
           {/* ── גזעים ── */}
           {savedBreeds.length > 0 && (
             <SavedSection title="גזעים ששמרתי" count={savedBreeds.length} browseHref="/breeds" browseLabel="עוד גזעים">
@@ -241,7 +271,7 @@ function SavedBreedCard({ breed }: { breed: Breed }) {
           <img
             loading="lazy"
             decoding="async"
-            src={breedImg(breed.photo, 480)}
+            src={breedFace(breed.photo, 480)}
             alt={`כלב מגזע ${breed.name}`}
             style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }}
           />
@@ -267,6 +297,50 @@ function SavedBreedCard({ breed }: { breed: Breed }) {
         type="breed"
         id={breed.slug}
         label={breed.name}
+        style={{ position: 'absolute', top: 12, insetInlineEnd: 12, zIndex: 2 }}
+      />
+    </article>
+  )
+}
+
+/* ════════════════════════════════════════════════════════════
+   כרטיס שם שמור - שם גדול, משמעות, צ'יפ סגנון, וכפתור הסרה
+   בפינה (אותו FavButton type='name' שמשמש את מחולל השמות).
+   ════════════════════════════════════════════════════════════ */
+function SavedNameCard({ dogName }: { dogName: DogName }) {
+  return (
+    <article
+      style={{
+        position: 'relative',
+        background: 'linear-gradient(160deg, #fff, #fdf8ef)',
+        borderRadius: 20,
+        padding: '22px 20px',
+        boxShadow: 'var(--shadow-lg)',
+        border: '1px solid rgba(201,154,91,.16)',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 8,
+      }}
+    >
+      <span
+        className="chip3d"
+        style={{ alignSelf: 'flex-start', fontWeight: 700 }}
+      >
+        {STYLE_EMOJI[dogName.style]} {STYLE_LABELS[dogName.style]}
+      </span>
+      <h3 className="grad-text" style={{ margin: '4px 0 0', fontSize: 28, fontWeight: 900, letterSpacing: '-0.5px' }}>
+        {dogName.name}
+      </h3>
+      {dogName.meaning && (
+        <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: 14.5, lineHeight: 1.6 }}>
+          {dogName.meaning}
+        </p>
+      )}
+      <FavButton
+        type="name"
+        id={dogName.name}
+        label={dogName.name}
         style={{ position: 'absolute', top: 12, insetInlineEnd: 12, zIndex: 2 }}
       />
     </article>
@@ -319,6 +393,9 @@ function EmptyState() {
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 12, marginTop: 26 }}>
         <Link href="/breeds" className="btn btn-primary" style={{ textDecoration: 'none' }}>
           לעיון בגזעים
+        </Link>
+        <Link href="/names" className="btn btn-ghost" style={{ textDecoration: 'none' }}>
+          לשמות לכלב
         </Link>
         <Link href="/adopt" className="btn btn-ghost" style={{ textDecoration: 'none' }}>
           ללוח האימוץ

@@ -3,7 +3,7 @@ import { buildMetadata } from '@/lib/seo'
 export const metadata = buildMetadata({
   title: 'צרו קשר',
   description:
-    'יצרו קשר עם כלבניה בכל שאלה, רעיון או הצעה לשיתוף פעולה.',
+    'יצרו קשר עם קהילה על ארבע בכל שאלה, רעיון או הצעה לשיתוף פעולה.',
   path: '/contact',
 })
 

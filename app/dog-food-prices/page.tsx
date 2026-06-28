@@ -39,7 +39,7 @@ export default function FoodPricesPage() {
           borderRadius: 14,
           padding: '12px 16px',
           marginBottom: 22,
-          fontSize: 13.5,
+          fontSize: 15,
           lineHeight: 1.6,
           color: 'var(--text)',
         }}
@@ -50,15 +50,15 @@ export default function FoodPricesPage() {
 
       <FoodPriceTable />
 
-      {/* קבוצת רכישה */}
+      {/* קבוצת רכישה - רשימת המתנה (טרם פעיל) */}
       <section style={{ marginTop: 30, background: 'linear-gradient(135deg, #fffaf0, #fdf6e9)', border: '2px solid var(--brand)', borderRadius: 22, padding: '24px 26px', textAlign: 'center' }}>
         <div style={{ fontSize: 38, marginBottom: 6 }}>🛒</div>
-        <h2 style={{ fontSize: 24, fontWeight: 900, color: 'var(--ink)', margin: '0 0 8px' }}>קבוצת רכישה - קונים יחד, משלמים פחות</h2>
-        <p style={{ fontSize: 15.5, color: '#6a6155', lineHeight: 1.7, maxWidth: 520, margin: '0 auto 16px' }}>
-          כשמתאחדים על הזמנה גדולה, המחיר יורד. אנחנו בונים קבוצות רכישה לחברי הקהילה -
-          כדי שתשלמו על אותו שק פחות ממה שמופיע למעלה.
+        <h2 style={{ fontSize: 24, fontWeight: 900, color: 'var(--ink)', margin: '0 0 8px' }}>רוצים שנארגן קבוצת רכישה?</h2>
+        <p style={{ fontSize: 16, color: '#6a6155', lineHeight: 1.7, maxWidth: 520, margin: '0 auto 16px' }}>
+          כשמתאחדים על הזמנה גדולה, המחיר לק״ג יורד. עוד לא הקמנו קבוצת רכישה -
+          אבל אם יש מספיק עניין, נארגן. הצטרפו לרשימת ההמתנה ונעדכן אתכם.
         </p>
-        <Link href="/premium" className="btn btn-primary">לפרטים על הקהילה →</Link>
+        <Link href="/waitlist" className="btn btn-primary">הצטרפו לרשימת ההמתנה →</Link>
       </section>
 
       {/* טיפים */}
@@ -90,8 +90,8 @@ export default function FoodPricesPage() {
         <h2 style={{ fontSize: 15, fontWeight: 800, color: '#8a7c66', margin: '0 0 8px' }}>מקורות</h2>
         <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexWrap: 'wrap', gap: 14 }}>
           {FOOD_SOURCES.map((s) => (
-            <li key={s.url} style={{ fontSize: 13 }}>
-              <a href={s.url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--brand)' }}>{s.label} ↗</a>
+            <li key={s.url} style={{ fontSize: 14.5 }}>
+              <a href={s.url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--brand-dark, #8a5a2b)', fontWeight: 700 }}>{s.label} ↗</a>
             </li>
           ))}
         </ul>

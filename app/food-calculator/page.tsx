@@ -3,7 +3,7 @@ import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { JsonLd, softwareAppSchema } from '@/components/seo/JsonLd'
 
 export const metadata = {
-  title: 'כמה אוכל למדוד לכלב · כלבניה',
+  title: 'כמה אוכל למדוד לכלב · קהילה על ארבע',
   description:
     'הכמות על השק היא ניחוש גס. המחשבון נותן מנה יומית בגרמים לפי משקל, גיל ורמת פעילות - על בסיס נוסחת RER/MER שווטרינרים עובדים איתה.',
 }

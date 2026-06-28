@@ -21,7 +21,7 @@ export default function CitiesPage() {
           <h1 className="page-title" style={{ fontSize: 44 }}>
             כלבים <span className="grad-text">בעיר שלכם</span>
           </h1>
-          <p className="page-sub" style={{ maxWidth: 600, fontSize: 17.5, color: '#6a6155', lineHeight: 1.7 }}>
+          <p className="page-sub" style={{ maxWidth: 600, fontSize: 17.5, color: '#5b4d3c', lineHeight: 1.7 }}>
             לכל עיר מדריך משלה: גינות כלבים, מקומות שמקבלים כלבים, ומסלולי טיול באזור. בחרו עיר.
           </p>
         </div>
@@ -36,7 +36,7 @@ export default function CitiesPage() {
             style={{ padding: '18px 20px', textDecoration: 'none', color: 'var(--ink)' }}
           >
             <div style={{ fontSize: 21, fontWeight: 900, marginBottom: 8 }}>{h.community.name}</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, fontSize: 13, color: '#6a6155' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, fontSize: 14.5, color: '#5b4d3c' }}>
               {h.parks.length > 0 && <span>🐕 {h.parks.length} גינות</span>}
               {h.dogFriendly.length > 0 && <span>· ☕ {h.dogFriendly.length} דוג-פרנדלי</span>}
               {h.walks.length > 0 && <span>· 🥾 {h.walks.length} מסלולים</span>}

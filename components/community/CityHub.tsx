@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import type { Community } from '@/lib/communities'
 import { img } from '@/lib/communities'
-import { formatNumber } from '@/lib/utils'
 import { Tilt3D } from '@/components/fx/Tilt3D'
 import { Reveal3D } from '@/components/fx/Reveal3D'
 import { MagneticButton } from '@/components/fx/MagneticButton'
@@ -31,9 +30,6 @@ const HUBS = [
     desc: 'איזה וטרינר באזור שווה את הכסף? מי מכיר מאלף טוב? כאן עונים אנשים שגרים ליד, לא גוגל.',
   },
 ] as const
-
-/** אווטארים מספריים מדומים - עיגול עם gradient ואות. */
-const AVATAR_LETTERS = ['ד', 'מ', 'ל', 'ש', 'נ', 'ר', 'א', 'ע', 'ת', 'י', 'ב', 'ג']
 
 function hexToRgba(hex: string, alpha: number) {
   const h = hex.replace('#', '')
@@ -140,7 +136,7 @@ export function CityHub({ community: c }: { community: Community }) {
                 marginBottom: 6,
               }}
             >
-              קהילת כלבניה · מחוז {c.district}
+              קהילת קהילה על ארבע · מחוז {c.district}
             </div>
           </Reveal3D>
 
@@ -176,11 +172,9 @@ export function CityHub({ community: c }: { community: Community }) {
 
           <Reveal3D delay={3}>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 30 }}>
-              <span className="chip3d-dark">
-                {formatNumber(c.members)} חברים
-              </span>
-              <span className="chip3d-dark">{c.events} אירועים החודש</span>
-              <span className="chip3d-dark">{c.groups} קבוצות רכישה</span>
+              <span className="chip3d-dark">✨ קהילה חדשה ב{c.name}</span>
+              <span className="chip3d-dark">📍 מחוז {c.district}</span>
+              <span className="chip3d-dark">🐾 הצטרפו ראשונים</span>
             </div>
           </Reveal3D>
 
@@ -323,104 +317,63 @@ export function CityHub({ community: c }: { community: Community }) {
                 margin: '14px 0 10px',
               }}
             >
-              <span className="grad-text">{formatNumber(c.members)}+</span> בעלי כלבים
+              <span className="grad-text">קהילה נבנית</span> ב{c.name}
             </h2>
           </Reveal3D>
           <Reveal3D delay={2}>
             <p
               style={{
-                color: 'rgba(255,255,255,.75)',
+                color: 'rgba(255,255,255,.82)',
                 fontSize: 18,
-                margin: '0 0 40px',
-                lineHeight: 1.5,
+                margin: '0 0 36px',
+                lineHeight: 1.55,
               }}
             >
-              שכנים שלכם מ{c.name}, עם הכלבים שלהם. אותם פרצופים בטיול של שישי, אותם אנשים ששומרים על הכלב כשאתם בחו"ל.
+              אנחנו מקימים עכשיו את חבורת בעלי הכלבים של {c.name}. הצטרפו ראשונים, ונעדכן אתכם
+              ברגע שנפתחת חבורה לטיול באזור שלכם.
             </p>
           </Reveal3D>
 
-          {/* avatar strip - דקורטיבי בלבד */}
+          {/* honest waitlist value-prop card */}
           <Reveal3D delay={3}>
             <div
-              aria-hidden
+              className="glass-dark"
               style={{
-                display: 'flex',
-                justifyContent: 'center',
-                flexWrap: 'wrap',
-                gap: 0,
-                marginBottom: 40,
-              }}
-            >
-              {AVATAR_LETTERS.map((letter, i) => (
-                <div
-                  key={i}
-                  className="floaty"
-                  style={{
-                    width: 56,
-                    height: 56,
-                    borderRadius: '50%',
-                    display: 'grid',
-                    placeItems: 'center',
-                    fontSize: 20,
-                    fontWeight: 900,
-                    color: '#2a2018',
-                    marginInlineStart: i === 0 ? 0 : -14,
-                    border: '3px solid #2a2018',
-                    background: `linear-gradient(135deg, ${accent}, ${hexToRgba(accent, 0.6)})`,
-                    boxShadow: `0 6px 18px ${hexToRgba(accent, 0.35)}`,
-                    animationDelay: `${i * 0.25}s`,
-                    position: 'relative',
-                    zIndex: AVATAR_LETTERS.length - i,
-                  }}
-                >
-                  {letter}
-                </div>
-              ))}
-              <div
-                style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: '50%',
-                  display: 'grid',
-                  placeItems: 'center',
-                  fontSize: 13,
-                  fontWeight: 900,
-                  color: '#fff',
-                  marginInlineStart: -14,
-                  border: '3px solid #2a2018',
-                  background: 'rgba(255,255,255,.12)',
-                  position: 'relative',
-                  zIndex: 0,
-                }}
-              >
-                +{formatNumber(Math.max(c.members - AVATAR_LETTERS.length, 0))}
-              </div>
-            </div>
-          </Reveal3D>
-
-          {/* mini stats */}
-          <Reveal3D delay={4}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                flexWrap: 'wrap',
+                borderRadius: 22,
+                padding: '26px 24px',
+                maxWidth: 520,
+                margin: '0 auto 36px',
+                textAlign: 'start',
+                display: 'grid',
                 gap: 14,
-                marginBottom: 40,
+                border: `1px solid ${accentLine}`,
               }}
             >
               {[
-                { val: formatNumber(c.members), lbl: 'חברים' },
-                { val: c.events, lbl: 'אירועים החודש' },
-                { val: c.groups, lbl: 'קבוצות פעילות' },
-              ].map((s) => (
-                <div
-                  key={s.lbl}
-                  className="glass-dark"
-                  style={{ borderRadius: 18, padding: '18px 26px', minWidth: 130 }}
-                >
-                  <div style={{ fontSize: 30, fontWeight: 900, color: accent }}>{s.val}</div>
-                  <div style={{ fontSize: 13, color: 'rgba(255,255,255,.7)' }}>{s.lbl}</div>
+                { icon: '🐾', txt: `מפגש טיול ראשון ב${c.name} ברגע שיש מספיק חברים באזור` },
+                { icon: '🔔', txt: 'עדכון אישי כשנפתחת פעילות, אירוע או קבוצת רכישה קרובה אליכם' },
+                { icon: '🤝', txt: 'אתם בין הראשונים שמעצבים את אופי החבורה המקומית' },
+              ].map((row) => (
+                <div key={row.txt} style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+                  <span
+                    aria-hidden
+                    style={{
+                      flexShrink: 0,
+                      width: 40,
+                      height: 40,
+                      borderRadius: 12,
+                      display: 'grid',
+                      placeItems: 'center',
+                      fontSize: 20,
+                      background: accentSoft,
+                      border: `1px solid ${accentLine}`,
+                    }}
+                  >
+                    {row.icon}
+                  </span>
+                  <span style={{ fontSize: 16, lineHeight: 1.5, color: 'rgba(255,255,255,.9)' }}>
+                    {row.txt}
+                  </span>
                 </div>
               ))}
             </div>
@@ -428,7 +381,7 @@ export function CityHub({ community: c }: { community: Community }) {
 
           <Reveal3D delay={4}>
             <MagneticButton href="/auth/register" className="btn btn-primary sweep">
-              אני רוצה להצטרף
+              הצטרפו ראשונים ל{c.name}
             </MagneticButton>
           </Reveal3D>
         </div>

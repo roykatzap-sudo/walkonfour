@@ -174,7 +174,7 @@ export function referralLink(code: string, origin = ''): string {
 
 /** טקסט מוכן לשיתוף בוואטסאפ / רשתות. */
 export function referralShareText(link: string): string {
-  return `הצטרפו אליי לכלבניה - קהילת בעלי הכלבים בישראל. דרך הקישור שלי נחסוך יחד בקבוצות רכישה ובאירועים: ${link}`
+  return `הצטרפו אליי לקהילה על ארבע - קהילת בעלי הכלבים בישראל. דרך הקישור שלי נחסוך יחד בקבוצות רכישה ובאירועים: ${link}`
 }
 
 /**

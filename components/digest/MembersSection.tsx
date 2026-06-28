@@ -21,10 +21,10 @@ export function MembersSection() {
       <SectionHeader
         id="digest-members"
         tag="הכוח של הקהילה"
-        title="החברים המובילים"
-        description="בעלי הכלבים שתרמו הכי הרבה החודש - פוסטים, עזרה לחברים והשתתפות באירועים."
+        title="כך ייראה לוח המובילים"
+        description="תצוגה לדוגמה: כשהקהילה תתחיל, בעלי הכלבים שיתרמו הכי הרבה - פוסטים, עזרה לחברים והשתתפות באירועים - יופיעו כאן."
         linkHref="/leaderboard"
-        linkLabel="ללוח המובילים המלא"
+        linkLabel="איך צוברים נקודות"
       />
 
       <div
@@ -82,14 +82,14 @@ export function MembersSection() {
                       boxShadow: 'inset 0 0 0 3px rgba(255,255,255,.5)',
                     }}
                   >
-                    {m.name.charAt(0)}
+                    {m.dog.charAt(0)}
                   </span>
 
                   <strong style={{ fontSize: 19, fontWeight: 900, letterSpacing: '-0.5px' }}>
-                    {m.name}
+                    {m.dog}
                   </strong>
                   <span style={{ fontSize: 13, opacity: 0.9 }}>
-                    ו{m.dog}
+                    {m.name}
                     {m.community ? ` · ${m.community.name}` : ''}
                   </span>
 
@@ -124,7 +124,7 @@ export function MembersSection() {
 
       <p style={{ textAlign: 'center', marginTop: 18 }}>
         <Link href="/leaderboard" className="btn btn-ghost">
-          רוצים לראות את עצמכם כאן? ככה צוברים נקודות
+          רוצים לראות את עצמכם כאן? ככה זה יעבוד
         </Link>
       </p>
     </section>

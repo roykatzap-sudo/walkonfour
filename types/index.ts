@@ -109,4 +109,6 @@ export type DogPark = {
   opening_hours: string | null
   surface: string | null
   website: string | null
+  /** כתובת רחוב (לרשימות עירוניות רשמיות; אופציונלי). */
+  address?: string | null
 }

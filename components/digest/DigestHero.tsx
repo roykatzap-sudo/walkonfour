@@ -44,7 +44,7 @@ export function DigestHero() {
             margin: '6px 0 18px',
           }}
         >
-          כלבניה <span style={{ color: '#e8c887' }}>החודש</span>
+          קהילה על ארבע <span style={{ color: '#e8c887' }}>החודש</span>
         </h1>
 
         <p

@@ -1,14 +1,14 @@
 import type { Metadata } from 'next'
 
 /**
- * עוזרי SEO מרכזיים לכלבניה.
+ * עוזרי SEO מרכזיים לקהילה על ארבע.
  *
  * אזור ה-SEO מספק כאן helpers וקבועים מרכזיים - עמודים קיימים
  * (וכאלה שייווצרו בעתיד) מייבאים אותם כדי לא לשכפל לוגיקה.
  * ה-layout הראשי כבר צורך מכאן את הקבועים (SITE_URL/SITE_NAME וכו')
  * ומגדיר metadataBase; buildMetadata זמין לאימוץ הדרגתי בשאר העמודים.
  *
- * הפונקציות כאן מחזירות URLs מוחלטים (https://kelvanya.co.il/...) כדי
+ * הפונקציות כאן מחזירות URLs מוחלטים (https://walkonfour.org/...) כדי
  * ש-canonical ו-og:url יהיו תקינים גם כשנקראים מחוץ להקשר של metadataBase.
  */
 
@@ -18,13 +18,13 @@ import type { Metadata } from 'next'
  * כך ש-canonical, og:url ו-og:image יצביעו לכתובת שבאמת זמינה לסורקים.
  * ברירת מחדל: דומיין הפרודקשן.
  */
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://kelvanya.co.il').replace(/\/+$/, '')
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://walkonfour.org').replace(/\/+$/, '')
 
 /** שם המותג - לשימוש בכותרות ובסכמות. */
-export const SITE_NAME = 'כלבניה'
+export const SITE_NAME = 'קהילה על ארבע'
 
-/** סלוגן קצר לתיאורי ברירת מחדל. */
-export const SITE_TAGLINE = 'קהילת בעלי הכלבים הגדולה בישראל'
+/** סלוגן קצר לתיאורי ברירת מחדל - ספציפי וכן, בלי superlatives. */
+export const SITE_TAGLINE = 'מדריכי גזעים, כלים ומפת גינות לבעלי כלבים בישראל'
 
 /** שפה ולוקאל ל-Open Graph. */
 export const SITE_LOCALE = 'he_IL'
@@ -42,8 +42,8 @@ export function ogImageUrl(opts: { title?: string; subtitle?: string; tag?: stri
   return qs ? `/og?${qs}` : '/og'
 }
 
-/** תמונת שיתוף ברירת מחדל - כרטיס מותג דינמי. */
-export const DEFAULT_OG_IMAGE = ogImageUrl()
+/** תמונת שיתוף ברירת מחדל - קובר המותג הקבוע (1200x628). */
+export const DEFAULT_OG_IMAGE = '/og-cover.jpg'
 
 /**
  * בונה URL מוחלט ומנורמל מנתיב יחסי.
@@ -117,10 +117,8 @@ export function buildMetadata(input: PageMetaInput): Metadata {
     rawTitle || title.includes(SITE_NAME) ? title : `${title} · ${SITE_NAME}`
   const desc = clampDescription(description ?? SITE_TAGLINE)
   const url = absoluteUrl(path)
-  // אם לא סופקה תמונה - מחוללים כרטיס OG דינמי עם כותרת/תיאור העמוד.
-  const ogImage = absoluteUrl(
-    image ?? ogImageUrl({ title, subtitle: description, tag: article?.section }),
-  )
+  // אם לא סופקה תמונה ספציפית - משתמשים בקובר המותג הקבוע.
+  const ogImage = absoluteUrl(image ?? DEFAULT_OG_IMAGE)
 
   const meta: Metadata = {
     title: fullTitle,

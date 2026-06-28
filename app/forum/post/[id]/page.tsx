@@ -52,14 +52,14 @@ async function loadPost(id: string): Promise<{ post: ForumPost | null; isDemo: b
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   const { post } = await loadPost(params.id)
-  if (!post) return { title: 'פוסט לא נמצא · כלבניה' }
+  if (!post) return { title: 'פוסט לא נמצא · קהילה על ארבע' }
 
-  const title = `${post.title} · פורום כלבניה`
-  const description = clip(post.content || 'דיון בקהילת בעלי הכלבים של כלבניה.')
+  const title = `${post.title} · פורום קהילה על ארבע`
+  const description = clip(post.content || 'דיון בקהילת בעלי הכלבים של קהילה על ארבע.')
   const url = `${SITE_URL}/forum/post/${post.id}`
   const breed = post.author?.dog_breed
   const ogImage = post.image_url || OG_FALLBACK
-  const ogAlt = breed ? `${post.title} - דיון על ${breed} בכלבניה` : `${post.title} - פורום כלבניה`
+  const ogAlt = breed ? `${post.title} - דיון על ${breed} בקהילה על ארבע` : `${post.title} - פורום קהילה על ארבע`
 
   return {
     metadataBase: new URL(SITE_URL),
@@ -71,7 +71,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
       title: post.title,
       description,
       url,
-      siteName: 'כלבניה',
+      siteName: 'קהילה על ארבע',
       locale: 'he_IL',
       images: [{ url: ogImage, width: 1200, height: 630, alt: ogAlt }],
     },
@@ -106,7 +106,7 @@ export default async function PostPage({ params }: { params: { id: string } }) {
 
   // קישורי שיתוף - בלחיצה אחת, דרך URL בלבד (ללא JS, נגיש, מהיר)
   const shareUrl = `${SITE_URL}/forum/post/${post.id}`
-  const shareText = `${post.title} - מתוך פורום כלבניה`
+  const shareText = `${post.title} - מתוך פורום קהילה על ארבע`
   const enc = encodeURIComponent
   const shareLinks = [
     {

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Reveal3D } from '@/components/fx/Reveal3D'
 import { breeds, type BreedSize } from '@/lib/breeds'
@@ -153,34 +153,28 @@ function CostGraph({ projection }: { projection: Projection }) {
 
 const YEAR_PRESETS = [1, 5, 10, 13]
 
-/** שלבי ה"חישוב" - תחושת תהליך מקצועי ומעמיק (סה"כ ~3.5 שניות). */
-const COMPUTE_STEPS = [
-  'מנתחים את מאפייני הגזע…',
-  'מצליבים מחירי שוק עדכניים בישראל…',
-  'מחשבים עלויות בריאות, מזון וטיפוח…',
-  'בונים תחזית מותאמת אישית…',
-]
-const STEP_MS = 850 // משך כל שלב; 4 שלבים ≈ 3.4 שניות
-
 type Snapshot = {
   projection: Projection
   result: ReturnType<typeof calcCosts>
   breedName: string | null
 }
 
-export function CostCalculator() {
-  const [input, setInput] = useState<CalcInput>(DEFAULT_INPUT)
+export function CostCalculator({ presetBreed }: { presetBreed?: string } = {}) {
+  // כשמוטמע בעמוד גזע - נעולים לגזע הזה (בלי בוחר גזע/גודל), ומחושב מראש.
+  const presetBreedObj = presetBreed ? breeds.find((b) => b.slug === presetBreed) : null
+  const [input, setInput] = useState<CalcInput>(
+    presetBreedObj ? { ...DEFAULT_INPUT, size: BREED_SIZE_MAP[presetBreedObj.size] } : DEFAULT_INPUT
+  )
   const [years, setYears] = useState(13)
-  const [breedSlug, setBreedSlug] = useState('')
+  const [breedSlug, setBreedSlug] = useState(presetBreed ?? '')
 
-  // ===== מצב ה"תהליך" - שום דבר לא מיידי =====
-  const [computing, setComputing] = useState(false)
-  const [step, setStep] = useState(0)
-  const [snap, setSnap] = useState<Snapshot | null>(null) // התוצאה המוצגת (תצלום בזמן החישוב)
+  // ===== מצב התוצאה - מחושב מיידית (חישוב מקומי מהיר) =====
+  const [snap, setSnap] = useState<Snapshot | null>(null) // התוצאה המוצגת
   const [dirty, setDirty] = useState(false) // השתנו בחירות מאז החישוב האחרון
-  const timer = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  useEffect(() => () => { if (timer.current) clearInterval(timer.current) }, [])
+  // בעמוד גזע - מריצים את התחזית אוטומטית פעם אחת, כדי שהמספר יופיע מיד.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { if (presetBreed) compute() }, [])
 
   const selectedBreed = breedSlug ? breeds.find((b) => b.slug === breedSlug) : null
   const selectedWeight = selectedBreed ? getBreedDetail(selectedBreed.slug)?.weightKg : null
@@ -214,29 +208,14 @@ export function CostCalculator() {
     markDirty()
   }
 
-  /** מפעיל את "תהליך החישוב" - שלבים מתגלגלים ואז חשיפת התוצאה. */
+  /** מחשב את התחזית מיידית (חישוב מקומי מהיר - אין סיבה להשהות). */
   function compute() {
-    if (computing) return
-    setComputing(true)
-    setStep(0)
-    if (timer.current) clearInterval(timer.current)
-    let i = 0
-    timer.current = setInterval(() => {
-      i += 1
-      if (i < COMPUTE_STEPS.length) {
-        setStep(i)
-      } else {
-        if (timer.current) clearInterval(timer.current)
-        timer.current = null
-        setSnap({
-          projection: projectCosts(input, years),
-          result: calcCosts(input),
-          breedName: selectedBreed ? selectedBreed.name : null,
-        })
-        setComputing(false)
-        setDirty(false)
-      }
-    }, STEP_MS)
+    setSnap({
+      projection: projectCosts(input, years),
+      result: calcCosts(input),
+      breedName: selectedBreed ? selectedBreed.name : null,
+    })
+    setDirty(false)
   }
 
   return (
@@ -244,29 +223,42 @@ export function CostCalculator() {
       <div className="cc-grid">
         {/* ===== טור הבחירות ===== */}
         <div className="cc-controls">
-          {/* ===== בחירת גזע ספציפי ===== */}
-          <fieldset className="cc-field">
-            <legend className="cc-legend">גזע ספציפי</legend>
-            <p className="cc-sub">בחרו גזע והגודל ייקבע אוטומטית לפי המשקל שלו - או דלגו ובחרו גודל ידנית למטה.</p>
-            <div className="cc-breed">
-              <select
-                className="cc-select"
-                value={breedSlug}
-                onChange={(e) => pickBreed(e.target.value)}
-                aria-label="בחירת גזע ספציפי"
-              >
-                <option value="">- לפי גודל (כללי) -</option>
-                {breeds.map((b) => (
-                  <option key={b.slug} value={b.slug}>{b.name}</option>
-                ))}
-              </select>
-              {selectedBreed && selectedWeight && (
-                <span className="cc-breed-info">⚖️ {selectedBreed.name}: {selectedWeight} ק״ג</span>
+          {/* ===== בחירת גזע ספציפי (מוסתר כשנעולים לגזע מעמוד הגזע) ===== */}
+          {presetBreedObj ? (
+            <div className="cc-field" style={{ marginBottom: 22 }}>
+              {selectedWeight && (
+                <span className="cc-breed-info">⚖️ {presetBreedObj.name}: {selectedWeight} ק״ג · גודל {presetBreedObj.size}</span>
               )}
+              <p className="cc-sub" style={{ marginTop: 12 }}>
+                שחקו עם סוג המזון, הווטרינר, הטיפוח והשנים - והתחזית תתעדכן בהתאם.
+              </p>
             </div>
-          </fieldset>
+          ) : (
+            <>
+              <fieldset className="cc-field">
+                <legend className="cc-legend">גזע ספציפי</legend>
+                <p className="cc-sub">בחרו גזע והגודל ייקבע אוטומטית לפי המשקל שלו - או דלגו ובחרו גודל ידנית למטה.</p>
+                <div className="cc-breed">
+                  <select
+                    className="cc-select"
+                    value={breedSlug}
+                    onChange={(e) => pickBreed(e.target.value)}
+                    aria-label="בחירת גזע ספציפי"
+                  >
+                    <option value="">- לפי גודל (כללי) -</option>
+                    {breeds.map((b) => (
+                      <option key={b.slug} value={b.slug}>{b.name}</option>
+                    ))}
+                  </select>
+                  {selectedBreed && selectedWeight && (
+                    <span className="cc-breed-info">⚖️ {selectedBreed.name}: {selectedWeight} ק״ג</span>
+                  )}
+                </div>
+              </fieldset>
 
-          <ChoiceRow group={SIZES} value={input.size} onChange={pickSize} />
+              <ChoiceRow group={SIZES} value={input.size} onChange={pickSize} />
+            </>
+          )}
           <ChoiceRow group={FOODS} value={input.food} onChange={(v) => set('food', v)} />
           <ChoiceRow group={VET} value={input.vet} onChange={(v) => set('vet', v)} />
           <ChoiceRow group={GROOM} value={input.groom} onChange={(v) => set('groom', v)} />
@@ -306,27 +298,8 @@ export function CostCalculator() {
 
         {/* ===== טור התוצאה ===== */}
         <div className="cc-result">
-          {/* --- מצב: תהליך החישוב רץ --- */}
-          {computing && (
-            <div className="cc-summary card cc-computing" role="status" aria-live="polite">
-              <div className="cc-spinner" aria-hidden />
-              <div className="cc-compute-title">בונים את התחזית שלכם…</div>
-              <ul className="cc-steps">
-                {COMPUTE_STEPS.map((s, i) => (
-                  <li key={i} className={i < step ? 'done' : i === step ? 'active' : ''}>
-                    <span className="cc-step-ico" aria-hidden>{i < step ? '✓' : i === step ? '◌' : '•'}</span>
-                    {s}
-                  </li>
-                ))}
-              </ul>
-              <div className="cc-progress" aria-hidden>
-                <div className="cc-progress-fill" style={{ width: `${((step + 1) / COMPUTE_STEPS.length) * 100}%` }} />
-              </div>
-            </div>
-          )}
-
           {/* --- מצב: עוד לא חושב --- */}
-          {!computing && !snap && (
+          {!snap && (
             <div className="cc-summary card cc-idle">
               <div className="cc-idle-ico" aria-hidden>📊</div>
               <h3 className="cc-idle-title">מוכנים לתחזית?</h3>
@@ -341,7 +314,7 @@ export function CostCalculator() {
           )}
 
           {/* --- מצב: יש תוצאה --- */}
-          {!computing && snap && (() => {
+          {snap && (() => {
             const snapMax = Math.max(...snap.result.lines.map((l) => l.monthly), 1)
             return (
               <>
@@ -421,14 +394,14 @@ export function CostCalculator() {
             <div className="cc-save">
               <div className="cc-save-text">
                 <span className="cc-save-tag">טיפ לחיסכון</span>
-                <h3 className="cc-save-title">חסכו עם קבוצות רכישה</h3>
+                <h3 className="cc-save-title">המזון הוא רוב ההוצאה</h3>
                 <p className="cc-save-body">
-                  המזון והאבזור הם רוב ההוצאה החודשית. הצטרפות לרכישה קבוצתית של חברי הקהילה
-                  יכולה להוריד את המחיר באופן משמעותי על אותם מוצרים בדיוק.
+                  המזון והאבזור הם רוב ההוצאה החודשית. השוו מחירי מזון בין החנויות וראו איפה זול
+                  יותר - זה החיסכון הכי קל, ובדיוק על מה שאתם קונים ממילא.
                 </p>
               </div>
-              <Link href="/groups" className="btn btn-primary cc-save-btn">
-                לקבוצות הרכישה
+              <Link href="/dog-food-prices" className="btn btn-primary cc-save-btn">
+                למחירון המזון
               </Link>
             </div>
           </Reveal3D>
@@ -796,81 +769,6 @@ export function CostCalculator() {
           padding: 15px 30px;
         }
 
-        /* ---- מצב: תהליך החישוב ---- */
-        .cc-computing {
-          text-align: center;
-          padding: 40px 28px;
-        }
-        .cc-spinner {
-          width: 56px;
-          height: 56px;
-          margin: 0 auto 20px;
-          border-radius: 50%;
-          background: conic-gradient(from 0deg, var(--brand), #e8c887, var(--brand-dark, #8a5a2b), var(--brand));
-          -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
-          mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
-          animation: cc-spin 0.9s linear infinite;
-        }
-        @keyframes cc-spin { to { transform: rotate(360deg); } }
-        .cc-compute-title {
-          font-size: 20px;
-          font-weight: 900;
-          color: var(--ink);
-          margin-bottom: 18px;
-        }
-        .cc-steps {
-          list-style: none;
-          margin: 0 auto 20px;
-          padding: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-          max-width: 320px;
-          text-align: right;
-        }
-        .cc-steps li {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          font-size: 14.5px;
-          color: #b3a892;
-          transition: color 0.3s;
-        }
-        .cc-steps li.active { color: var(--ink); font-weight: 800; }
-        .cc-steps li.done { color: #8a5a2b; }
-        .cc-step-ico {
-          width: 20px;
-          height: 20px;
-          flex: none;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          font-size: 12px;
-          font-weight: 900;
-        }
-        .cc-steps li.done .cc-step-ico { background: #fdf6e9; color: #8a5a2b; }
-        .cc-steps li.active .cc-step-ico {
-          background: var(--brand);
-          color: #fff;
-          animation: cc-pulse 0.9s ease-in-out infinite;
-        }
-        @keyframes cc-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.18); } }
-        .cc-progress {
-          height: 8px;
-          background: #efe7d6;
-          border-radius: 100px;
-          overflow: hidden;
-          max-width: 320px;
-          margin: 0 auto;
-        }
-        .cc-progress-fill {
-          height: 100%;
-          background: linear-gradient(90deg, var(--brand), #e8c887);
-          border-radius: 100px;
-          transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
         /* ---- חשיפת התוצאה ---- */
         .cc-reveal { animation: cc-reveal-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
         @keyframes cc-reveal-in {
@@ -901,12 +799,9 @@ export function CostCalculator() {
 
         @media (prefers-reduced-motion: reduce) {
           .cc-opt,
-          .cc-bar-fill,
-          .cc-progress-fill {
+          .cc-bar-fill {
             transition: none;
           }
-          .cc-spinner { animation-duration: 2s; }
-          .cc-steps li.active .cc-step-ico { animation: none; }
           .cc-reveal { animation: none; }
         }
       `}</style>

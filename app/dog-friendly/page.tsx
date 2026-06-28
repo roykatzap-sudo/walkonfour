@@ -6,7 +6,7 @@ import { DF_COUNT } from '@/lib/dogFriendly'
 export const metadata = buildMetadata({
   title: 'מקומות דוג-פרנדלי בישראל',
   description:
-    'דירקטוריון מקומות שמקבלים כלבים בכל הארץ: חופי כלבים, מסעדות ובתי קפה, קניונים, חנויות, גלידריות ומלונות. סינון אינטראקטיבי לפי קטגוריה ואזור.',
+    'דירקטוריון מקומות מאומתים שמקבלים כלבים בישראל: חופי כלבים מוכרזים, מסעדות ובתי קפה דוג-פרנדלי. סינון אינטראקטיבי לפי קטגוריה ואזור, עם ניווט במפות.',
   path: '/dog-friendly',
 })
 
@@ -21,8 +21,8 @@ export default function DogFriendlyPage() {
             איפה מקבלים <span className="grad-text">אתכם ואת הכלב?</span>
           </h1>
           <p className="page-sub" style={{ maxWidth: 640, fontSize: 17, color: '#6a6155', lineHeight: 1.7 }}>
-            {DF_COUNT} מקומות בכל הארץ שמקבלים כלבים - חופים, מסעדות, בתי קפה, קניונים, חנויות,
-            גלידריות ומלונות. סננו במקרא לפי מה שמתחשק לכם.
+            {DF_COUNT} מקומות מאומתים שמקבלים כלבים - חופי כלבים, מסעדות ובתי קפה.
+            סננו במקרא לפי קטגוריה ואזור, ונווטו ישר במפות. הרשימה תתרחב עם הקהילה.
           </p>
         </div>
       </div>
@@ -36,7 +36,7 @@ export default function DogFriendlyPage() {
           borderRadius: 14,
           padding: '12px 16px',
           marginBottom: 24,
-          fontSize: 13.5,
+          fontSize: 15,
           lineHeight: 1.6,
           color: 'var(--text)',
         }}

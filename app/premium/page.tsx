@@ -205,12 +205,12 @@ export default function PremiumPage() {
         </section>
       </Reveal3D>
 
-      {/* ── איך כלבניה מתפרנסת (שקיפות) ── */}
+      {/* ── איך קהילה על ארבע מתפרנסת (שקיפות) ── */}
       <section aria-labelledby="revenue-title" style={{ marginBottom: 48 }}>
         <div style={{ textAlign: 'center', marginBottom: 26 }}>
           <span className="section-tag">שקיפות מלאה</span>
           <h2 id="revenue-title" className="page-title" style={{ fontSize: 28 }}>
-            איך כלבניה מתפרנסת
+            איך קהילה על ארבע מתפרנסת
           </h2>
           <p className="page-sub" style={{ maxWidth: 620, margin: '12px auto 0' }}>
             אנחנו מאמינים שמותר לכם לדעת בדיוק מאיפה מגיע הכסף. ארבעה מקורות הכנסה, כולם
@@ -288,7 +288,7 @@ export default function PremiumPage() {
 
       {/* ── CTA סיום ── */}
       <section
-        aria-label="הצטרפות לכלבניה"
+        aria-label="הצטרפות לקהילה על ארבע"
         style={{
           display: 'flex',
           flexWrap: 'wrap',
@@ -314,7 +314,7 @@ export default function PremiumPage() {
             type="button"
             className="btn btn-primary"
             style={{ whiteSpace: 'nowrap' }}
-            onClick={() => toast('מצוין! הצטרפתם לכלבניה בחינם - בואו נבנה לכלב פרופיל 🐾')}
+            onClick={() => toast('מצוין! הצטרפתם לקהילה על ארבע בחינם - בואו נבנה לכלב פרופיל 🐾')}
           >
             הצטרפו בחינם ←
           </button>

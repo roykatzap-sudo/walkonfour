@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { EventForm } from '@/components/events/EventForm'
 
-export const metadata = { title: 'יצירת אירוע · כלבניה' }
+export const metadata = { title: 'יצירת אירוע · קהילה על ארבע' }
 
 export default function CreateEventPage() {
   return (

@@ -11,13 +11,13 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }: { params: { id: string } }): Metadata {
   const l = demoListings.find((x) => x.id === params.id)
-  if (!l) return { title: 'מודעה לא נמצאה · כלבניה' }
+  if (!l) return { title: 'מודעה לא נמצאה · קהילה על ארבע' }
   const title = `${l.title} - ${formatPrice(l.price)} · יד שנייה`
   const description = clampDescription(`${l.title} למכירה ב${l.city}, מצב ${l.condition}. ${l.description}`)
   const url = absoluteUrl(`/market/${l.id}`)
   const ogImage = absoluteUrl(ogImageUrl({ title: l.title, subtitle: `${formatPrice(l.price)} · ${l.city}`, tag: 'יד שנייה' }))
   return {
-    title: `${title} | כלבניה`,
+    title: `${title} | קהילה על ארבע`,
     description,
     alternates: { canonical: url },
     openGraph: { title, description, url, type: 'website', locale: 'he_IL', images: [{ url: ogImage, width: 1200, height: 630, alt: l.title }] },
@@ -29,7 +29,7 @@ const SAFETY_TIPS = [
   'היפגשו במקום ציבורי ומואר לאיסוף הפריט.',
   'בדקו את הפריט פיזית לפני שמשלמים - אל תעבירו תשלום מראש.',
   'שלמו רק במסירה. הימנעו מהעברות לחשבונות לא מוכרים.',
-  'יצירת הקשר נעשית דרך כלבניה - אין צורך למסור טלפון מראש.',
+  'יצירת הקשר נעשית דרך קהילה על ארבע - אין צורך למסור טלפון מראש.',
 ]
 
 export default function ListingPage({ params }: { params: { id: string } }) {
@@ -95,7 +95,7 @@ export default function ListingPage({ params }: { params: { id: string } }) {
           ))}
         </ul>
         <p className="ml-safety-note">
-          כלבניה היא לוח מודעות שמחבר בין מוכר לקונה ואינה צד לעסקה. אנו לא אחראים לטיב הפריט
+          קהילה על ארבע היא לוח מודעות שמחבר בין מוכר לקונה ואינה צד לעסקה. אנו לא אחראים לטיב הפריט
           או לתשלום. מצאתם מודעה חשודה? דווחו לנו. <Link href="/terms" className="link">לתקנון המלא</Link>
         </p>
       </section>

@@ -39,7 +39,7 @@ function serialize(schema: JsonLdObject): string {
 
 /**
  * סכמת הארגון/האתר - מתאימה לעמוד הבית.
- * מגדירה את כלבניה כ-Organization ומחברת ל-WebSite עם חיפוש פנימי.
+ * מגדירה את קהילה על ארבע כ-Organization ומחברת ל-WebSite עם חיפוש פנימי.
  */
 export function organizationSchema(): JsonLdObject {
   return {
@@ -97,7 +97,7 @@ export type ArticleSchemaInput = {
   path: string
   /** תמונת כותרת (יחסית או מוחלטת). */
   image?: string
-  /** שם המחבר. ברירת מחדל: מערכת כלבניה. */
+  /** שם המחבר. ברירת מחדל: מערכת קהילה על ארבע. */
   author?: string
   /** מועד פרסום בפורמט ISO. */
   datePublished?: string

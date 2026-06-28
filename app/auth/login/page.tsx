@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { AuthForm } from '@/components/auth/AuthForm'
 
-export const metadata = { title: 'התחברות · כלבניה' }
+export const metadata = { title: 'התחברות · קהילה על ארבע' }
 
 export default function LoginPage() {
   return (

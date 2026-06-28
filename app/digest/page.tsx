@@ -6,16 +6,17 @@ import { EventsSection } from '@/components/digest/EventsSection'
 import { GroupsSection } from '@/components/digest/GroupsSection'
 import { MembersSection } from '@/components/digest/MembersSection'
 import { AdoptionsSection } from '@/components/digest/AdoptionsSection'
+import { DemoBanner } from '@/components/shared/DemoBanner'
 
 export const metadata = buildMetadata({
-  title: 'כלבניה החודש - הדייג׳סט הקהילתי',
+  title: 'קהילה על ארבע החודש - הדייג׳סט הקהילתי',
   description:
-    'מה שקרה החודש בקהילת כלבניה: הדיונים שעשו רעש, האירועים הקרובים, קבוצות הרכישה הפעילות, החברים שהובילו וכלבים חדשים שמחכים לאימוץ.',
+    'תצוגה לדוגמה של הדייג׳סט החודשי: דיונים, אירועים קרובים, קבוצות רכישה וכלבים שמחכים לאימוץ. הקהילה בהקמה - כך זה ייראה כשנתחיל.',
   path: '/digest',
 })
 
 /**
- * "כלבניה החודש" - דייג׳סט קהילתי (Server Component).
+ * "קהילה על ארבע החודש" - דייג׳סט קהילתי (Server Component).
  *
  * עמוד-מרכז שמרכז את הפעילות באתר לתמונת חודש אחת. כל סקשן שואב את
  * הנתונים שלו דרך שכבת האגרגציה ב-lib/digest.ts, שהיא read-only מעל
@@ -27,6 +28,7 @@ export default function DigestPage() {
   return (
     <main className="page">
       <DigestHero />
+      <DemoBanner />
       <DiscussionsSection />
       <EventsSection />
       <GroupsSection />
@@ -45,7 +47,7 @@ export default function DigestPage() {
         }}
       >
         <h2 style={{ margin: '0 0 8px', fontSize: 28, fontWeight: 900, letterSpacing: '-1px' }}>
-          רוצים להופיע בדייג׳סט של החודש הבא?
+          רוצים להופיע בדייג׳סט הראשון שלנו?
         </h2>
         <p
           style={{
@@ -56,15 +58,12 @@ export default function DigestPage() {
             color: 'var(--text-muted)',
           }}
         >
-          תפתחו דיון שאנשים ירצו לענות עליו, תבואו למפגש, או תאמצו את אחד הכלבים שלמעלה.
-          מי שעושה - מופיע כאן.
+          הדייג׳סט הזה הוא תצוגה לדוגמה. כשהקהילה תתחיל, כאן יופיעו הדיונים,
+          המפגשים והחברים האמיתיים. הצטרפו לרשימה ותהיו חלק מהגיליון הראשון.
         </p>
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link href="/forum" className="btn btn-primary">
-            לפורום הקהילה
-          </Link>
-          <Link href="/events" className="btn btn-dark">
-            לאירועים הקרובים
+          <Link href="/waitlist" className="btn btn-primary">
+            הצטרפו לרשימה
           </Link>
           <Link href="/adopt" className="btn btn-ghost">
             לכלבים לאימוץ

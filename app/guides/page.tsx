@@ -6,7 +6,7 @@ import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { CostCalculator } from '@/components/tools/CostCalculator'
 
 export const metadata = {
-  title: 'מדריכי טיפול ואילוף · כלבניה',
+  title: 'מדריכי טיפול ואילוף · קהילה על ארבע',
   description:
     'המדריכים שבאמת עוזרים: גמילה, משיכה ברצועה, חרדת נטישה, חום בקיץ הישראלי וזיקוקים. בלי תיאוריה מנופחת, רק מה שעובד.',
 }
