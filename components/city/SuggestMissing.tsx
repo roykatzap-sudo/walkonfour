@@ -48,21 +48,29 @@ export function SuggestMissing({ city }: { city: string }) {
   }
 
   return (
-    <section style={{ marginTop: 40 }}>
-      <div style={{ background: '#fff', border: '1px solid rgba(201,154,91,.22)', borderRadius: 18, padding: '20px 18px' }}>
-        <h2 style={{ fontSize: 20, fontWeight: 900, color: 'var(--ink)', margin: 0 }}>
+    <section style={{ marginTop: 48 }}>
+      <div style={{
+        background: 'linear-gradient(135deg, #fff7e9 0%, #fbeece 100%)',
+        border: '2px solid var(--brand)',
+        borderRadius: 22,
+        padding: '32px 24px',
+        textAlign: 'center',
+        boxShadow: '0 12px 36px rgba(201,154,91,.22)',
+      }}>
+        <div style={{ fontSize: 42, marginBottom: 2 }} aria-hidden="true">🐾</div>
+        <h2 style={{ fontSize: 25, fontWeight: 900, color: 'var(--ink)', margin: '0 0 6px', letterSpacing: '-.5px' }}>
           חסר משהו ב{city}?
         </h2>
-        <p style={{ fontSize: 15, color: '#5b4d3c', margin: '6px 0 0', lineHeight: 1.6 }}>
-          מכירים גינת כלבים, מסלול טיול או מקום דוג-פרנדלי שלא רשום כאן? ספרו לנו ונוסיף.
+        <p style={{ fontSize: 16, color: '#5b4d3c', margin: '0 auto', maxWidth: 470, lineHeight: 1.65 }}>
+          מכירים גינת כלבים, מסלול טיול או מקום דוג-פרנדלי שלא רשום כאן? ספרו לנו ונוסיף - הקהילה תודה לכם.
         </p>
 
         {!open ? (
-          <button type="button" onClick={() => setOpen(true)} className="btn btn-primary" style={{ marginTop: 14, fontSize: 15.5 }}>
+          <button type="button" onClick={() => setOpen(true)} className="btn btn-primary" style={{ marginTop: 20, fontSize: 17, padding: '15px 38px', fontWeight: 800 }}>
             הוסיפו המלצה +
           </button>
         ) : (
-          <form onSubmit={submit} style={{ display: 'grid', gap: 12, marginTop: 16 }}>
+          <form onSubmit={submit} style={{ display: 'grid', gap: 12, marginTop: 20, textAlign: 'start' }}>
             <div style={{ display: 'grid', gap: 5 }}>
               <label htmlFor="sg-type" style={{ fontSize: 14, fontWeight: 800, color: '#5b4d3c' }}>מה זה?</label>
               <select
