@@ -88,6 +88,27 @@ export const CREATE_SQLS = [
     created_at timestamptz not null default now()
   )`,
 
+  // דיווחים על משתמשים אחרים (הטרדה / תוכן פוגעני). אדמין רואה דרך פאנל.
+  `create table if not exists user_reports (
+    id bigint generated always as identity primary key,
+    reporter_id bigint not null references community_users(id) on delete cascade,
+    reported_id bigint not null references community_users(id) on delete cascade,
+    context text not null,                -- 'message' / 'plan' / 'profile'
+    context_ref text,                     -- מזהה של המסר/התיאום שדווח (לא חובה)
+    reason text not null,                 -- הסבר חופשי, עד 500 תווים
+    status text not null default 'pending', -- pending / actioned / dismissed
+    created_at timestamptz not null default now()
+  )`,
+
+  // חסימה הדדית בין משתמשים: A חוסם B → לא רואים את התיאומים/הודעות אחד של השני.
+  `create table if not exists user_blocks (
+    id bigint generated always as identity primary key,
+    blocker_id bigint not null references community_users(id) on delete cascade,
+    blocked_id bigint not null references community_users(id) on delete cascade,
+    created_at timestamptz not null default now(),
+    unique (blocker_id, blocked_id)
+  )`,
+
   // ALTER לטבלאות קיימות (idempotent) - מוסיף עמודות חדשות אם חסרות
   `alter table community_users add column if not exists notif_operational boolean not null default true`,
   `alter table community_users add column if not exists notif_marketing boolean not null default false`,
@@ -101,6 +122,9 @@ export const CREATE_SQLS = [
   `create index if not exists idx_plans_user on park_plans(user_id)`,
   `create index if not exists idx_msg_park on park_messages(park_key, created_at desc)`,
   `create index if not exists idx_audit_user on community_audit_log(user_id, created_at desc)`,
+  `create index if not exists idx_reports_status on user_reports(status, created_at desc)`,
+  `create index if not exists idx_blocks_blocker on user_blocks(blocker_id)`,
+  `create index if not exists idx_blocks_blocked on user_blocks(blocked_id)`,
 ]
 
 /** טקסט הגרסה הנוכחית של ההסכמה. כשהטקסט מתעדכן - מעלים את הגרסה.

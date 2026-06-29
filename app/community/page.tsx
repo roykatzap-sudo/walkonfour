@@ -60,18 +60,22 @@ export default async function CommunityHome() {
           </div>
         )}
 
-        {/* כרטיסי "בקרוב" - תיאומים וצ'אט */}
+        {/* כרטיסי פעולה - תיאומים פעיל, צ'אט בקרוב */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14, marginTop: 22 }}>
-          <PlaceholderCard
-            emoji="⏰"
-            title="תיאום הגעה לגינה"
-            subtitle="בחרו גינה ושעה - מי שמסמן את אותה גינה יראה את התיאום."
-            badge="בקרוב"
-          />
+          <Link href="/community/plans" className="card" style={{ padding: '20px 20px', textDecoration: 'none', color: 'inherit', display: 'block' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+              <div style={{ fontSize: 28 }} aria-hidden="true">⏰</div>
+              <h3 style={{ fontSize: 17, fontWeight: 900, color: 'var(--ink)', margin: 0, flex: 1 }}>תיאום הגעה לגינה</h3>
+              <span style={{ color: 'var(--brand-dark)', fontSize: 18 }} aria-hidden="true">←</span>
+            </div>
+            <p style={{ fontSize: 14, color: '#5b4d3c', margin: 0, lineHeight: 1.55 }}>
+              בחרו גינה ושעה. שמכם נחשף לחברים רק 15 דקות לפני שעת ההגעה - מסיבות בטיחות.
+            </p>
+          </Link>
           <PlaceholderCard
             emoji="💬"
             title="צ'אט פר גינה"
-            subtitle="הודעות בזמן אמת בין מי שמתכנן הגעה לאותה גינה. נמחק אוטומטית אחרי 24 שעות."
+            subtitle="הודעות בין מי שתיאמו הגעה לאותה גינה. נמחק אוטומטית אחרי 24 שעות."
             badge="בקרוב"
           />
         </div>
