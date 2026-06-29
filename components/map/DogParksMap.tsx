@@ -1,6 +1,8 @@
 'use client'
 
 import 'leaflet/dist/leaflet.css'
+import 'leaflet.markercluster/dist/MarkerCluster.css'
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import { useEffect, useRef, useState } from 'react'
 import type * as L from 'leaflet'
 import type { DogPark } from '@/types'
@@ -38,15 +40,19 @@ export function DogParksMap() {
   const mapEl = useRef<HTMLDivElement>(null)
   const mapRef = useRef<L.Map | null>(null)
   const LRef = useRef<typeof L | null>(null)
-  const markersRef = useRef<L.Marker[]>([])
+  const clusterRef = useRef<any>(null) // L.MarkerClusterGroup
   const dfMarkersRef = useRef<L.Marker[]>([])
   const userMarkerRef = useRef<L.Marker | null>(null)
+  const userPosRef = useRef<{ lat: number; lng: number } | null>(null)
   const allParks = useRef<DogPark[]>([])
   const approvedMarkersRef = useRef<L.Marker[]>([])
   const reportModeRef = useRef(false)
 
   const [search, setSearch] = useState('')
   const [city, setCity] = useState('all')
+  const [nearMe, setNearMe] = useState(false) // האם להציג רק גינות בקרבה
+  const [locating, setLocating] = useState(false)
+  const [locErr, setLocErr] = useState('')
   const [showDF, setShowDF] = useState(true)
   const [mapReady, setMapReady] = useState(false)
   const [count, setCount] = useState(0)
@@ -82,7 +88,10 @@ export function DogParksMap() {
   function openPark(park: DogPark) {
     const L = LRef.current!
     const map = mapRef.current!
-    markersRef.current.forEach((m) => m.setIcon(icon(L, (m as any).pid === park.id)))
+    const cluster = clusterRef.current
+    if (cluster) {
+      cluster.eachLayer((m: any) => { if (m.setIcon) m.setIcon(icon(L, m.pid === park.id)) })
+    }
     map.flyTo([park.lat, park.lng], 15, { duration: 0.7 })
 
     const parkName = escapeHtml(park.name ?? 'גינת כלבים')
@@ -126,15 +135,17 @@ export function DogParksMap() {
 
   function render(parks: DogPark[]) {
     const L = LRef.current!
-    const map = mapRef.current!
-    markersRef.current.forEach((m) => m.remove())
-    markersRef.current = []
+    const cluster = clusterRef.current
+    if (!cluster) return
+    cluster.clearLayers()
+    const batch: L.Marker[] = []
     parks.forEach((p) => {
-      const m = L.marker([p.lat, p.lng], { icon: icon(L, false) }).addTo(map)
+      const m = L.marker([p.lat, p.lng], { icon: icon(L, false) })
       ;(m as any).pid = p.id
       m.on('click', () => openPark(p))
-      markersRef.current.push(m)
+      batch.push(m)
     })
+    cluster.addLayers(batch)
     setCount(parks.length)
   }
 
@@ -142,7 +153,7 @@ export function DogParksMap() {
   useEffect(() => {
     let cancelled = false
     import('leaflet')
-      .then((mod) => {
+      .then(async (mod) => {
         const L = (mod.default ?? mod) as typeof import('leaflet')
         if (cancelled || mapRef.current || !mapEl.current) return
         LRef.current = L
@@ -153,6 +164,28 @@ export function DogParksMap() {
           maxZoom: 19,
         }).addTo(map)
         L.control.zoom({ position: 'bottomright' }).addTo(map)
+
+        // קלאסטרינג: גינות מתקבצות לעיגולים זהובים עם מספרים ב-zoom רחב,
+        // נפרסות לסמלים בודדים ב-zoom קרוב. פותר את "המפה מפוצצת" עם 621 גינות.
+        await import('leaflet.markercluster')
+        clusterRef.current = (L as any).markerClusterGroup({
+          showCoverageOnHover: false,
+          spiderfyOnMaxZoom: true,
+          disableClusteringAtZoom: 15,
+          maxClusterRadius: 55,
+          iconCreateFunction: (cluster: any) => {
+            const n = cluster.getChildCount()
+            const size = n < 10 ? 38 : n < 50 ? 46 : 56
+            return L.divIcon({
+              className: '',
+              html: `<div style="width:${size}px;height:${size}px;background:radial-gradient(circle at 30% 30%,#f0d199,#c99a5b);border:3px solid #fff;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#2a2018;font-weight:900;font-size:${n<10?15:n<100?14:13}px;box-shadow:0 6px 18px rgba(201,154,91,.55);cursor:pointer">${n}<span style="font-size:9px;font-weight:600;opacity:.75;line-height:1">גינות</span></div>`,
+              iconSize: [size, size],
+              iconAnchor: [size / 2, size / 2],
+            })
+          },
+        })
+        map.addLayer(clusterRef.current)
+
         setMapReady(true)
 
         // מצב דיווח: לחיצה על המפה לוכדת את המיקום של הגינה החסרה
@@ -200,18 +233,59 @@ export function DogParksMap() {
   useEffect(() => {
     if (!mapRef.current || !allParks.current.length) return
     const L = LRef.current!
-    const filtered = allParks.current.filter((p) => {
+    // אם במצב "לידי" - חישוב מרחק וקיצוץ ל-25 הקרובות ביותר
+    let filtered = allParks.current.filter((p) => {
       const s = !search || p.name?.includes(search) || p.city?.includes(search)
       const c = city === 'all' || p.city === city
       return s && c
     })
+    if (nearMe && userPosRef.current) {
+      const u = userPosRef.current
+      const withDist = filtered.map((p) => {
+        const dx = (p.lat - u.lat) * 111
+        const dy = (p.lng - u.lng) * 94
+        return { p, d: Math.hypot(dx, dy) }
+      }).sort((a, b) => a.d - b.d).slice(0, 25)
+      filtered = withDist.map((x) => x.p)
+    }
     render(filtered)
     if (filtered.length > 0 && filtered.length < allParks.current.length) {
       const b = L.latLngBounds(filtered.map((p) => [p.lat, p.lng] as [number, number]))
       mapRef.current.flyToBounds(b, { padding: [60, 60], duration: 0.7, maxZoom: 14 })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, city])
+  }, [search, city, nearMe])
+
+  // "גינות לידי" - מבקש מיקום ומסנן ל-25 הקרובות. במובייל זה הדרך הראשית להשתמש במפה.
+  function findNearMe() {
+    if (!navigator.geolocation) { setLocErr('הדפדפן לא תומך באיתור מיקום'); return }
+    setLocating(true); setLocErr('')
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const L = LRef.current
+        const map = mapRef.current
+        if (!L || !map) return
+        userPosRef.current = { lat: pos.coords.latitude, lng: pos.coords.longitude }
+        // סמן מיקום המשתמש
+        if (userMarkerRef.current) userMarkerRef.current.remove()
+        userMarkerRef.current = L.marker([pos.coords.latitude, pos.coords.longitude], {
+          icon: L.divIcon({
+            className: '',
+            html: `<div style="width:18px;height:18px;background:#4a90e2;border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 6px rgba(74,144,226,.25),0 2px 8px rgba(0,0,0,.3)"></div>`,
+            iconSize: [18, 18],
+            iconAnchor: [9, 9],
+          }),
+        }).addTo(map)
+        setNearMe(true)
+        setLocating(false)
+      },
+      (err) => {
+        setLocErr(err.code === 1 ? 'נא לאשר הרשאת מיקום בדפדפן' : 'לא הצלחתי לאתר אתכם')
+        setLocating(false)
+      },
+      { timeout: 10000, maximumAge: 60000 },
+    )
+  }
 
   // שכבת מקומות דוג-פרנדלי (toggle)
   useEffect(() => {
@@ -315,6 +389,15 @@ export function DogParksMap() {
   }
 
   function locateMe() {
+    // אם כבר במצב "לידי" - מבטל
+    if (nearMe) {
+      setNearMe(false)
+      userMarkerRef.current?.remove(); userMarkerRef.current = null
+      userPosRef.current = null
+      mapRef.current?.flyTo([32.05, 34.85], 8, { duration: 0.7 })
+      showNotif('מציג את כל הגינות בארץ 🐕')
+      return
+    }
     if (!navigator.geolocation) {
       showNotif('הדפדפן לא תומך ב-GPS')
       return
@@ -326,19 +409,18 @@ export function DogParksMap() {
         const L = LRef.current!
         const map = mapRef.current!
         userMarkerRef.current?.remove()
-        map.flyTo([lat, lng], 14, { duration: 0.8 })
         userMarkerRef.current = L.marker([lat, lng], {
           icon: L.divIcon({ className: '', html: '<div class="user-loc"></div>', iconSize: [20, 20], iconAnchor: [10, 10] }),
         }).addTo(map)
+        userPosRef.current = { lat, lng }
+        // מצב "near me" - הסינון יקרה אוטומטית ב-effect; הוא גם יזיז את ה-bounds
+        setNearMe(true)
         const pool = allParks.current.length ? allParks.current : fallbackParks
         const near = pool.reduce((a, b) =>
           Math.hypot(a.lat - lat, a.lng - lng) < Math.hypot(b.lat - lat, b.lng - lng) ? a : b
         )
-        setTimeout(() => {
-          openPark(near)
-          const dist = (Math.hypot(near.lat - lat, near.lng - lng) * 111).toFixed(1)
-          showNotif(`הגינה הקרובה: ${near.name} (${dist} ק״מ) 🐕`)
-        }, 900)
+        const dist = (Math.hypot(near.lat - lat, near.lng - lng) * 111).toFixed(1)
+        showNotif(`25 גינות הקרובות אליכם · הכי קרובה: ${near.name} (${dist} ק״מ) 🐕`)
       },
       () => showNotif('לא ניתן לאתר מיקום')
     )
@@ -389,11 +471,12 @@ export function DogParksMap() {
       <div className="map-bottom-bar">
         <button
           type="button"
-          className="locate-me-btn"
-          aria-label="מצא את מיקומי"
+          className={`locate-me-btn${nearMe ? ' on' : ''}`}
+          aria-label={nearMe ? 'הצג שוב את כל הגינות' : 'מצא גינות קרובות אלי'}
+          aria-pressed={nearMe}
           onClick={locateMe}
         >
-          📍 מצא גינות קרובות אלי
+          {nearMe ? '🌍 הראה את כל הארץ' : '📍 גינות קרובות אלי'}
         </button>
         <button
           type="button"
@@ -403,7 +486,9 @@ export function DogParksMap() {
         >
           🚩 {reportMode ? 'לחצו על המפה…' : 'דווח על גינה חסרה'}
         </button>
-        <div className="map-count-chip" aria-live="polite">🐕 {count} גינות</div>
+        <div className="map-count-chip" aria-live="polite">
+          {nearMe ? '📍 ' : '🐕 '}{count} גינות{nearMe ? ' לידכם' : ''}
+        </div>
       </div>
 
       <div className={`map-notif${notifShow ? ' show' : ''}`} role="status" aria-live="polite">
