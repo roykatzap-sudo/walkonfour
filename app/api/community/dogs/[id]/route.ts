@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { withCommunityDb, logAudit } from '@/lib/community/db'
 import { readCurrentSession } from '@/lib/community/auth'
 import { deleteDog, getDog, updateDog, validateDogInput } from '@/lib/community/dogs'
+import { deleteDogImage } from '@/lib/community/storage'
 import { clientIp } from '@/lib/rateLimit'
 
 export const dynamic = 'force-dynamic'
@@ -40,11 +41,13 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
   if (!session) return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 })
   const dogId = Number(params.id)
   if (!Number.isInteger(dogId) || dogId <= 0) return NextResponse.json({ ok: false, error: 'id' }, { status: 400 })
-  const ok = await withCommunityDb(async (c) => {
+  const result = await withCommunityDb(async (c) => {
     const d = await deleteDog(c, session.userId, dogId)
-    if (d) await logAudit(c, session.userId, 'dog.deleted', ip, { dog_id: dogId })
+    if (d.ok) await logAudit(c, session.userId, 'dog.deleted', ip, { dog_id: dogId })
     return d
   })
-  if (!ok) return NextResponse.json({ ok: false, error: 'not_found' }, { status: 404 })
+  if (!result?.ok) return NextResponse.json({ ok: false, error: 'not_found' }, { status: 404 })
+  // ניקוי התמונה מ-storage (לא חוסם את ה-response)
+  if (result.photoUrl) void deleteDogImage(result.photoUrl)
   return NextResponse.json({ ok: true })
 }

@@ -42,8 +42,13 @@ export default async function DogsListPage() {
         ) : (
           <div style={{ display: 'grid', gap: 12 }}>
             {dogs.map((d) => (
-              <Link key={d.id} href={`/community/dogs/${d.id}`} className="card" style={{ padding: '18px 20px', textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: 14 }}>
-                <div style={{ fontSize: 34, lineHeight: 1 }} aria-hidden="true">🐾</div>
+              <Link key={d.id} href={`/community/dogs/${d.id}`} className="card" style={{ padding: '14px 18px', textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: 14 }}>
+                {d.photo_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={d.photo_url} alt={d.name} width={56} height={56} style={{ width: 56, height: 56, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: '2px solid var(--brand-light)' }} />
+                ) : (
+                  <div aria-hidden="true" style={{ width: 56, height: 56, borderRadius: '50%', background: '#fbf7ef', border: '2px dashed rgba(201,154,91,.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, flexShrink: 0 }}>🐕</div>
+                )}
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 18, fontWeight: 900, color: 'var(--ink)' }}>{d.name}</div>
                   <div style={{ fontSize: 13.5, color: '#5b4d3c', marginTop: 2 }}>

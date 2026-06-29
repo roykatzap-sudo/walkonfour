@@ -81,7 +81,10 @@ export async function updateDog(client: Client, userId: number, dogId: number, i
   return (res.rows[0] as Dog | undefined) ?? null
 }
 
-export async function deleteDog(client: Client, userId: number, dogId: number): Promise<boolean> {
+export async function deleteDog(client: Client, userId: number, dogId: number): Promise<{ ok: boolean; photoUrl: string | null }> {
+  // קבל את ה-photo_url לפני המחיקה כדי לנקות מ-storage
+  const before = await client.query('select photo_url from dogs where id = $1 and user_id = $2', [dogId, userId])
+  const photoUrl = (before.rows[0]?.photo_url as string | null) ?? null
   const res = await client.query('delete from dogs where id = $1 and user_id = $2', [dogId, userId])
-  return (res.rowCount ?? 0) > 0
+  return { ok: (res.rowCount ?? 0) > 0, photoUrl }
 }

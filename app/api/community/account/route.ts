@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { withCommunityDb, logAudit } from '@/lib/community/db'
 import { readCurrentSession } from '@/lib/community/auth'
 import { COMMUNITY_COOKIE } from '@/lib/community/session'
+import { deleteDogImage } from '@/lib/community/storage'
 import { clientIp, rateLimited } from '@/lib/rateLimit'
 
 export const dynamic = 'force-dynamic'
@@ -71,14 +72,19 @@ export async function DELETE(req: Request) {
   const session = readCurrentSession()
   if (!session) return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 })
   const result = await withCommunityDb(async (c) => {
+    // אסוף את כל ה-photo_urls של הכלבים לפני המחיקה (לניקוי storage)
+    const photos = await c.query('select photo_url from dogs where user_id = $1 and photo_url is not null', [session.userId])
+    const photoUrls = photos.rows.map((r) => r.photo_url as string)
     // אנונימיזציית audit_log (לפי המלצת הסקירה המשפטית - שומרים אירועים בלי מזהה)
     await c.query('update community_audit_log set user_id = null where user_id = $1', [session.userId])
     // CASCADE delete של המשתמש מוחק dogs, park_plans, park_messages
     const del = await c.query('delete from community_users where id = $1', [session.userId])
-    await logAudit(c, null, 'account.deleted', ip, { previous_user_id: session.userId })
-    return (del.rowCount ?? 0) > 0
+    await logAudit(c, null, 'account.deleted', ip, { previous_user_id: session.userId, photos_removed: photoUrls.length })
+    return { ok: (del.rowCount ?? 0) > 0, photoUrls }
   })
-  if (!result) return NextResponse.json({ ok: false, error: 'not_found' }, { status: 404 })
+  if (!result?.ok) return NextResponse.json({ ok: false, error: 'not_found' }, { status: 404 })
+  // מחיקת כל התמונות מ-storage (async, לא חוסם)
+  for (const url of result.photoUrls) void deleteDogImage(url)
   const res = NextResponse.json({ ok: true })
   res.cookies.delete(COMMUNITY_COOKIE)
   res.cookies.delete(`${COMMUNITY_COOKIE}_pending`)

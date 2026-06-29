@@ -5,6 +5,7 @@ import { withCommunityDb } from '@/lib/community/db'
 import { getDog } from '@/lib/community/dogs'
 import { DogForm } from '@/components/community/DogForm'
 import { DeleteDogButton } from '@/components/community/DeleteDogButton'
+import { DogPhotoUpload } from '@/components/community/DogPhotoUpload'
 import { CommunityHeader } from '@/components/community/CommunityHeader'
 
 export const dynamic = 'force-dynamic'
@@ -33,6 +34,12 @@ export default async function EditDogPage({ params }: { params: { id: string } }
             עריכת {dog.name}
           </h1>
         </div>
+        {/* תמונה (קודם - הכי ויזואלי) */}
+        <div className="card" style={{ padding: '22px 22px', marginBottom: 16 }}>
+          <h2 style={{ fontSize: 16, fontWeight: 900, color: 'var(--ink)', margin: '0 0 14px' }}>תמונה</h2>
+          <DogPhotoUpload dogId={dog.id} currentUrl={dog.photo_url} dogName={dog.name} />
+        </div>
+        {/* פרטים */}
         <div className="card" style={{ padding: '26px 22px' }}>
           <DogForm initial={dog} />
         </div>
