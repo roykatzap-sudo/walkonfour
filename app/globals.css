@@ -677,9 +677,14 @@ body.kv-zoomed, body.kv-zoomed * { cursor: auto !important; }
 .pp-divider { border: none; border-top: 1px solid rgba(255,255,255,.07); margin: 10px 0; }
 .pp-row { font-size: 13px; color: rgba(255,255,255,.78); padding: 3px 0; display: flex; gap: 8px; }
 .pp-row span:first-child { color: var(--brand-light); }
-.pp-btn { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; box-sizing: border-box; margin-top: 12px; padding: 12px 14px; min-height: 44px; background: var(--brand-light); color: #2a2018; border: none; border-radius: 10px; font-size: 14px; font-weight: 800; text-align: center; text-decoration: none; white-space: nowrap; cursor: pointer; font-family: inherit; transition: background .2s; }
-.pp-btn:hover { background: #dbb46f; text-decoration: none; color: #2a2018; }
-.pp-btn:visited { color: #2a2018; }
+.pp-rating { display: flex; align-items: center; gap: 8px; margin-top: 6px; padding: 6px 0; }
+.pp-actions { display: flex; gap: 6px; margin-top: 12px; }
+.pp-btn { display: flex; align-items: center; justify-content: center; gap: 6px; flex: 1 1 auto; box-sizing: border-box; padding: 10px 12px; min-height: 42px; border: none; border-radius: 10px; font-size: 13.5px; font-weight: 800; text-align: center; text-decoration: none; white-space: nowrap; cursor: pointer; font-family: inherit; transition: background .2s, transform .1s; }
+.pp-btn-primary { background: var(--brand-light); color: #2a2018; }
+.pp-btn-primary:hover { background: #dbb46f; text-decoration: none; color: #2a2018; }
+.pp-btn-ghost { background: rgba(232,200,135,.1); color: var(--brand-light); border: 1px solid rgba(232,200,135,.3); flex: 0 0 auto; padding-inline: 14px; }
+.pp-btn-ghost:hover { background: rgba(232,200,135,.18); text-decoration: none; color: var(--brand-light); }
+.pp-btn:visited { color: inherit; }
 .user-loc { width: 20px; height: 20px; background: var(--brand-light); border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 6px rgba(232,200,135,.2); animation: loc-pulse 2s infinite; }
 @keyframes loc-pulse { 0%,100%{box-shadow:0 0 0 6px rgba(232,200,135,.2)} 50%{box-shadow:0 0 0 12px rgba(232,200,135,.05)} }
 /* shimmer לשלדי טעינה (לוח אימוץ) - מבוטל אוטומטית תחת prefers-reduced-motion */

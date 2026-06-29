@@ -100,6 +100,20 @@ export const CREATE_SQLS = [
     created_at timestamptz not null default now()
   )`,
 
+  // דירוג גינות. אנונימי בתצוגה אבל user_id נשמר (אדמין רואה / מודרציה).
+  // משתמש מדרג כל גינה פעם אחת (unique). אפשר לעדכן.
+  `create table if not exists park_ratings (
+    id bigint generated always as identity primary key,
+    user_id bigint not null references community_users(id) on delete cascade,
+    park_key text not null,
+    stars int not null check (stars between 1 and 5),
+    tags text[] not null default '{}',
+    note text,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now(),
+    unique (user_id, park_key)
+  )`,
+
   // חסימה הדדית בין משתמשים: A חוסם B → לא רואים את התיאומים/הודעות אחד של השני.
   `create table if not exists user_blocks (
     id bigint generated always as identity primary key,
@@ -125,6 +139,8 @@ export const CREATE_SQLS = [
   `create index if not exists idx_reports_status on user_reports(status, created_at desc)`,
   `create index if not exists idx_blocks_blocker on user_blocks(blocker_id)`,
   `create index if not exists idx_blocks_blocked on user_blocks(blocked_id)`,
+  `create index if not exists idx_ratings_park on park_ratings(park_key)`,
+  `create index if not exists idx_ratings_user on park_ratings(user_id)`,
 ]
 
 /** טקסט הגרסה הנוכחית של ההסכמה. כשהטקסט מתעדכן - מעלים את הגרסה.

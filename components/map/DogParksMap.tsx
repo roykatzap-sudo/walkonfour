@@ -106,7 +106,12 @@ export function DogParksMap() {
       ? `<hr class="pp-divider">${detailRows}`
       : `<hr class="pp-divider"><div class="pp-row"><span>🐕</span><span>גינה לשחרור רצועה - נווטו והגיעו</span></div>`
 
-    const popup = L.popup({ className: 'dp', closeButton: true, maxWidth: 260 })
+    const communityUrl = `/community/parks/${park.id}`
+    const ratingPlaceholder = `<div class="pp-rating" data-park="${escapeHtml(String(park.id))}">
+      <span class="pp-rating-stars" style="color:rgba(232,200,135,.35)">☆☆☆☆☆</span>
+      <span class="pp-rating-text" style="font-size:11.5px;color:rgba(255,255,255,.45)">טוען...</span>
+    </div>`
+    const popup = L.popup({ className: 'dp', closeButton: true, maxWidth: 280 })
       .setLatLng([park.lat, park.lng])
       .setContent(`
         <div class="pp">
@@ -117,11 +122,42 @@ export function DogParksMap() {
               <div class="pp-city">${cityTxt}</div>
             </div>
           </div>
+          ${ratingPlaceholder}
           ${body}
-          <a class="pp-btn" href="${escapeHtml(navUrl)}" target="_blank" rel="noopener noreferrer" aria-label="נווט עם Google Maps">🗺️ נווט עם Google Maps</a>
+          <div class="pp-actions">
+            <a class="pp-btn pp-btn-primary" href="${escapeHtml(communityUrl)}" aria-label="הקהילה של הגינה">🐾 הקהילה של הגינה</a>
+            <a class="pp-btn pp-btn-ghost" href="${escapeHtml(navUrl)}" target="_blank" rel="noopener noreferrer" aria-label="נווט עם Google Maps">🗺️ נווט</a>
+          </div>
         </div>
       `)
     popup.openOn(map)
+    // טעינת הדירוג async ועדכון ה-placeholder
+    void fetchAndFillRating(park.id)
+  }
+
+  /** טעינה async של הדירוג ועדכון ה-popup הפתוח. */
+  async function fetchAndFillRating(parkId: number) {
+    try {
+      const res = await fetch(`/api/community/ratings?park_key=${encodeURIComponent(String(parkId))}`)
+      const data = await res.json()
+      const el = document.querySelector(`.pp-rating[data-park="${parkId}"]`) as HTMLDivElement | null
+      if (!el || !data.ok) return
+      const s = data.summary as { avg: number; count: number }
+      if (s.count === 0) {
+        el.innerHTML = `<span class="pp-rating-text" style="font-size:12px;color:rgba(255,255,255,.5)">⭐ עוד אין דירוגים - היו ראשונים</span>`
+        return
+      }
+      const full = Math.floor(s.avg)
+      const half = s.avg - full >= 0.5
+      let stars = ''
+      for (let i = 0; i < 5; i++) {
+        if (i < full) stars += '★'
+        else if (i === full && half) stars += '⯨'
+        else stars += '☆'
+      }
+      el.innerHTML = `<span class="pp-rating-stars" style="color:#e8c887;font-size:15px">${stars}</span>
+        <span class="pp-rating-text" style="font-size:12px;color:rgba(255,255,255,.75)">${s.avg.toFixed(1)} · ${s.count} ${s.count === 1 ? 'דירוג' : 'דירוגים'}</span>`
+    } catch {/* silent */}
   }
 
   function render(parks: DogPark[]) {

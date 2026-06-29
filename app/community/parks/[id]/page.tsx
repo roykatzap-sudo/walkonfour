@@ -6,6 +6,7 @@ import { allDogParks } from '@/lib/dogParksAll'
 import { CommunityHeader } from '@/components/community/CommunityHeader'
 import { ParkPlansList } from '@/components/community/ParkPlansList'
 import { ParkChat } from '@/components/community/ParkChat'
+import { ParkRating } from '@/components/community/ParkRating'
 
 export const dynamic = 'force-dynamic'
 export const metadata = buildMetadata({
@@ -36,6 +37,12 @@ export default async function CommunityParkPage({ params }: { params: { id: stri
             {park.city || 'ישראל'}
           </p>
         </div>
+
+        {/* דירוג */}
+        <section style={{ marginBottom: 24 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 900, color: 'var(--ink)', margin: '0 0 10px' }}>⭐ דירוג הגינה</h2>
+          <ParkRating parkKey={String(park.id)} isAuthed={true} />
+        </section>
 
         {/* תיאומים */}
         <section style={{ marginBottom: 24 }}>

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { withCommunityDb, logAudit } from '@/lib/community/db'
 import { readCurrentSession } from '@/lib/community/auth'
 import { createPlan, listMyPlans, listParkPlans, countParkPlans, validatePlanInput } from '@/lib/community/plans'
+import { findCoplanners, notifyCoplanners } from '@/lib/community/notifyPlan'
 import { clientIp, rateLimited } from '@/lib/rateLimit'
 
 export const dynamic = 'force-dynamic'
@@ -36,11 +37,17 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}))
   const v = validatePlanInput(body)
   if (!v.ok) return NextResponse.json({ ok: false, error: v.field }, { status: 400 })
-  const result = await withCommunityDb(async (c) => {
+  const created = await withCommunityDb(async (c) => {
     const plan = await createPlan(c, session.userId, v.data)
-    if (plan) await logAudit(c, session.userId, 'plan.created', ip, { park_key: v.data.parkKey, plan_id: plan.id })
-    return plan
+    if (!plan) return null
+    await logAudit(c, session.userId, 'plan.created', ip, { park_key: v.data.parkKey, plan_id: plan.id })
+    const recipients = await findCoplanners(c, session.userId, v.data.parkKey, v.data.arrivalAt)
+    return { plan, recipients }
   })
-  if (!result) return NextResponse.json({ ok: false, error: 'dog_not_found' }, { status: 404 })
-  return NextResponse.json({ ok: true, plan: result })
+  if (!created) return NextResponse.json({ ok: false, error: 'dog_not_found' }, { status: 404 })
+  // שליחת מיילים async - לא לחסום את התגובה
+  if (created.recipients.length > 0) {
+    void notifyCoplanners(created.recipients, v.data.parkKey, v.data.arrivalAt)
+  }
+  return NextResponse.json({ ok: true, plan: created.plan, notified: created.recipients.length })
 }
