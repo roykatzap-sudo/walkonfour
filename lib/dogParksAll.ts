@@ -1,9 +1,9 @@
 /* ════════════════════════════════════════════════════════════
    מקור גינות מאוחד: OSM (bakedParks) + רשימות עירוניות רשמיות
    (manualParks).
-   כלל: בעיר עם רשימה רשמית, הרשימה היא ה-source of truth -
-   משמיטים את כל גינות ה-OSM באזור שלה (כדי לא לנפח מעבר למספר
-   הרשמי). בערים בלי רשימה רשמית - מציגים את OSM כרגיל.
+   כלל (תוסף-בלבד): שתי הרשימות מתמזגות. גינת OSM נשמטת רק אם היא
+   כפילות אמיתית - בתוך ~120מ' מגינה רשמית. כך אף גינה קיימת לא
+   נמחקת; הרשימות הרשמיות רק מוסיפות כיסוי ומחליפות כפילויות מדויקות.
    ════════════════════════════════════════════════════════════ */
 import type { DogPark } from '@/types'
 import { bakedParks } from './dogParksBaked'
@@ -13,29 +13,16 @@ function distKm(aLat: number, aLng: number, bLat: number, bLng: number): number 
   return Math.hypot((aLat - bLat) * 111, (aLng - bLng) * 94)
 }
 
-/** מרכזי הערים המתועדות (centroid של הגינות הרשמיות בכל עיר). */
-const curatedCenters: { lat: number; lng: number }[] = (() => {
-  const groups: Record<string, DogPark[]> = {}
-  for (const p of manualParks) {
-    const key = p.city || '?'
-    ;(groups[key] ??= []).push(p)
-  }
-  return Object.values(groups).map((ps) => ({
-    lat: ps.reduce((s, p) => s + p.lat, 0) / ps.length,
-    lng: ps.reduce((s, p) => s + p.lng, 0) / ps.length,
-  }))
-})()
+/** מרחק (מטרים) שמתחתיו גינת OSM נחשבת כפילות של גינה רשמית ונשמטת. */
+const DEDUP_M = 120
 
-/** רדיוס (ק״מ) של "אזור עיר מתועדת" שבו OSM מושמט לטובת הרשימה הרשמית. */
-const CURATED_RADIUS_KM = 6
-
-function inCuratedZone(p: DogPark): boolean {
-  return curatedCenters.some((c) => distKm(p.lat, p.lng, c.lat, c.lng) < CURATED_RADIUS_KM)
+function isDuplicateOfManual(p: DogPark): boolean {
+  return manualParks.some((m) => distKm(p.lat, p.lng, m.lat, m.lng) * 1000 < DEDUP_M)
 }
 
-/** מצרף את הרשימות הרשמיות, ומשמיט גינות OSM שבתוך אזור עיר מתועדת. */
+/** מצרף את הרשימות הרשמיות ל-OSM, ומשמיט רק כפילויות OSM קרובות (תוסף-בלבד). */
 export function withManual(primary: DogPark[]): DogPark[] {
-  const kept = primary.filter((p) => !inCuratedZone(p))
+  const kept = primary.filter((p) => !isDuplicateOfManual(p))
   return [...kept, ...manualParks]
 }
 
