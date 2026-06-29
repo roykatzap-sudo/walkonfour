@@ -116,8 +116,9 @@ export function WaitlistForm({ initialCount }: { initialCount: number }) {
           style={{ marginTop: 3, width: 18, height: 18, flexShrink: 0, accentColor: 'var(--brand)', cursor: 'pointer' }}
         />
         <span>
-          אני מאשר/ת קבלת <strong>דבר פרסומת</strong> (עדכונים, טיפים והצעות מסחריות) מקהילה על ארבע במייל, לפי סעיף 30א לחוק התקשורת. ניתן להסיר בכל עת, חינם, בקליק.{' '}
-          <a href="/privacy" style={{ color: 'var(--brand-dark)', fontWeight: 700 }}>מדיניות הפרטיות</a>
+          אני מאשר/ת קבלת <strong>דיוור ישיר, עדכונים, מבצעים ותכנים שיווקיים</strong> מקהילה על ארבע באמצעות דואר אלקטרוני (דוא"ל בלבד - לא SMS ולא WhatsApp), לפי סעיף 30א לחוק התקשורת. ניתן להסיר בכל עת חינם דרך הקישור בכל הודעה או בעמוד{' '}
+          <a href="/unsubscribe" style={{ color: 'var(--brand-dark)', fontWeight: 700 }}>/unsubscribe</a>. ראו גם{' '}
+          <a href="/privacy" style={{ color: 'var(--brand-dark)', fontWeight: 700 }}>מדיניות הפרטיות</a>.
         </span>
       </label>
       <div style={{ textAlign: 'center', fontSize: 15, fontWeight: 800, color: 'var(--brand-dark)' }}>

@@ -168,8 +168,8 @@ function emailHtml(code: string): string {
   </div>
   <div style="max-width:480px;margin:18px auto 0;padding:0 8px;font-size:11px;color:#8a7c66;text-align:center;line-height:1.7">
     <div><strong>קהילה על ארבע</strong> · <a href="https://walkonfour.org" style="color:#8a7c66">walkonfour.org</a></div>
-    <div style="margin-top:6px">המפעיל: רוי קצפ. מייל זה הוא תפעולי (אימות כניסה) ואינו דיוור.</div>
-    <div style="margin-top:4px">נשלח דרך ez-suit.org (אותו מפעיל) כתשתית טכנית. תגובות יגיעו ל-community@walkonfour.org.</div>
+    <div style="margin-top:6px">מייל זה הוא תפעולי (אימות כניסה) ואינו דיוור.</div>
+    <div style="margin-top:4px">נשלח דרך תשתית של ez-suit.org (אותו מפעיל). תגובות יגיעו ל-community@walkonfour.org.</div>
     <div style="margin-top:4px">לשאלות פרטיות / עיון / מחיקה: <a href="mailto:privacy@walkonfour.org" style="color:#8a7c66">privacy@walkonfour.org</a></div>
   </div>
   </body></html>`
@@ -182,8 +182,8 @@ function emailText(code: string): string {
 אם לא ביקשתם, התעלמו מהמייל.
 
 ---
-קהילה על ארבע · walkonfour.org · המפעיל: רוי קצפ
+קהילה על ארבע · walkonfour.org
 מייל זה הוא תפעולי (אימות כניסה) ואינו דיוור.
-נשלח דרך ez-suit.org (אותו מפעיל) כתשתית טכנית.
+נשלח דרך תשתית של ez-suit.org (אותו מפעיל).
 פניות פרטיות: privacy@walkonfour.org`
 }
