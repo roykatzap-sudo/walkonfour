@@ -650,7 +650,7 @@ body.kv-zoomed, body.kv-zoomed * { cursor: auto !important; }
 .map-section-inner { max-width: 1200px; margin: 0 auto; padding: 0 52px; }
 .map-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 52px; gap: 24px; flex-wrap: wrap; }
 .map-title { font-size: var(--h2); font-weight: 900; letter-spacing: -2px; color: #fff; }
-.map-title em { color: var(--brand-light); font-style: normal; display: block; }
+.map-title em { color: var(--brand-light); font-style: normal; }
 .map-sub { font-size: 15px; color: rgba(255,255,255,.72); line-height: 1.7; max-width: 260px; }
 .map-wrap { position: relative; border-radius: 28px 28px 0 0; overflow: hidden; border: 1px solid rgba(232,200,135,.15); border-bottom: none; box-shadow: 0 -20px 80px rgba(232,200,135,.05); height: 600px; }
 .map-controls { position: absolute; top: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; max-width: 300px; }

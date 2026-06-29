@@ -12,7 +12,9 @@ function typeForPath(path: string): string {
 }
 
 // בעמודים האלה כבר יש מנגנון הצעה ייעודי/לא רלוונטי - לא מציגים את הכפתור הצף.
-const HIDE_ON = ['/admin', '/unsubscribe', '/privacy', '/terms']
+// במפה (/map) - כי יש שם כפתור "דווח על גינה חסרה" + כדי לא לכסות את המפה.
+// בקהילה (/community) - חוויית הקהילה הסגורה לא צריכה כפתור הצעה כללי.
+const HIDE_ON = ['/admin', '/unsubscribe', '/privacy', '/terms', '/map', '/community']
 
 export function GlobalSuggest() {
   const pathname = usePathname() || '/'

@@ -48,11 +48,11 @@ export function MapSection() {
           <div>
             <span className="section-tag">גינות כלבים</span>
             <h2 className="map-title">
-              מצא גינה<em>קרובה אליך</em>
+              מצא גינה <em>קרובה אליך</em>
             </h2>
           </div>
           <p className="map-sub">
-            מאות גינות כלבים ברחבי ישראל - חפש לפי עיר או לחץ על מצא קרוב אלי.
+            621 גינות כלבים בכל הארץ - לחצו "גינות לידי" לראות את הקרובות.
           </p>
         </div>
       </div>

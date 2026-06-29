@@ -414,19 +414,18 @@ export function DogParksMap() {
           value={search}
           onChange={(e) => setSearch(e.target.value.trim())}
         />
-        <div className="map-city-btns" role="group" aria-label="סינון גינות לפי עיר">
+        <select
+          className="map-city-select"
+          aria-label="סינון לפי עיר"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+        >
           {MAP_CITIES.map((c) => (
-            <button
-              key={c.value}
-              type="button"
-              className={`mcb${city === c.value ? ' on' : ''}`}
-              aria-pressed={city === c.value}
-              onClick={() => setCity(c.value)}
-            >
-              {c.label}
-            </button>
+            <option key={c.value} value={c.value}>
+              {c.value === 'all' ? '🏙️ כל הערים' : `📍 ${c.label}`}
+            </option>
           ))}
-        </div>
+        </select>
       </div>
 
       <div className="map-bottom-bar">
@@ -456,8 +455,34 @@ export function DogParksMap() {
         {notif}
       </div>
 
-      {/* רספונסיביות למובייל: סרגל בקרה ברוחב מלא + סינון ערים גליל אופקי, כדי שהמפה לא תיחנק */}
+      {/* רספונסיביות למובייל: סרגל בקרה ברוחב מלא, מינימלי */}
       <style>{`
+        .map-city-select {
+          background: rgba(42,32,24,.92);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(232,200,135,.35);
+          color: var(--brand-light);
+          padding: 11px 16px;
+          padding-inline-end: 36px;
+          border-radius: 100px;
+          font-size: 14px;
+          font-weight: 700;
+          cursor: pointer;
+          font-family: inherit;
+          appearance: none;
+          background-image: linear-gradient(45deg, transparent 50%, var(--brand-light) 50%), linear-gradient(135deg, var(--brand-light) 50%, transparent 50%);
+          background-position: calc(16px) center, calc(16px + 5px) center;
+          background-size: 5px 5px, 5px 5px;
+          background-repeat: no-repeat;
+          min-width: 160px;
+          transition: all .2s;
+        }
+        .map-city-select:hover, .map-city-select:focus {
+          border-color: var(--brand-light);
+          background-color: rgba(232,200,135,.12);
+          outline: none;
+        }
+        .map-city-select option { background: #2a2018; color: var(--brand-light); }
         @media (max-width: 720px) {
           .map-controls {
             position: absolute;
@@ -472,26 +497,12 @@ export function DogParksMap() {
           .map-controls .map-search {
             width: 100%;
             box-sizing: border-box;
-            font-size: 16px; /* מונע zoom אוטומטי ב-iOS */
+            font-size: 16px;
           }
-          .map-controls .map-city-btns {
-            display: flex;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            gap: 6px;
-            padding-bottom: 4px;
-            scrollbar-width: none;
-          }
-          .map-controls .map-city-btns::-webkit-scrollbar { display: none; }
-          .map-controls .mcb {
-            flex: 0 0 auto;
-            white-space: nowrap;
-            font-size: 13px;
-          }
-          .map-controls .df-toggle {
+          .map-controls .map-city-select {
             width: 100%;
-            text-align: center;
+            box-sizing: border-box;
+            font-size: 15px;
           }
           .map-bottom-bar {
             gap: 6px;

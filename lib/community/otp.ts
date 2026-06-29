@@ -14,7 +14,10 @@ import { withCommunityDb, logAudit } from './db'
 import { OTP_TTL_MIN, OTP_MAX_ATTEMPTS } from './schema'
 
 const RESEND_KEY = process.env.RESEND_API_KEY
-const FROM = process.env.COMMUNITY_EMAIL_FROM || 'קהילה על ארבע <community@walkonfour.org>'
+// ברירת מחדל: כתובת הבדיקה של Resend - עובדת מיד בלי דומיין מאומת.
+// בייצור: להגדיר COMMUNITY_EMAIL_FROM=קהילה על ארבע <community@walkonfour.org>
+// (אחרי שמאמתים את walkonfour.org ב-Resend → Domains).
+const FROM = process.env.COMMUNITY_EMAIL_FROM || 'onboarding@resend.dev'
 
 function hashCode(code: string): string {
   return createHash('sha256').update(code).digest('hex')
@@ -62,18 +65,29 @@ export async function requestOtp(email: string, ip: string | null): Promise<Requ
     // שליחת המייל
     try {
       const resend = new Resend(RESEND_KEY)
-      await resend.emails.send({
+      // Resend SDK v3+ מחזיר { data, error } - לא זורק. חייבים לבדוק error.
+      const sendRes = await resend.emails.send({
         from: FROM,
         to: email,
         subject: 'קוד הכניסה שלך לקהילה על ארבע',
         html: emailHtml(code),
         text: emailText(code),
       })
+      if ((sendRes as { error?: { message?: string; name?: string } | null }).error) {
+        const err = (sendRes as { error: { message?: string; name?: string } }).error
+        console.error('[otp] Resend rejected:', err.name, err.message, 'from:', FROM, 'to:', email)
+        await logAudit(client, null, 'otp.email_failed', ip, {
+          email_lc: email.toLowerCase(),
+          resend_error: err.message?.slice(0, 200) || 'unknown',
+          resend_name: err.name || 'unknown',
+        })
+        return { ok: false as const, reason: 'email_failed' as const }
+      }
       await logAudit(client, null, 'otp.sent', ip, { email_lc: email.toLowerCase() })
       return { ok: true as const }
     } catch (e) {
-      console.error('[otp] email send failed', e)
-      await logAudit(client, null, 'otp.email_failed', ip, { email_lc: email.toLowerCase() })
+      console.error('[otp] Resend threw:', e)
+      await logAudit(client, null, 'otp.email_failed', ip, { email_lc: email.toLowerCase(), thrown: String(e).slice(0, 200) })
       return { ok: false as const, reason: 'email_failed' as const }
     }
   })
