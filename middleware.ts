@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
-import { readSession, COMMUNITY_COOKIE } from '@/lib/community/session'
+import { readSessionEdge, COMMUNITY_COOKIE } from '@/lib/community/sessionEdge'
 
 /**
  * שער השקה: בשלב הראשון רק תוכן וכלים פתוחים. כל החלקים האינטראקטיביים
@@ -37,7 +37,7 @@ export async function middleware(request: NextRequest) {
   }
   if (isCommunityProtected(pathname)) {
     const token = request.cookies.get(COMMUNITY_COOKIE)?.value
-    const session = readSession(token)
+    const session = await readSessionEdge(token)
     if (!session || session.userId === -1) {
       const url = request.nextUrl.clone()
       url.pathname = '/community/login'

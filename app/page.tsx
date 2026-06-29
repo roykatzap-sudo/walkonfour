@@ -15,11 +15,11 @@ import { communities, img } from '@/lib/communities'
 import { breeds, getBreed, breedImg } from '@/lib/breeds'
 
 const MARQUEE = [
-  '29 מדריכי גזעים בלי לייפות',
-  '621 גינות כלבים על המפה',
-  '42 מדריכי ערים לבעלי כלבים',
-  '38 מסלולי טיול לכלבים בכל הארץ',
-  'מחירון מזון מעודכן + מחשבון עלויות',
+  'מדריכי גזעים בלי לייפות',
+  'גינות כלבים על המפה',
+  'מדריך לכל עיר בארץ',
+  'מסלולים אמיתיים, לא רק על המפה',
+  'מחירון מזון ומחשבון עלויות',
 ]
 
 const PHOTOS = [
@@ -34,23 +34,23 @@ const REEL = ['photo-1552053831-71594a27632d', 'photo-1587300003388-59208cc962cb
 const REEL_LABELS = ['לברדור', 'גולדן', 'שפיץ', 'בולדוג', 'חברים', 'גור']
 
 const FEATURES = [
-  { icon: '🛒', title: 'קונים יחד', sub: 'מתאחדים על שק מזון או ציוד - וכשקונים בכמות, המחיר יורד', d: 1 as const },
-  { icon: '🎉', title: 'נפגשים', sub: 'מפגשי בוקר בפארק, ערבי אילוף ויריד יד שנייה - מתארגנים יחד', d: 2 as const },
-  { icon: '🏠', title: 'שומרים אחד על הכלב של השני', sub: 'נוסעים לחו"ל? בקהילה יש מי שכבר עשה את זה', d: 3 as const },
-  { icon: '💬', title: 'שואלים בלי בושה', sub: 'את השאלות שלא נעים לשאול את הווטרינר. עונים אנשים שעברו את זה', d: 2 as const },
-  { icon: '🔄', title: 'יד שנייה', sub: 'רתמה כמעט חדשה במקום לזרוק - כלבים גדלים מהר', d: 3 as const },
-  { icon: '🩺', title: 'שאלות לווטרינר', sub: 'הכלב הקיא בלילה ואתם לא בטוחים? שואלים בלי לרוץ למרפאה', d: 4 as const },
+  { icon: '01', title: 'קונים יחד', sub: 'שק מזון או ציוד בכמות. המחיר יורד, אף אחד לא נשאר עם 30 קילו לבד', d: 1 as const },
+  { icon: '02', title: 'נפגשים', sub: 'בוקר בפארק, ערב אילוף, יריד יד שנייה. מתארגנים בקבוצה, באים בלי לתאם פגישות', d: 2 as const },
+  { icon: '03', title: 'שומרים אחד על הכלב של השני', sub: 'נוסעים לחו"ל? יש מי שכבר עשה את זה ושמח להחזיר טובה', d: 3 as const },
+  { icon: '04', title: 'שואלים בלי בושה', sub: 'את השאלות שלא נעים לשאול את הווטרינר. עונים אנשים שעברו את זה', d: 2 as const },
+  { icon: '05', title: 'יד שנייה', sub: 'רתמה כמעט חדשה במקום לזרוק. כלבים גדלים מהר, ההורים יודעים', d: 3 as const },
+  { icon: '06', title: 'שאלות לווטרינר', sub: 'הכלב הקיא בלילה? שואלים, מקבלים תשובה, מחליטים אם רצים למרפאה', d: 4 as const },
 ]
 
 
 
 const TOOLS = [
-  { href: '/match', icon: '🧭', title: 'מתאם הגזע', sub: 'שש שאלות, ונגיד לכם בכנות אילו שלושה גזעים יסתדרו עם הסלון והילדים', d: 1 as const },
-  { href: '/names', icon: '🏷️', title: 'מחולל שמות', sub: 'מקס, לונה, בלו או משהו שאף אחד בגינה עוד לא קרא לכלב שלו', d: 2 as const },
-  { href: '/calculator', icon: '🧮', title: 'מחשבון עלות', sub: 'כמה כלב באמת עולה בחודש. כולל הדברים ששוכחים, כמו וטרינר פתאומי', d: 3 as const },
-  { href: '/health', icon: '🩺', title: 'מרכז בריאות', sub: 'מתי זה "נחכה לבוקר" ומתי זה "רץ עכשיו לווטרינר". וגם חיסונים', d: 4 as const },
-  { href: '/walks', icon: '🐾', title: 'מסלולי טיול', sub: 'גינות כלבים וטיילות שאנשים באמת הולכים אליהן, לא רק על המפה', d: 1 as const },
-  { href: '/tools', icon: '🧰', title: 'כל הכלים', sub: 'שישה כלים חינמיים, בלי הרשמה. בוחרים ומתחילים', d: 2 as const },
+  { href: '/match', icon: '🧭', title: 'מתאם הגזע', sub: 'שש שאלות, שלוש המלצות. בכנות, כולל הגזעים שלא יסתדרו עם הסלון שלכם', d: 1 as const },
+  { href: '/names', icon: '🏷️', title: 'מחולל שמות', sub: 'מקס, לונה, בלו - או משהו שאף אחד בגינה עוד לא חשב עליו', d: 2 as const },
+  { href: '/calculator', icon: '🧮', title: 'מחשבון עלות', sub: 'כמה כלב באמת עולה בחודש, כולל וטרינר פתאומי שאף אחד לא מספר עליו מראש', d: 3 as const },
+  { href: '/health', icon: '🩺', title: 'מרכז בריאות', sub: 'מתי "נחכה לבוקר" ומתי "עכשיו לווטרינר". וגם לוח חיסונים', d: 4 as const },
+  { href: '/walks', icon: '🥾', title: 'מסלולי טיול', sub: 'מסלולים שאנשים באמת הולכים אליהם, לא רק שמופיעים על המפה', d: 1 as const },
+  { href: '/tools', icon: '+', title: 'עוד כלים', sub: 'שישה כלים חינמיים, בלי הרשמה. בוחרים ומתחילים', d: 2 as const },
 ]
 
 
@@ -123,14 +123,13 @@ export default function Home() {
           <div className="hero-content">
             <div className="hero-eyebrow">
               <span className="ey-dot" />
-              הקהילה לבעלי כלבים בישראל · בהקמה
+              בהקמה · קהילה לבעלי כלבים בישראל
             </div>
             <h1 className="hero-h1 display">
-              לכלב שלך מגיע<em className="grad-text">יותר מגוגל</em>
+              לכלב שלך מגיע<em>יותר מגוגל</em>
             </h1>
             <p className="hero-sub">
-              מוצאים גינות כלבים ומסלולי טיול, מגלים מה יש בעיר שלכם, ושואלים את הדברים
-              שלא תמיד נעים לשאול. קבוצות הרכישה והמפגשים בהקמה - הצטרפו מההתחלה.
+              גינות, מסלולים ומה שאף ווטרינר לא יספיק לכם להגיד. מאנשים שכבר עברו את זה.
             </p>
             <div className="hero-btns">
               <MagneticButton href="/waitlist" className="hbm">
@@ -182,7 +181,7 @@ export default function Home() {
         <Reveal3D className="ev-head">
           <div>
             <span className="section-tag">קרוב לבית</span>
-            <h2 id="cities-heading" className="section-title display">מדריך לכלב בעיר שלכם</h2>
+            <h2 id="cities-heading" className="section-title display">מה יש בעיר שלכם</h2>
           </div>
           <Link href="/cities" className="btn btn-ghost">לכל מדריכי הערים →</Link>
         </Reveal3D>
@@ -226,9 +225,9 @@ export default function Home() {
         <Reveal3D className="pg-header">
           <div>
             <span className="section-tag">הקהילה שלנו</span>
-            <h2 className="section-title display">כלבים אמיתיים,<br />אנשים אמיתיים</h2>
+            <h2 className="section-title display">הכלבים<br />של הקהילה</h2>
           </div>
-          <p className="pg-sub">מקס מתל אביב, לונה מחיפה - והעיר שלכם בדרך. הקהילה נבנית עכשיו, סביב כלב אחד בכל פעם.</p>
+          <p className="pg-sub">מקס מתל אביב, לונה מחיפה. העיר שלכם בדרך.</p>
         </Reveal3D>
         <div className="pg-grid">
           {PHOTOS.map((p) => (
@@ -266,8 +265,8 @@ export default function Home() {
         </div>
         <div className="split-content">
           <Reveal3D as="span" className="section-tag">מה מחכה בקהילה</Reveal3D>
-          <Reveal3D><h2 id="split-heading" className="split-title display">שש סיבות<br />להצטרף</h2></Reveal3D>
-          <Reveal3D><p className="split-sub">מקבוצות רכישה שמורידות מחירים, ועד מישהו שישמור על הכלב כשאתם בחו"ל. זה מה שאנחנו בונים.</p></Reveal3D>
+          <Reveal3D><h2 id="split-heading" className="split-title display">מה אפשר<br />לעשות כאן</h2></Reveal3D>
+          <Reveal3D><p className="split-sub">להוריד את המחיר של שק המזון, למצוא חבר לטיול בוקר, ולשאול בלילה את מי שכבר עבר את זה. זה מה שאנחנו בונים.</p></Reveal3D>
           <div className="features-list">
             {FEATURES.map((f) => (
               <Reveal3D as="div" delay={f.d} key={f.title} className="feat-row">
@@ -290,7 +289,7 @@ export default function Home() {
         <Reveal3D className="ev-head">
           <div>
             <span className="section-tag">מדריך הגזעים</span>
-            <h2 id="breeds-heading" className="section-title display">גזעים שמדברים עליהם</h2>
+            <h2 id="breeds-heading" className="section-title display">הגזעים הנפוצים</h2>
           </div>
           <Link href="/breeds" className="btn btn-ghost">לכל הגזעים →</Link>
         </Reveal3D>
@@ -342,7 +341,7 @@ export default function Home() {
         <Reveal3D className="ev-head">
           <div>
             <span className="section-tag">חינם, בלי הרשמה</span>
-            <h2 id="tools-home-heading" className="section-title display">כלים שבאמת עוזרים</h2>
+            <h2 id="tools-home-heading" className="section-title display">כלים חינמיים</h2>
           </div>
           <Link href="/tools" className="btn btn-ghost">לכל הכלים →</Link>
         </Reveal3D>
@@ -388,18 +387,18 @@ export default function Home() {
       {/* PRICING */}
       <section className="pr-section" aria-labelledby="pr-heading">
         <div className="pr-inner">
-          <Reveal3D><h2 id="pr-heading" className="pr-title display">בחינם זה כבר שווה. פרימיום זה בונוס</h2></Reveal3D>
+          <Reveal3D><h2 id="pr-heading" className="pr-title display">חינם זה רוב מה שיש כאן</h2></Reveal3D>
           <Reveal3D><p className="pr-sub">מתחילים בחינם, בלי כרטיס אשראי. משדרגים רק אם בא לכם. אפשר גם לא - רוב מה שכאן פתוח ממילא.</p></Reveal3D>
           <div className="pr-cards">
             <Reveal3D as="div" delay={1} className="pc">
               <div className="pc-name">בסיסי</div>
               <div className="pc-price">חינם <span>לתמיד</span></div>
               <hr className="pc-div" />
-              <div className="pc-feat"><span className="ok">✓</span> גישה לפורום</div>
-              <div className="pc-feat"><span className="ok">✓</span> קבוצות רכישה</div>
-              <div className="pc-feat"><span className="ok">✓</span> אירועים חברתיים</div>
+              <div className="pc-feat"><span className="ok">✓</span> כל המדריכים והכלים</div>
+              <div className="pc-feat"><span className="ok">✓</span> מפת גינות ומסלולים</div>
+              <div className="pc-feat"><span className="ok">✓</span> פורום הקהילה</div>
               <div className="pc-feat"><span className="no">✗</span> שאל וטרינר</div>
-              <div className="pc-feat"><span className="no">✗</span> תוכן בלעדי</div>
+              <div className="pc-feat"><span className="no">✗</span> מדריכים מעמיקים</div>
               <Link href="/auth/register" className="pc-btn pc-out kv-block-link">
                 להצטרפות חינם
               </Link>
@@ -408,7 +407,7 @@ export default function Home() {
               <div className="pc-badge">הכי פופולרי</div>
               <div className="pc-name">פרימיום</div>
               <div className="pc-price">₪19 <span>/ חודש</span></div>
-              <div style={{ fontSize: 12.5, fontWeight: 700, color: '#a87a3e', marginTop: -4, marginBottom: 4 }}>מחיר השקה מוקדם 🚀</div>
+              <div style={{ fontSize: 12.5, fontWeight: 700, color: '#a87a3e', marginTop: -4, marginBottom: 4 }}>מחיר השקה - למצטרפים הראשונים</div>
               <hr className="pc-div" />
               <div className="pc-feat"><span className="ok">✓</span> כל מה שכלול בבסיסי</div>
               <div className="pc-feat"><span className="ok">✓</span> שאל וטרינר</div>
