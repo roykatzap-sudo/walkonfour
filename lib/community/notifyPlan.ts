@@ -20,7 +20,12 @@ const SITE_URL = process.env.SITE_URL || 'https://walkonfour.org'
 type Recipient = { user_id: number; email: string; nickname: string }
 
 /** מחפש משתמשים אחרים שתיאמו לאותה גינה בחלון ±3 שעות סביב arrivalAt.
- *  מסנן: לא המשתמש עצמו, רק עם notif_operational=true, ולא חסומים הדדית. */
+ *  הסכמה דו-שלבית: נמען מקבל מייל רק אם כל ארבעת התנאים מתקיימים:
+ *  1. notif_operational=true (העדפה כללית)
+ *  2. p.notify_consent=true בתיאום הספציפי שלו (הסכמה ספציפית)
+ *  3. לא חסומים הדדית
+ *  4. בחלון של ±3 שעות סביב התיאום החדש
+ *  כך מקסימום הגנה מפני תביעה - שתי שכבות הסכמה מפורשת. */
 export async function findCoplanners(
   client: Client,
   planUserId: number,
@@ -37,6 +42,7 @@ export async function findCoplanners(
        and p.expires_at > now()
        and abs(extract(epoch from (p.arrival_at - $3::timestamptz))) <= 3 * 3600
        and u.notif_operational = true
+       and p.notify_consent = true
        and u.id not in (select blocked_id from user_blocks where blocker_id = $2)
        and u.id not in (select blocker_id from user_blocks where blocked_id = $2)
      order by u.id, p.created_at desc

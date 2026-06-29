@@ -13,6 +13,7 @@ export function PlanForm({ dogs, parks }: { dogs: Dog[]; parks: Park[] }) {
   const [parkKey, setParkKey] = useState(String(parks[0]?.id ?? ''))
   const [date, setDate] = useState('')
   const [time, setTime] = useState('')
+  const [notifyConsent, setNotifyConsent] = useState(false) // לא מסומן כברירת מחדל - הסכמה אקטיבית
   const [state, setState] = useState<'idle' | 'sending' | 'error'>('idle')
   const [err, setErr] = useState('')
 
@@ -37,7 +38,7 @@ export function PlanForm({ dogs, parks }: { dogs: Dog[]; parks: Park[] }) {
       const res = await fetch('/api/community/plans', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ dog_id: dogId, park_key: parkKey, arrival_at: arrivalAt }),
+        body: JSON.stringify({ dog_id: dogId, park_key: parkKey, arrival_at: arrivalAt, notify_consent: notifyConsent }),
       })
       const data = await res.json()
       if (!data.ok) {
@@ -135,6 +136,19 @@ export function PlanForm({ dogs, parks }: { dogs: Dog[]; parks: Park[] }) {
       <p style={{ fontSize: 13, color: '#8a7c66', margin: 0, lineHeight: 1.6 }}>
         🔒 <strong>פרטיות:</strong> השם והכלב שלכם נחשפים לחברים בקהילה <strong>רק 15 דקות לפני שעת ההגעה</strong>. עד אז - אנונימי. אפשר לבטל בכל עת. התיאום נמחק אוטומטית 30 דקות אחרי השעה.
       </p>
+
+      {/* הסכמה דו-שלבית להתראות מייל - לא מסומן מראש, פעולה אקטיבית. */}
+      <label style={{ display: 'flex', gap: 10, alignItems: 'flex-start', padding: '14px 16px', background: '#fbf7ef', border: '1.5px solid rgba(201,154,91,.25)', borderRadius: 14, cursor: 'pointer' }}>
+        <input
+          type="checkbox"
+          checked={notifyConsent}
+          onChange={(e) => setNotifyConsent(e.target.checked)}
+          style={{ marginTop: 3, width: 20, height: 20, flexShrink: 0, accentColor: 'var(--brand)', cursor: 'pointer' }}
+        />
+        <span style={{ fontSize: 13.5, color: 'var(--ink)', lineHeight: 1.55 }}>
+          <strong>אני מסכים/ה לקבל מייל</strong> אם משתמש/ת אחר/ת תיאם/ה הגעה לאותה גינה בשעה דומה (±3 שעות). ההתראה היא תפעולית, אנונימית (בלי שמות), וניתן להסיר בקליק מכל מייל. <strong>סימון לא חובה</strong> - אם לא תסמנו, התיאום יישמר אבל לא תקבלו התראות.
+        </span>
+      </label>
 
       <button type="submit" className="btn btn-primary" disabled={state === 'sending'} style={{ fontSize: 16, padding: '14px' }}>
         {state === 'sending' ? 'שומר...' : 'תיאום הגעה 📍'}

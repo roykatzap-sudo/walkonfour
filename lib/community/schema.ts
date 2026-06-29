@@ -57,6 +57,8 @@ export const CREATE_SQLS = [
   // תיאומי הגעה לגינות. אין מיקום בזמן אמת - רק כוונה עתידית.
   // park_key הוא string שמזהה את הגינה (id מ-allDogParks).
   // expires_at = arrival_at + 30 דק׳, ואז נמחק.
+  // notify_consent: הסכמה דו-שלבית להתראות מייל לתיאום הספציפי הזה
+  // (גם אם המשתמש סימן notif_operational=true כללית, ההסכמה כאן ספציפית).
   `create table if not exists park_plans (
     id bigint generated always as identity primary key,
     user_id bigint not null references community_users(id) on delete cascade,
@@ -65,6 +67,7 @@ export const CREATE_SQLS = [
     arrival_at timestamptz not null,
     expires_at timestamptz not null,
     cancelled_at timestamptz,
+    notify_consent boolean not null default false,
     created_at timestamptz not null default now()
   )`,
 
@@ -127,6 +130,7 @@ export const CREATE_SQLS = [
   `alter table community_users add column if not exists notif_operational boolean not null default true`,
   `alter table community_users add column if not exists notif_marketing boolean not null default false`,
   `alter table community_users add column if not exists deleted_at timestamptz`,
+  `alter table park_plans add column if not exists notify_consent boolean not null default false`,
 
   // אינדקסים
   `create index if not exists idx_otp_email on community_otp(email)`,

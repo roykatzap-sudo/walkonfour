@@ -20,6 +20,7 @@ export type PlanInput = {
   parkKey: string
   dogId: number
   arrivalAt: Date
+  notifyConsent: boolean
 }
 
 export type PlanRow = {
@@ -65,7 +66,8 @@ export function validatePlanInput(input: unknown): { ok: true; data: PlanInput }
   // אסור לתאם בעבר (עם 5 דק׳ גרייס) או יותר מ-24 שעות קדימה
   if (arrivalAt.getTime() < now - 5 * 60_000) return { ok: false, field: 'arrival_past' }
   if (arrivalAt.getTime() > now + PLAN_HORIZON_HOURS * 60 * 60_000) return { ok: false, field: 'arrival_too_far' }
-  return { ok: true, data: { parkKey, dogId, arrivalAt } }
+  const notifyConsent = i?.notify_consent === true
+  return { ok: true, data: { parkKey, dogId, arrivalAt, notifyConsent } }
 }
 
 export async function createPlan(client: Client, userId: number, input: PlanInput): Promise<PlanRow | null> {
@@ -74,10 +76,10 @@ export async function createPlan(client: Client, userId: number, input: PlanInpu
   if (!dog.rows[0]) return null
   const expiresAt = new Date(input.arrivalAt.getTime() + PLAN_GRACE_MIN * 60_000)
   const res = await client.query(
-    `insert into park_plans (user_id, dog_id, park_key, arrival_at, expires_at)
-     values ($1, $2, $3, $4, $5)
+    `insert into park_plans (user_id, dog_id, park_key, arrival_at, expires_at, notify_consent)
+     values ($1, $2, $3, $4, $5, $6)
      returning id, user_id, dog_id, park_key, arrival_at, expires_at, cancelled_at, created_at`,
-    [userId, input.dogId, input.parkKey, input.arrivalAt, expiresAt],
+    [userId, input.dogId, input.parkKey, input.arrivalAt, expiresAt, input.notifyConsent],
   )
   return res.rows[0] as PlanRow
 }
