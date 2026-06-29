@@ -14,10 +14,11 @@ import { withCommunityDb, logAudit } from './db'
 import { OTP_TTL_MIN, OTP_MAX_ATTEMPTS } from './schema'
 
 const RESEND_KEY = process.env.RESEND_API_KEY
-// ברירת מחדל: כתובת הבדיקה של Resend - עובדת מיד בלי דומיין מאומת.
-// בייצור: להגדיר COMMUNITY_EMAIL_FROM=קהילה על ארבע <community@walkonfour.org>
-// (אחרי שמאמתים את walkonfour.org ב-Resend → Domains).
-const FROM = process.env.COMMUNITY_EMAIL_FROM || 'onboarding@resend.dev'
+// השולח: walkonfour משתמשת בתשתית ez-suit.org (אותו מפעיל, אותה ישות משפטית).
+// בגוף המייל מצוין במפורש שהמייל מ-walkonfour.org. Reply-To חוזר ל-walkonfour
+// כדי שתגובות לא יוצרו ל-ez-suit.
+const FROM = process.env.COMMUNITY_EMAIL_FROM || 'קהילה על ארבע <community@ez-suit.org>'
+const REPLY_TO = process.env.COMMUNITY_EMAIL_REPLY_TO || 'community@walkonfour.org'
 
 function hashCode(code: string): string {
   return createHash('sha256').update(code).digest('hex')
@@ -69,6 +70,7 @@ export async function requestOtp(email: string, ip: string | null): Promise<Requ
       const sendRes = await resend.emails.send({
         from: FROM,
         to: email,
+        replyTo: REPLY_TO,
         subject: 'קוד הכניסה שלך לקהילה על ארבע',
         html: emailHtml(code),
         text: emailText(code),
@@ -164,10 +166,24 @@ function emailHtml(code: string): string {
       אם לא ביקשתם את הקוד הזה - אפשר להתעלם מהמייל. אף אחד לא יוכל להיכנס לחשבון שלכם בלי הקוד.
     </p>
   </div>
-  <p style="font-size:12px;color:#8a7c66;margin:18px auto 0;text-align:center;max-width:480px">קהילה על ארבע · walkonfour.org</p>
+  <div style="max-width:480px;margin:18px auto 0;padding:0 8px;font-size:11px;color:#8a7c66;text-align:center;line-height:1.7">
+    <div><strong>קהילה על ארבע</strong> · <a href="https://walkonfour.org" style="color:#8a7c66">walkonfour.org</a></div>
+    <div style="margin-top:6px">המפעיל: רוי קצפ. מייל זה הוא תפעולי (אימות כניסה) ואינו דיוור.</div>
+    <div style="margin-top:4px">נשלח דרך ez-suit.org (אותו מפעיל) כתשתית טכנית. תגובות יגיעו ל-community@walkonfour.org.</div>
+    <div style="margin-top:4px">לשאלות פרטיות / עיון / מחיקה: <a href="mailto:privacy@walkonfour.org" style="color:#8a7c66">privacy@walkonfour.org</a></div>
+  </div>
   </body></html>`
 }
 
 function emailText(code: string): string {
-  return `קהילה על ארבע - קוד כניסה: ${code}\n\nהקוד תקף ל-${OTP_TTL_MIN} דקות.\nאם לא ביקשתם, התעלמו מהמייל.\n\nwalkonfour.org`
+  return `קהילה על ארבע - קוד כניסה: ${code}
+
+הקוד תקף ל-${OTP_TTL_MIN} דקות.
+אם לא ביקשתם, התעלמו מהמייל.
+
+---
+קהילה על ארבע · walkonfour.org · המפעיל: רוי קצפ
+מייל זה הוא תפעולי (אימות כניסה) ואינו דיוור.
+נשלח דרך ez-suit.org (אותו מפעיל) כתשתית טכנית.
+פניות פרטיות: privacy@walkonfour.org`
 }

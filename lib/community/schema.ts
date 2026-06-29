@@ -24,6 +24,9 @@ export const CREATE_SQLS = [
     consent_version text not null,
     consented_at timestamptz not null default now(),
     last_login_at timestamptz,
+    notif_operational boolean not null default true,  -- התראות תפעוליות (תיאום בגינה)
+    notif_marketing boolean not null default false,   -- דיוור שיווקי (מסונכרן מ-waitlist.marketing_consent)
+    deleted_at timestamptz,                            -- soft delete + 30 ימים grace ל-CASCADE
     created_at timestamptz not null default now()
   )`,
 
@@ -84,6 +87,11 @@ export const CREATE_SQLS = [
     details jsonb,
     created_at timestamptz not null default now()
   )`,
+
+  // ALTER לטבלאות קיימות (idempotent) - מוסיף עמודות חדשות אם חסרות
+  `alter table community_users add column if not exists notif_operational boolean not null default true`,
+  `alter table community_users add column if not exists notif_marketing boolean not null default false`,
+  `alter table community_users add column if not exists deleted_at timestamptz`,
 
   // אינדקסים
   `create index if not exists idx_otp_email on community_otp(email)`,

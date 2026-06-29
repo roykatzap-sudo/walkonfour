@@ -116,7 +116,7 @@ export function WaitlistForm({ initialCount }: { initialCount: number }) {
           style={{ marginTop: 3, width: 18, height: 18, flexShrink: 0, accentColor: 'var(--brand)', cursor: 'pointer' }}
         />
         <span>
-          אני מאשר/ת קבלת עדכונים והצעות מקהילה על ארבע במייל. אפשר להסיר בכל עת בקליק.{' '}
+          אני מאשר/ת קבלת <strong>דבר פרסומת</strong> (עדכונים, טיפים והצעות מסחריות) מקהילה על ארבע במייל, לפי סעיף 30א לחוק התקשורת. ניתן להסיר בכל עת, חינם, בקליק.{' '}
           <a href="/privacy" style={{ color: 'var(--brand-dark)', fontWeight: 700 }}>מדיניות הפרטיות</a>
         </span>
       </label>

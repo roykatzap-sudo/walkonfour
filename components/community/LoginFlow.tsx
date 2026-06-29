@@ -97,7 +97,7 @@ export function LoginFlow() {
             style={{ width: '100%', padding: '13px 16px', borderRadius: 14, border: '1.5px solid rgba(201,154,91,.35)', fontSize: 16 }}
           />
           <p style={{ fontSize: 13, color: '#8a7c66', marginTop: 6, lineHeight: 1.55 }}>
-            אינך חייב למסור את המייל. הוא משמש רק לאימות חד-פעמי מול רשימת ההמתנה ולא יועבר לצד שלישי.
+            המייל נדרש לאימות שאתם ברשימת ההמתנה. הוא נשלח דרך Resend (ספק שליחת מיילים) ומאוחסן ב-Supabase (ספק בסיס נתונים). לא יועבר לצד שלישי לצרכי שיווק.
           </p>
         </div>
         <button type="submit" className="btn btn-primary" disabled={state === 'sending'} style={{ fontSize: 16, padding: '13px' }}>
