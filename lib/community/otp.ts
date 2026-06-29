@@ -12,6 +12,7 @@ import type { Client } from 'pg'
 import { Resend } from 'resend'
 import { withCommunityDb, logAudit } from './db'
 import { OTP_TTL_MIN, OTP_MAX_ATTEMPTS } from './schema'
+import { emailFooterHtml, emailFooterText } from './emailFooter'
 
 const RESEND_KEY = process.env.RESEND_API_KEY
 // השולח: walkonfour משתמשת בתשתית ez-suit.org (אותו מפעיל, אותה ישות משפטית).
@@ -72,8 +73,8 @@ export async function requestOtp(email: string, ip: string | null): Promise<Requ
         to: email,
         replyTo: REPLY_TO,
         subject: 'קוד הכניסה שלך לקהילה על ארבע',
-        html: emailHtml(code),
-        text: emailText(code),
+        html: emailHtml(code, email),
+        text: emailText(code, email),
       })
       if ((sendRes as { error?: { message?: string; name?: string } | null }).error) {
         const err = (sendRes as { error: { message?: string; name?: string } }).error
@@ -153,7 +154,7 @@ export async function verifyOtp(email: string, code: string, ip: string | null):
 }
 
 // ───────── תוכן המייל ─────────
-function emailHtml(code: string): string {
+function emailHtml(code: string, email: string): string {
   return `<!DOCTYPE html><html dir="rtl" lang="he"><body style="font-family:-apple-system,system-ui,sans-serif;background:#fbf7ef;padding:24px;color:#2a2018">
   <div style="max-width:480px;margin:0 auto;background:#fff;border-radius:18px;padding:32px 28px;border:1px solid rgba(201,154,91,.22)">
     <div style="text-align:center;font-size:28px;margin-bottom:8px">🐾</div>
@@ -166,24 +167,15 @@ function emailHtml(code: string): string {
       אם לא ביקשתם את הקוד הזה - אפשר להתעלם מהמייל. אף אחד לא יוכל להיכנס לחשבון שלכם בלי הקוד.
     </p>
   </div>
-  <div style="max-width:480px;margin:18px auto 0;padding:0 8px;font-size:11px;color:#8a7c66;text-align:center;line-height:1.7">
-    <div><strong>קהילה על ארבע</strong> · <a href="https://walkonfour.org" style="color:#8a7c66">walkonfour.org</a></div>
-    <div style="margin-top:6px">מייל זה הוא תפעולי (אימות כניסה) ואינו דיוור.</div>
-    <div style="margin-top:4px">נשלח דרך תשתית של ez-suit.org (אותו מפעיל). תגובות יגיעו ל-community@walkonfour.org.</div>
-    <div style="margin-top:4px">לשאלות פרטיות / עיון / מחיקה: <a href="mailto:privacy@walkonfour.org" style="color:#8a7c66">privacy@walkonfour.org</a></div>
-  </div>
+  ${emailFooterHtml({ email, kind: 'operational' })}
   </body></html>`
 }
 
-function emailText(code: string): string {
+function emailText(code: string, email: string): string {
   return `קהילה על ארבע - קוד כניסה: ${code}
 
 הקוד תקף ל-${OTP_TTL_MIN} דקות.
 אם לא ביקשתם, התעלמו מהמייל.
 
----
-קהילה על ארבע · walkonfour.org
-מייל זה הוא תפעולי (אימות כניסה) ואינו דיוור.
-נשלח דרך תשתית של ez-suit.org (אותו מפעיל).
-פניות פרטיות: privacy@walkonfour.org`
+${emailFooterText({ email, kind: 'operational' })}`
 }

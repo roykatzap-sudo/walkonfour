@@ -4,12 +4,32 @@ import { useEffect, useState } from 'react'
 
 export function Unsubscribe() {
   const [email, setEmail] = useState('')
-  const [state, setState] = useState<'idle' | 'sending' | 'done' | 'error' | 'badEmail'>('idle')
+  const [state, setState] = useState<'idle' | 'sending' | 'done' | 'error' | 'badEmail' | 'tokenVerifying'>('idle')
 
-  // מילוי אוטומטי מהקישור במייל: /unsubscribe?email=...
+  // קישור מהמייל עם טוקן חתום: ?t=... → הסרה אוטומטית מיידית.
+  // אם יש רק email (legacy) → מילוי טופס בלבד.
   useEffect(() => {
-    const p = new URLSearchParams(window.location.search).get('email')
-    if (p) setEmail(p)
+    const params = new URLSearchParams(window.location.search)
+    const token = params.get('t')
+    const emailParam = params.get('email')
+    if (token) {
+      setState('tokenVerifying')
+      fetch('/api/unsubscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      })
+        .then((r) => r.json())
+        .then((d) => {
+          if (d.ok) {
+            if (d.email) setEmail(d.email)
+            setState('done')
+          } else setState('error')
+        })
+        .catch(() => setState('error'))
+      return
+    }
+    if (emailParam) setEmail(emailParam)
   }, [])
 
   async function submit(e: React.FormEvent) {
@@ -30,11 +50,24 @@ export function Unsubscribe() {
     }
   }
 
+  if (state === 'tokenVerifying') {
+    return (
+      <div className="card" style={{ textAlign: 'center', padding: '28px 22px' }}>
+        <div style={{ fontSize: 22, color: '#8a7c66' }}>מסיר אותך מהדיוור...</div>
+      </div>
+    )
+  }
+
   if (state === 'done') {
     return (
       <div className="card" style={{ textAlign: 'center', padding: '28px 22px' }}>
         <div style={{ fontSize: 38 }}>✓</div>
         <h2 style={{ fontSize: 20, fontWeight: 900, color: 'var(--ink)', margin: '6px 0' }}>הוסרת מרשימת הדיוור</h2>
+        {email && (
+          <p style={{ fontSize: 13.5, color: '#8a7c66', margin: '4px 0 8px' }}>
+            ({email})
+          </p>
+        )}
         <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.6 }}>
           לא נשלח אליך עוד דיוור שיווקי. אם תרצה לחזור, אפשר להירשם שוב בכל עת.
         </p>
