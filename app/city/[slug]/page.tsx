@@ -15,10 +15,10 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: { params: { slug: string } }) {
   const hub = getCityHub(params.slug)
   if (!hub) return buildMetadata({ title: 'עיר לא נמצאה', path: `/city/${params.slug}`, noindex: true })
-  const { community, parks, dogFriendly, walks } = hub
+  const { community, parks, walks } = hub
   return buildMetadata({
-    title: `כלבים ב${community.name}: גינות, דוג-פרנדלי וטיולים`,
-    description: `המדריך לבעלי כלבים ב${community.name}: ${parks.length} גינות כלבים, ${dogFriendly.length} מקומות שמקבלים כלבים, ו-${walks.length} מסלולי טיול באזור. הכול במקום אחד.`,
+    title: `כלבים ב${community.name}: גינות ומסלולי טיול`,
+    description: `המדריך לבעלי כלבים ב${community.name}: ${parks.length} גינות כלבים ו-${walks.length} מסלולי טיול באזור. הכול במקום אחד.`,
     path: `/city/${community.slug}`,
   })
 }
@@ -35,14 +35,14 @@ function Stat({ n, label }: { n: number; label: string }) {
 export default function CityPage({ params }: { params: { slug: string } }) {
   const hub = getCityHub(params.slug)
   if (!hub) notFound()
-  const { community, parks, dogFriendly, walks } = hub
+  const { community, parks, walks } = hub
   const others = allCityHubs().filter((h) => h.community.slug !== community.slug).slice(0, 8)
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: `כלבים ב${community.name}`,
-    description: `גינות כלבים, מקומות דוג-פרנדלי ומסלולי טיול ב${community.name}.`,
+    description: `גינות כלבים ומסלולי טיול ב${community.name}.`,
     url: `${SITE_URL}/city/${community.slug}`,
   }
 
@@ -64,7 +64,6 @@ export default function CityPage({ params }: { params: { slug: string } }) {
           </p>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 16 }}>
             {parks.length > 0 && <Stat n={parks.length} label="גינות כלבים" />}
-            {dogFriendly.length > 0 && <Stat n={dogFriendly.length} label="מקומות דוג-פרנדלי" />}
             {walks.length > 0 && <Stat n={walks.length} label="מסלולי טיול" />}
           </div>
         </div>
@@ -82,32 +81,6 @@ export default function CityPage({ params }: { params: { slug: string } }) {
           <CityParksList parks={parks} city={community.name} />
           <Link href="/map" className="btn btn-ghost" style={{ marginTop: 16, display: 'inline-block' }}>
             לכל הגינות על המפה →
-          </Link>
-        </section>
-      )}
-
-      {/* דוג-פרנדלי */}
-      {dogFriendly.length > 0 && (
-        <section style={{ marginTop: 48 }}>
-          <h2 style={{ fontSize: 26, fontWeight: 900, color: 'var(--ink)', margin: '0 0 6px' }}>
-            ☕ מקומות שמקבלים כלבים ב{community.name}
-          </h2>
-          <p style={{ color: '#5b4d3c', fontSize: 15.5, margin: '0 0 16px' }}>
-            מסעדות, בתי קפה, חופים וחנויות שמזמינים אתכם יחד עם הכלב.
-          </p>
-          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 10 }}>
-            {dogFriendly.slice(0, 14).map((d) => (
-              <li key={d.id} style={{ background: '#fff', border: '1px solid rgba(201,154,91,.18)', borderRadius: 14, padding: '13px 16px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }}>
-                  <span style={{ fontWeight: 800, color: 'var(--ink)', fontSize: 15.5 }}>{d.name}</span>
-                  <span style={{ fontSize: 14, color: 'var(--brand)', fontWeight: 800 }}>{d.category}</span>
-                </div>
-                {d.note && <div style={{ fontSize: 14.5, color: '#5b4d3c', marginTop: 4, lineHeight: 1.55 }}>{d.note}</div>}
-              </li>
-            ))}
-          </ul>
-          <Link href="/dog-friendly" className="btn btn-ghost" style={{ marginTop: 16, display: 'inline-block' }}>
-            לכל המקומות הדוג-פרנדלי →
           </Link>
         </section>
       )}

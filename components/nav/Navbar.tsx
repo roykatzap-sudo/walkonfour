@@ -17,7 +17,6 @@ const PRIMARY_LINKS: NavLink[] = [
 /** קישורים משניים תחת "עוד ▾". (אזור הקהילה סגור בהשקה - יתווסף כשייפתח) */
 const MORE_LINKS: NavLink[] = [
   { href: '/match', label: 'איזה כלב מתאים לי' },
-  { href: '/dog-friendly', label: 'מקומות דוג-פרנדלי' },
   { href: '/cities', label: 'מדריכי ערים' },
   { href: '/map', label: 'מפת גינות' },
   { href: '/walks', label: 'מסלולי טיול' },

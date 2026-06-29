@@ -1,14 +1,13 @@
 /* ════════════════════════════════════════════════════════════
    עמודי עיר (SEO) - "כל מה שכלב צריך ב<עיר>".
-   מצרף, פר עיר, את כל הדאטה הציבורי שכבר יש לנו: גינות כלבים,
-   מקומות דוג-פרנדלי, ומסלולי טיול - לפי קרבה גאוגרפית למרכז העיר.
+   מצרף, פר עיר, את כל הדאטה הציבורי שכבר יש לנו: גינות כלבים
+   ומסלולי טיול - לפי קרבה גאוגרפית למרכז העיר.
    ════════════════════════════════════════════════════════════ */
 
 import { communities, type Community } from './communities'
 import { allDogParks } from './dogParksAll'
 import { manualParks } from './dogParksManual'
 import { demoWalks as walks, type Walk } from './walks'
-import { dogFriendlyGeo, type DFGeo } from './dogFriendlyGeo'
 import type { DogPark } from '@/types'
 
 /** מרחק מקורב בק״מ (קו ישר, מספיק לצירוף עירוני). */
@@ -20,14 +19,10 @@ export type CityHub = {
   community: Community
   parks: DogPark[]
   walks: Walk[]
-  dogFriendly: DFGeo[]
 }
-
-const DF = dogFriendlyGeo()
 
 /** מרחק מקסימלי (ק״מ) לשיוך פריט לעיר הקרובה ביותר. */
 const PARK_MAX_KM = 6
-const DF_MAX_KM = 10
 const R_WALKS = 30 // טיולים נשארים אזוריים (מעטים, פרוסים)
 
 /** רדיוס (לטיולים בלבד). */
@@ -81,7 +76,6 @@ export function getCityHub(slug: string): CityHub | null {
   return {
     community,
     parks,
-    dogFriendly: nearestSorted(DF, slug, community.lat, community.lng, DF_MAX_KM),
     walks: near(walks, community.lat, community.lng, R_WALKS),
   }
 }
@@ -92,7 +86,7 @@ export function cityHubSlugs(): string[] {
     .filter((c) => {
       const h = getCityHub(c.slug)
       if (!h) return false
-      return h.parks.length + h.dogFriendly.length + h.walks.length >= 3
+      return h.parks.length + h.walks.length >= 3
     })
     .map((c) => c.slug)
 }
@@ -101,5 +95,5 @@ export function cityHubSlugs(): string[] {
 export function allCityHubs(): CityHub[] {
   return cityHubSlugs()
     .map((s) => getCityHub(s)!)
-    .sort((a, b) => b.parks.length + b.dogFriendly.length - (a.parks.length + a.dogFriendly.length))
+    .sort((a, b) => b.parks.length - a.parks.length)
 }

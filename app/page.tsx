@@ -16,9 +16,9 @@ import { breeds, getBreed, breedImg } from '@/lib/breeds'
 
 const MARQUEE = [
   '29 מדריכי גזעים בלי לייפות',
-  '288 גינות כלבים על המפה',
-  '59 מקומות דוג-פרנדלי בכל הארץ',
-  '17 מדריכי ערים לבעלי כלבים',
+  '621 גינות כלבים על המפה',
+  '42 מדריכי ערים לבעלי כלבים',
+  '38 מסלולי טיול לכלבים בכל הארץ',
   'מחירון מזון מעודכן + מחשבון עלויות',
 ]
 
@@ -129,7 +129,7 @@ export default function Home() {
               לכלב שלך מגיע<em className="grad-text">יותר מגוגל</em>
             </h1>
             <p className="hero-sub">
-              מוצאים גינות ומקומות דוג-פרנדלי, מגלים מה יש בעיר שלכם, ושואלים את הדברים
+              מוצאים גינות כלבים ומסלולי טיול, מגלים מה יש בעיר שלכם, ושואלים את הדברים
               שלא תמיד נעים לשאול. קבוצות הרכישה והמפגשים בהקמה - הצטרפו מההתחלה.
             </p>
             <div className="hero-btns">
@@ -160,9 +160,9 @@ export default function Home() {
         </div>
         <div className="hero-stats">
           <div className="hs"><div className="hs-val"><Counter to={29} /></div><div className="hs-lbl">מדריכי גזעים</div></div>
-          <div className="hs"><div className="hs-val"><Counter to={288} /></div><div className="hs-lbl">גינות כלבים</div></div>
-          <div className="hs"><div className="hs-val"><Counter to={59} /></div><div className="hs-lbl">מקומות דוג-פרנדלי</div></div>
-          <div className="hs"><div className="hs-val"><Counter to={17} /></div><div className="hs-lbl">מדריכי ערים</div></div>
+          <div className="hs"><div className="hs-val"><Counter to={621} /></div><div className="hs-lbl">גינות כלבים</div></div>
+          <div className="hs"><div className="hs-val"><Counter to={38} /></div><div className="hs-lbl">מסלולי טיול</div></div>
+          <div className="hs"><div className="hs-val"><Counter to={42} /></div><div className="hs-lbl">מדריכי ערים</div></div>
         </div>
       </section>
 

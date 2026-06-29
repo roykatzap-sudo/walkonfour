@@ -54,7 +54,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/food-calculator', priority: 0.8, changeFrequency: 'monthly' },
     { path: '/health', priority: 0.7, changeFrequency: 'monthly' },
     { path: '/walks', priority: 0.7, changeFrequency: 'monthly' },
-    { path: '/dog-friendly', priority: 0.8, changeFrequency: 'weekly' },
     { path: '/canaan-dog', priority: 0.8, changeFrequency: 'monthly' },
     { path: '/cities', priority: 0.8, changeFrequency: 'weekly' },
     { path: '/dog-food-prices', priority: 0.8, changeFrequency: 'weekly' },

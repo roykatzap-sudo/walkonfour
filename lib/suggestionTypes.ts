@@ -1,12 +1,11 @@
 /* טיפוסים וקבועים של הצעות - בלי תלות ב-pg, כדי שאפשר לייבא גם בצד-לקוח. */
 
-export const SUGGESTION_TYPES = ['park', 'route', 'dogfriendly', 'breed', 'general', 'other'] as const
+export const SUGGESTION_TYPES = ['park', 'route', 'breed', 'general', 'other'] as const
 export type SuggestionType = (typeof SUGGESTION_TYPES)[number]
 
 export const TYPE_LABELS: Record<string, string> = {
   park: 'גינת כלבים',
   route: 'מסלול טיול',
-  dogfriendly: 'מקום דוג-פרנדלי',
   breed: 'גזע',
   general: 'הצעה כללית',
   other: 'אחר',

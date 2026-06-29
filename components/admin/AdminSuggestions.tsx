@@ -14,7 +14,6 @@ const LS_KEY = 'kv-admin-token' // אותו טוקן כמו פאנל דיווח�
 const TYPE_COLOR: Record<string, string> = {
   park: 'var(--brand)',
   route: 'var(--brand-dark)',
-  dogfriendly: '#a9763e',
   other: '#8a7c66',
 }
 

@@ -7,7 +7,6 @@ import { usePathname } from 'next/navigation'
 function typeForPath(path: string): string {
   if (path.startsWith('/breeds') || path.startsWith('/articles')) return 'breed'
   if (path.startsWith('/walks')) return 'route'
-  if (path.startsWith('/dog-friendly')) return 'dogfriendly'
   if (path.startsWith('/map') || path.startsWith('/city') || path.startsWith('/cities') || path.startsWith('/community')) return 'park'
   return 'general'
 }
@@ -95,7 +94,7 @@ export function GlobalSuggest() {
                 <div>
                   <h2 style={{ fontSize: 21, fontWeight: 900, color: 'var(--ink)', margin: 0 }}>יש לכם הצעה?</h2>
                   <p style={{ fontSize: 14.5, color: '#5b4d3c', margin: '6px 0 0', lineHeight: 1.55 }}>
-                    חסר גזע, גינה, מסלול, מקום דוג-פרנדלי או כל דבר אחר? ספרו לנו ונוסיף.
+                    חסר גזע, גינה, מסלול או כל דבר אחר? ספרו לנו ונוסיף.
                   </p>
                 </div>
                 <input

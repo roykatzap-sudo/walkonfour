@@ -90,7 +90,7 @@ export default async function WaitlistPage() {
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
           <Link href="/breeds" className="chip3d" style={{ textDecoration: 'none' }}>מדריכי גזעים</Link>
           <Link href="/map" className="chip3d" style={{ textDecoration: 'none' }}>מפת גינות</Link>
-          <Link href="/dog-friendly" className="chip3d" style={{ textDecoration: 'none' }}>דוג-פרנדלי</Link>
+          <Link href="/walks" className="chip3d" style={{ textDecoration: 'none' }}>מסלולי טיול</Link>
           <Link href="/dog-food-prices" className="chip3d" style={{ textDecoration: 'none' }}>מחירון מזון</Link>
           <Link href="/cities" className="chip3d" style={{ textDecoration: 'none' }}>מדריכי ערים</Link>
         </div>

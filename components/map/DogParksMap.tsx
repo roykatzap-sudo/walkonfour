@@ -9,13 +9,6 @@ import type { DogPark } from '@/types'
 import { fallbackParks, fetchParksFromOSM, MAP_CITIES, withCities } from '@/lib/dogParks'
 import { bakedParks } from '@/lib/dogParksBaked'
 import { allDogParks, withManual } from '@/lib/dogParksAll'
-import { dogFriendlyGeo } from '@/lib/dogFriendlyGeo'
-
-/** אייקון לפי קטגוריה למקומות הדוג-פרנדלי. */
-const DF_CAT_ICON: Record<string, string> = {
-  'חוף': '🏖️', 'מסעדה': '🍽️', 'בית קפה': '☕', 'גלידרייה': '🍦',
-  'קניון': '🛍️', 'חנות': '🏬', 'לינה': '🏨',
-}
 
 /** מקודד תווים מסוכנים כדי למנוע שבירת HTML / XSS בתוכן הפופאפ. */
 function escapeHtml(text: string | number | null | undefined): string {
@@ -41,7 +34,6 @@ export function DogParksMap() {
   const mapRef = useRef<L.Map | null>(null)
   const LRef = useRef<typeof L | null>(null)
   const clusterRef = useRef<any>(null) // L.MarkerClusterGroup
-  const dfMarkersRef = useRef<L.Marker[]>([])
   const userMarkerRef = useRef<L.Marker | null>(null)
   const userPosRef = useRef<{ lat: number; lng: number } | null>(null)
   const allParks = useRef<DogPark[]>([])
@@ -53,7 +45,6 @@ export function DogParksMap() {
   const [nearMe, setNearMe] = useState(false) // האם להציג רק גינות בקרבה
   const [locating, setLocating] = useState(false)
   const [locErr, setLocErr] = useState('')
-  const [showDF, setShowDF] = useState(true)
   const [mapReady, setMapReady] = useState(false)
   const [count, setCount] = useState(0)
   // דיווח על גינה חסרה
@@ -287,46 +278,6 @@ export function DogParksMap() {
     )
   }
 
-  // שכבת מקומות דוג-פרנדלי (toggle)
-  useEffect(() => {
-    const L = LRef.current
-    const map = mapRef.current
-    if (!L || !map) return
-    dfMarkersRef.current.forEach((m) => m.remove())
-    dfMarkersRef.current = []
-    if (!showDF) return
-    dogFriendlyGeo().forEach((p) => {
-      const emoji = DF_CAT_ICON[p.category] ?? '🐾'
-      const m = L.marker([p.lat, p.lng], {
-        icon: L.divIcon({
-          className: '',
-          html: `<div style="width:30px;height:30px;background:#e8c887;border:2px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 3px 10px rgba(0,0,0,.35);cursor:pointer">${emoji}</div>`,
-          iconSize: [30, 30],
-          iconAnchor: [15, 15],
-        }),
-      }).addTo(map)
-      const q = encodeURIComponent(`${p.name} ${p.city}`)
-      const nav = `https://www.google.com/maps/search/?api=1&query=${q}`
-      const approxRow = p.approx
-        ? '<div class="pp-row"><span style="font-size:11px;opacity:.6">📍 מיקום מקורב לפי עיר - חפשו בגוגל לכתובת המדויקת</span></div>'
-        : ''
-      m.bindPopup(
-        `<div class="pp">
-          <div class="pp-top"><div class="pp-ico">${emoji}</div><div>
-            <div class="pp-name">${escapeHtml(p.name)}</div>
-            <div class="pp-city">📍 ${escapeHtml(p.city)} · ${escapeHtml(p.category)}</div>
-          </div></div>
-          <hr class="pp-divider">
-          <div class="pp-row"><span style="font-size:12px">${escapeHtml(p.note)}</span></div>
-          ${approxRow}
-          <a class="pp-btn" href="${escapeHtml(nav)}" target="_blank" rel="noopener noreferrer" aria-label="חפש בגוגל מפות">🗺️ פתח בגוגל מפות</a>
-        </div>`,
-        { className: 'dp', maxWidth: 260 }
-      )
-      dfMarkersRef.current.push(m)
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showDF, mapReady])
 
   // שכבת גינות מאושרות מדיווחי משתמשים
   useEffect(() => {
@@ -476,15 +427,6 @@ export function DogParksMap() {
             </button>
           ))}
         </div>
-        <button
-          type="button"
-          className={`mcb df-toggle${showDF ? ' on' : ''}`}
-          aria-pressed={showDF}
-          onClick={() => setShowDF((v) => !v)}
-          title="הצג/הסתר מקומות שמקבלים כלבים (מסעדות, בתי קפה, חופים ועוד)"
-        >
-          🦴 מקומות דוג-פרנדלי
-        </button>
       </div>
 
       <div className="map-bottom-bar">

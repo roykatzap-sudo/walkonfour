@@ -5,7 +5,7 @@ import { MapSection } from '@/components/map/MapSection'
 export const metadata = buildMetadata({
   title: 'מפת גינות כלבים',
   description:
-    'מפה אינטראקטיבית של גינות כלבים בכל ישראל - מאות גינות לשחרור רצועה, סינון לפי עיר, ומקומות דוג-פרנדלי.',
+    'מפה אינטראקטיבית של גינות כלבים בכל ישראל - 621 גינות לשחרור רצועה, סינון לפי עיר, ולחיצה אחת למצוא את הקרובה אליכם.',
   path: '/map',
 })
 
@@ -16,7 +16,7 @@ export default function MapPage() {
         <span className="section-tag">המפה החיה</span>
         <h1 className="page-title" style={{ marginTop: 12 }}>כל גינות הכלבים על מפה אחת</h1>
         <p className="page-sub" style={{ marginBottom: 20 }}>
-          מאות גינות כלבים בכל הארץ + מקומות דוג-פרנדלי. סננו לפי עיר ומצאו את הקרובה אליכם.
+          621 גינות כלבים בכל הארץ. סננו לפי עיר או לחצו על "גינות לידי" כדי לראות את הקרובות אליכם.
         </p>
         <Link href="/cities" className="btn btn-ghost" style={{ marginBottom: 28, display: 'inline-block' }}>
           למדריכי הערים →

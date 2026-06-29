@@ -6,7 +6,7 @@ import { allCityHubs } from '@/lib/cityHubs'
 export const metadata = buildMetadata({
   title: 'מדריכי ערים לבעלי כלבים',
   description:
-    'מדריך לבעלי כלבים בכל עיר בישראל: גינות כלבים, מקומות דוג-פרנדלי ומסלולי טיול. בחרו את העיר שלכם.',
+    'מדריך לבעלי כלבים בכל עיר בישראל: גינות כלבים ומסלולי טיול. בחרו את העיר שלכם.',
   path: '/cities',
 })
 
@@ -38,7 +38,6 @@ export default function CitiesPage() {
             <div style={{ fontSize: 21, fontWeight: 900, marginBottom: 8 }}>{h.community.name}</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, fontSize: 14.5, color: '#5b4d3c' }}>
               {h.parks.length > 0 && <span>🐕 {h.parks.length} גינות</span>}
-              {h.dogFriendly.length > 0 && <span>· ☕ {h.dogFriendly.length} דוג-פרנדלי</span>}
               {h.walks.length > 0 && <span>· 🥾 {h.walks.length} מסלולים</span>}
             </div>
           </Link>

@@ -54,7 +54,6 @@ export function Footer() {
         <Link href="/dog-food-prices">מחירון מזון</Link>
         <Link href="/map">מפת גינות</Link>
         <Link href="/walks">מסלולי טיול</Link>
-        <Link href="/dog-friendly">דוג-פרנדלי</Link>
         <Link href="/cities">מדריכי ערים</Link>
         <Link href="/canaan-dog">סיפור הכלב הכנעני</Link>
       </nav>

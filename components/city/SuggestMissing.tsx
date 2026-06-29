@@ -5,7 +5,6 @@ import { useState } from 'react'
 const TYPES: { key: string; label: string }[] = [
   { key: 'park', label: 'גינת כלבים' },
   { key: 'route', label: 'מסלול טיול' },
-  { key: 'dogfriendly', label: 'מקום דוג-פרנדלי' },
   { key: 'other', label: 'אחר' },
 ]
 
@@ -62,7 +61,7 @@ export function SuggestMissing({ city }: { city: string }) {
           חסר משהו ב{city}?
         </h2>
         <p style={{ fontSize: 16, color: '#5b4d3c', margin: '0 auto', maxWidth: 470, lineHeight: 1.65 }}>
-          מכירים גינת כלבים, מסלול טיול או מקום דוג-פרנדלי שלא רשום כאן? ספרו לנו ונוסיף - הקהילה תודה לכם.
+          מכירים גינת כלבים או מסלול טיול שלא רשום כאן? ספרו לנו ונוסיף - הקהילה תודה לכם.
         </p>
 
         {!open ? (
