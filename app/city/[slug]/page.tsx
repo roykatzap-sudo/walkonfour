@@ -6,6 +6,7 @@ import { JsonLd } from '@/components/seo/JsonLd'
 import { getCityHub, cityHubSlugs, allCityHubs } from '@/lib/cityHubs'
 import { CityParksList } from '@/components/city/CityParksList'
 import { SuggestMissing } from '@/components/city/SuggestMissing'
+import { JoinCommunityCard } from '@/components/fx/JoinCommunityCard'
 
 export function generateStaticParams() {
   return cityHubSlugs().map((slug) => ({ slug }))
@@ -152,17 +153,7 @@ export default function CityPage({ params }: { params: { slug: string } }) {
       )}
 
       {/* קישור לקהילה המקבילה - מחבר את "מדריך" ל"קהילה" */}
-      <section style={{ marginTop: 44, background: '#fbf7ef', border: '1px solid #efe2cd', borderRadius: 20, padding: '22px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
-        <div>
-          <div style={{ fontSize: 18, fontWeight: 900, color: 'var(--ink)' }}>🐾 קהילת בעלי הכלבים ב{community.name}</div>
-          <div style={{ fontSize: 14.5, color: '#5b4d3c', marginTop: 4, lineHeight: 1.5 }}>
-            טיולים משותפים, אירועים וקבוצות רכישה עם שכנים מ{community.name}.
-          </div>
-        </div>
-        <Link href={`/community/${community.slug}`} className="btn btn-primary" style={{ whiteSpace: 'nowrap' }}>
-          לקהילת {community.name} ←
-        </Link>
-      </section>
+      <JoinCommunityCard tone="parks" />
 
       {/* CTA */}
       <div style={{ marginTop: 24, display: 'flex', gap: 12, flexWrap: 'wrap' }}>

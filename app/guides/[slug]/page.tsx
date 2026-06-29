@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { guides, getGuide, guideImg } from '@/lib/guides'
 import { Reveal3D } from '@/components/fx/Reveal3D'
+import { JoinCommunityCard } from '@/components/fx/JoinCommunityCard'
 import { Tilt3D } from '@/components/fx/Tilt3D'
 import { MagneticButton } from '@/components/fx/MagneticButton'
 import { JsonLd, articleSchema, breadcrumbSchema, howToSchema } from '@/components/seo/JsonLd'
@@ -115,12 +116,8 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
           ממשי - כדאי להתייעץ עם וטרינר או מאלף מוסמך.
         </p>
 
-        {/* CTA */}
-        <div className="card" style={{ marginTop: 34, textAlign: 'center', padding: 30 }}>
-          <h3 style={{ fontSize: 21, fontWeight: 900, marginBottom: 8 }}>נתקעתם עם משהו ספציפי?</h3>
-          <p className="muted" style={{ marginBottom: 18, color: '#5f574c' }}>שאלו בפורום. תמיד יש מישהו שכבר עבר בדיוק את זה.</p>
-          <MagneticButton href="/forum" className="btn btn-primary">לפורום הקהילה</MagneticButton>
-        </div>
+        {/* CTA - קבוצת הפייסבוק (קהילה אמיתית) */}
+        <JoinCommunityCard tone="guides" />
 
         {/* RELATED */}
         <section style={{ marginTop: 44 }}>

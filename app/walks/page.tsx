@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { WalkBoard } from '@/components/walks/WalkCard'
+import { JoinCommunityCard } from '@/components/fx/JoinCommunityCard'
 import { DemoBanner } from '@/components/shared/DemoBanner'
 import { FloatingPaws } from '@/components/fx/FloatingPaws'
 import { demoWalks, walkCities, fencedCount, totalKm } from '@/lib/walks'
@@ -120,6 +121,7 @@ export default function WalksPage() {
 
       {/* לוח המסלולים - סינון + גריד (client) */}
       <WalkBoard walks={demoWalks} cities={walkCities} />
+      <JoinCommunityCard tone="walks" />
     </main>
   )
 }

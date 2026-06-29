@@ -85,6 +85,35 @@ export async function waitlistAdd(
   }
 }
 
+export type WaitlistRow = {
+  id: number
+  email: string
+  name: string | null
+  city: string | null
+  marketing_consent: boolean
+  created_at: string
+}
+
+/** אדמין: רשימת כל הנרשמים (עד 5,000), החדשים קודם. */
+export async function waitlistList(): Promise<WaitlistRow[]> {
+  if (!waitlistConfigured()) return []
+  const client = makeClient()
+  try {
+    await client.connect()
+    await client.query(CREATE_SQL)
+    await client.query(ALTER_SQL)
+    const res = await client.query(
+      'select id, email, name, city, marketing_consent, created_at from waitlist order by created_at desc limit 5000',
+    )
+    return res.rows as WaitlistRow[]
+  } catch (e) {
+    console.error('[waitlist] list failed', e)
+    return []
+  } finally {
+    try { await client.end() } catch {}
+  }
+}
+
 /** הסרה מדיוור (חוק הספאם): מבטל את ההסכמה לשיווק. מחזיר true אם נמצא ועודכן. */
 export async function waitlistUnsubscribe(email: string): Promise<boolean> {
   if (!waitlistConfigured()) return false

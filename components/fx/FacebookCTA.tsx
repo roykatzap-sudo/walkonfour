@@ -38,9 +38,9 @@ export function FacebookCTA() {
     }
     const onScroll = () => {
       const scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight || 1)
-      if (scrolled > 0.5) reveal()
+      if (scrolled > 0.25) reveal()
     }
-    const timer = window.setTimeout(reveal, 18000)
+    const timer = window.setTimeout(reveal, 8000)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => {
       window.clearTimeout(timer)
@@ -75,8 +75,8 @@ export function FacebookCTA() {
           <svg viewBox="0 0 24 24" width="26" height="26" fill="#fff"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.9 3.78-3.9 1.1 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.9h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94Z"/></svg>
         </div>
         <div className="fbcta-text">
-          <div className="fbcta-title">בא לכם להיות חלק מהחבר'ה?</div>
-          <div className="fbcta-sub">בינתיים, בזמן שאנחנו בונים - קבוצת הפייסבוק שלנו עם בעלי כלבים אמיתיים, שאלות וטיפים.</div>
+          <div className="fbcta-title">חבר'ה - תצטרפו אלינו 🐾</div>
+          <div className="fbcta-sub">קבוצת הפייסבוק של "קהילה על ארבע" - שאלות, טיפים והמלצות אמיתיות מבעלי כלבים מכל הארץ. שואלים ומקבלים תשובה תוך דקות.</div>
         </div>
       </div>
       <a href={FB_GROUP} target="_blank" rel="noopener noreferrer" className="fbcta-btn" onClick={dismiss}>
