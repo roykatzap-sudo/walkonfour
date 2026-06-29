@@ -399,13 +399,20 @@ export function DogParksMap() {
       return
     }
     if (!navigator.geolocation) {
-      showNotif('הדפדפן לא תומך ב-GPS')
+      showNotif('הדפדפן לא תומך באיתור מיקום')
+      return
+    }
+    // אזהרה אם לא HTTPS (geolocation דורש secure context)
+    if (typeof window !== 'undefined' && window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+      showNotif('איתור מיקום דורש HTTPS - פתחו את האתר ב-https://')
       return
     }
     showNotif('מאתר מיקום...')
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude: lat, longitude: lng } = pos.coords
+        // נשמרים מערך מטורף מ-GPS שגוי: אם המיקום לא בישראל בכלל - מציגים הכל
+        const inIsrael = lat > 29 && lat < 33.5 && lng > 34 && lng < 36
         const L = LRef.current!
         const map = mapRef.current!
         userMarkerRef.current?.remove()
@@ -413,6 +420,12 @@ export function DogParksMap() {
           icon: L.divIcon({ className: '', html: '<div class="user-loc"></div>', iconSize: [20, 20], iconAnchor: [10, 10] }),
         }).addTo(map)
         userPosRef.current = { lat, lng }
+        if (!inIsrael) {
+          // לא בארץ → מקרבים לסמן המשתמש אבל לא מסננים (25 הקרובות יהיו במרחק אלפי ק"מ)
+          map.flyTo([lat, lng], 10, { duration: 0.7 })
+          showNotif('המיקום שלכם לא בישראל - מציגים את כל הגינות בארץ 🇮🇱')
+          return
+        }
         // מצב "near me" - הסינון יקרה אוטומטית ב-effect; הוא גם יזיז את ה-bounds
         setNearMe(true)
         const pool = allParks.current.length ? allParks.current : fallbackParks
@@ -422,7 +435,13 @@ export function DogParksMap() {
         const dist = (Math.hypot(near.lat - lat, near.lng - lng) * 111).toFixed(1)
         showNotif(`25 גינות הקרובות אליכם · הכי קרובה: ${near.name} (${dist} ק״מ) 🐕`)
       },
-      () => showNotif('לא ניתן לאתר מיקום')
+      (err) => {
+        // הודעות שגיאה ספציפיות לפי קוד (1=PERMISSION_DENIED, 2=POSITION_UNAVAILABLE, 3=TIMEOUT)
+        if (err.code === 1) showNotif('הרשאת מיקום נדחתה. אפשרו בדפדפן: 🔒 ליד הכתובת ← מיקום')
+        else if (err.code === 3) showNotif('איתור המיקום ארך יותר מדי. נסו שוב במקום פתוח')
+        else showNotif('לא ניתן לאתר מיקום כרגע. בדקו ש-GPS פעיל ונסו שוב')
+      },
+      { timeout: 12000, maximumAge: 60000, enableHighAccuracy: false },
     )
   }
 
