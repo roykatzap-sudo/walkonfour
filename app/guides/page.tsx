@@ -19,11 +19,11 @@ export default function GuidesPage() {
         <div style={{ position: 'relative', zIndex: 2 }}>
           <span className="section-tag">מדריכי טיפול ואילוף</span>
           <h1 className="page-title" style={{ fontSize: 46 }}>
-            הבעיות האמיתיות, <span className="grad-text">בלי הרצאות</span>
+            הבעיות האמיתיות, בלי הרצאות
           </h1>
           <p className="page-sub" style={{ maxWidth: 600 }}>
-            הכלב מושך, לא נגמל, מפחד מזיקוקים או נמס בחום של אוגוסט? את כל אלה כבר עברנו.
-            ריכזנו את מה שבאמת עובד - קצר, אנושי, ולעניין.
+            הכלב מושך, לא נגמל, מפחד מזיקוקים או נמס בחום של אוגוסט. את כל אלה כבר עברנו.
+            ריכזנו את מה שעובד - קצר ולעניין.
           </p>
         </div>
       </div>

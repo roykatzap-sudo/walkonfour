@@ -28,14 +28,13 @@ export default function BreedsPage() {
         <FloatingShapes />
         <div style={{ position: 'relative', zIndex: 1 }}>
           <span className="section-tag">מדריך הגזעים</span>
-          <h1 className="page-title grad-text" style={{ marginTop: 10 }}>
+          <h1 className="page-title" style={{ marginTop: 10 }}>
             איזה כלב באמת מתאים לכם?
           </h1>
           <p className="page-sub" style={{ maxWidth: 640, margin: '12px auto 0' }}>
-            {breeds.length} גזעים, מהכלב הכנעני שגדל פה ועד הסנט ברנרד הענק. על כל אחד כתבנו
-            בכנות - כולל מי שאתו תתמודדו עם נחירות, מי שלא ישרוד את הקיץ בלי מיזוג, ומי
-            שישתעמם ויפרק לכם את הסלון. סננו לפי גודל, אנרגיה והתאמה לילדים, ולחצו על כרטיס
-            כדי לראות עוד.
+            {breeds.length} גזעים, מהכנעני שגדל פה ועד הסנט ברנרד הענק. כתבנו על כל אחד בכנות -
+            כולל הנחירות, מי לא ישרוד את אוגוסט בלי מיזוג, ומי יפרק לכם את הסלון מרוב שעמום.
+            סננו לפי גודל, אנרגיה והתאמה לילדים.
           </p>
         </div>
       </section>

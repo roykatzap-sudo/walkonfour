@@ -19,10 +19,10 @@ export default function CitiesPage() {
         <div style={{ position: 'relative', zIndex: 2 }}>
           <span className="section-tag">מדריכי ערים</span>
           <h1 className="page-title" style={{ fontSize: 44 }}>
-            כלבים <span className="grad-text">בעיר שלכם</span>
+            כלבים בעיר שלכם
           </h1>
           <p className="page-sub" style={{ maxWidth: 600, fontSize: 17.5, color: '#5b4d3c', lineHeight: 1.7 }}>
-            לכל עיר מדריך משלה: גינות כלבים, מקומות שמקבלים כלבים, ומסלולי טיול באזור. בחרו עיר.
+            גינות, בתי קפה שמקבלים כלבים ומסלולי טיול - לכל עיר מדריך משלה. בחרו עיר.
           </p>
         </div>
       </div>

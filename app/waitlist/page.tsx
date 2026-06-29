@@ -35,11 +35,11 @@ export default async function WaitlistPage() {
         <div style={{ position: 'relative', zIndex: 2, textAlign: 'center' }}>
           <span className="section-tag">הקהילה · בהקמה</span>
           <h1 className="page-title" style={{ fontSize: 42 }}>
-            החיים עם כלב יקרים.<br /><span className="grad-text">ביחד הם קלים יותר.</span>
+            החיים עם כלב יקרים.<br />ביחד הם קלים יותר.
           </h1>
           <p className="page-sub" style={{ maxWidth: 520, margin: '0 auto', fontSize: 17, color: 'var(--text-muted)', lineHeight: 1.7 }}>
-            אנחנו בונים את קהילת בעלי הכלבים של קהילה על ארבע בזהירות. הצטרפו לרשימת ההמתנה ותהיו
-            מהראשונים שנכנסים - עם כל ההטבות של ההתחלה.
+            אנחנו בונים את הקהילה בזהירות, ושם כל מי שמצטרף עכשיו ייכנס מהראשונים -
+            עם ההטבות של ההתחלה.
           </p>
         </div>
       </div>
@@ -50,8 +50,8 @@ export default async function WaitlistPage() {
           <>
             <div style={{ textAlign: 'center', marginBottom: 14, fontSize: 14.5, fontWeight: 800, color: 'var(--brand)' }}>
               {count >= COUNT_DISPLAY_MIN
-                ? `🐾 ${count.toLocaleString('he-IL')} בעלי כלבים כבר ברשימה`
-                : '🐾 בעלי הכלבים הראשונים נרשמים עכשיו - הצטרפו לראשונים'}
+                ? `${count.toLocaleString('he-IL')} בעלי כלבים כבר ברשימה`
+                : 'הראשונים נרשמים עכשיו - הצטרפו אליהם'}
             </div>
             <WaitlistForm initialCount={count} />
           </>

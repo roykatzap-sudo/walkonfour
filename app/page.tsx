@@ -158,10 +158,10 @@ export default function Home() {
           </div>
         </div>
         <div className="hero-stats">
-          <div className="hs"><div className="hs-val"><Counter to={29} /></div><div className="hs-lbl">מדריכי גזעים</div></div>
-          <div className="hs"><div className="hs-val"><Counter to={621} /></div><div className="hs-lbl">גינות כלבים</div></div>
-          <div className="hs"><div className="hs-val"><Counter to={38} /></div><div className="hs-lbl">מסלולי טיול</div></div>
-          <div className="hs"><div className="hs-val"><Counter to={42} /></div><div className="hs-lbl">מדריכי ערים</div></div>
+          <div className="hs"><div className="hs-val"><Counter to={29} /></div><div className="hs-lbl">גזעים</div></div>
+          <div className="hs"><div className="hs-val"><Counter to={621} /></div><div className="hs-lbl">גינות על המפה</div></div>
+          <div className="hs"><div className="hs-val"><Counter to={38} /></div><div className="hs-lbl">מסלולים</div></div>
+          <div className="hs"><div className="hs-val"><Counter to={42} /></div><div className="hs-lbl">ערים</div></div>
         </div>
       </section>
 

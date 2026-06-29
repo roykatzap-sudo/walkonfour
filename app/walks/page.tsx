@@ -30,13 +30,12 @@ export default function WalksPage() {
         <FloatingPaws />
         <div style={{ position: 'relative', zIndex: 2 }}>
           <span className="section-tag">יוצאים החוצה</span>
-          <h1 className="page-title grad-text" style={{ marginTop: 8 }}>
+          <h1 className="page-title" style={{ marginTop: 8 }}>
             איפה מטיילים השבת?
           </h1>
           <p className="page-sub" style={{ margin: '0 auto', maxWidth: 580 }}>
-            נמאס מאותו סיבוב שכונה? אספנו מסלולים אמיתיים בכל הארץ - חופים, נחלים,
-            יערות מוצלים ומתחמים מגודרים. לכל אחד יש אורך, רמת קושי, וסימון אם יש
-            בדרך צל ומים בקיץ. לוחצים ניווט, ויוצאים.
+            נמאס מאותו סיבוב שכונה. אספנו מסלולים אמיתיים - חופים, נחלים, יערות מוצלים
+            ומתחמים מגודרים. לכל אחד אורך, קושי, וסימון אם יש בדרך צל ומים. ניווט בלחיצה.
           </p>
 
           {/* מדדים מהירים */}
