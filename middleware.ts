@@ -1,22 +1,30 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
+import { readSession, COMMUNITY_COOKIE } from '@/lib/community/session'
 
 /**
  * שער השקה: בשלב הראשון רק תוכן וכלים פתוחים. כל החלקים האינטראקטיביים
- * והקהילתיים חסומים ומפנים ל"/soon" - עד שנהיה מוכנים משפטית ותפעולית
- * לפתוח קהילה (הרשמה, תוכן משתמשים, החזקת נתונים).
- * להסרת השער: למחוק את GATED_PREFIXES או לרוקן אותו.
+ * חסומים ומפנים ל"/soon" - חוץ מ-/community שזו הקהילה הסגורה בהקמה
+ * (דורש OTP login + הסכמה).
  */
 const GATED_PREFIXES = [
   '/auth', '/profile', '/saved', '/start',
-  '/communities', '/community',
+  '/communities',
   '/forum', '/events', '/groups', '/wall', '/lost-found', '/leaderboard',
   '/market', '/petsitting', '/adopt', '/businesses', '/digest',
   '/health-tracker', '/premium',
 ]
 
+/** /community/* פתוח כפלטפורמה, אבל דורש session - חוץ מ-login/onboarding */
+const COMMUNITY_PUBLIC = ['/community/login', '/community/onboarding']
+
 function isGated(pathname: string): boolean {
   return GATED_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + '/'))
+}
+
+function isCommunityProtected(pathname: string): boolean {
+  if (!pathname.startsWith('/community')) return false
+  return !COMMUNITY_PUBLIC.some((p) => pathname === p || pathname.startsWith(p + '/'))
 }
 
 export async function middleware(request: NextRequest) {
@@ -26,6 +34,16 @@ export async function middleware(request: NextRequest) {
     url.pathname = '/soon'
     url.search = ''
     return NextResponse.redirect(url)
+  }
+  if (isCommunityProtected(pathname)) {
+    const token = request.cookies.get(COMMUNITY_COOKIE)?.value
+    const session = readSession(token)
+    if (!session || session.userId === -1) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/community/login'
+      url.search = ''
+      return NextResponse.redirect(url)
+    }
   }
   return await updateSession(request)
 }
