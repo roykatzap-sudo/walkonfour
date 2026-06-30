@@ -5,6 +5,7 @@ import { breedArticles } from '@/lib/articles'
 import { guides } from '@/lib/guides'
 import { cityHubSlugs } from '@/lib/cityHubs'
 import { comparisons } from '@/lib/comparisons'
+import { lawSpokes } from '@/lib/lawSpokes'
 
 /**
  * מפת אתר דינמית (Next.js 14 native).
@@ -104,6 +105,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }))
 
+  const lawSpokeEntries: MetadataRoute.Sitemap = lawSpokes.map((s) => ({
+    url: join(`/laws/${s.slug}`),
+    lastModified: now,
+    changeFrequency: 'monthly' as ChangeFrequency,
+    priority: 0.85,
+  }))
+
   return [
     ...staticEntries,
     ...breedEntries,
@@ -111,5 +119,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...guideEntries,
     ...cityEntries,
     ...compareEntries,
+    ...lawSpokeEntries,
   ]
 }

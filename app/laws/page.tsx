@@ -2,7 +2,15 @@ import Link from 'next/link'
 import { buildMetadata, SITE_URL } from '@/lib/seo'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { JsonLd, breadcrumbSchema, faqSchema } from '@/components/seo/JsonLd'
-import { lawsContent } from '@/lib/lawsContent'
+import { lawsContent, officialSources } from '@/lib/lawsContent'
+
+const SPOKE_PAGES = [
+  { slug: 'dangerous-breeds', label: 'גזעים מסוכנים - הרשימה המלאה', icon: '⚠️' },
+  { slug: 'leash-fine', label: 'קנס על כלב בלי רצועה', icon: '🔴' },
+  { slug: 'dog-license', label: 'רישיון לכלב - שלב אחר שלב', icon: '📋' },
+  { slug: 'dog-bite', label: 'כלב נשך - מה עושים', icon: '🩹' },
+  { slug: 'poop-fine', label: 'קנס על אי-איסוף צואה', icon: '🚫' },
+]
 
 export function generateMetadata() {
   return buildMetadata({
@@ -88,8 +96,39 @@ export default function LawsPage() {
         </div>
       </section>
 
+      {/* מדריכים מעמיקים - spoke pages */}
+      <section style={{ marginTop: 40 }}>
+        <h2 style={{ fontSize: 22, fontWeight: 900, color: 'var(--ink)', margin: '0 0 14px' }}>מדריכים מעמיקים לפי נושא</h2>
+        <div style={{ display: 'grid', gap: 10, gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}>
+          {SPOKE_PAGES.map((s) => (
+            <Link key={s.slug} href={`/laws/${s.slug}`} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '14px 16px', background: '#fff', border: '1px solid rgba(201,154,91,.22)', borderRadius: 14, textDecoration: 'none', color: 'var(--ink)', fontWeight: 700, fontSize: 15, transition: 'border-color .15s' }}>
+              <span style={{ fontSize: 20 }}>{s.icon}</span>
+              {s.label} →
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* מקורות רשמיים */}
+      <section style={{ marginTop: 40, padding: '22px 22px', background: '#fff', border: '1.5px solid rgba(201,154,91,.28)', borderRadius: 18 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 900, color: 'var(--ink)', margin: '0 0 14px' }}>מקורות רשמיים</h2>
+        <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'grid', gap: 8 }}>
+          {officialSources.map((s, i) => (
+            <li key={i} style={{ display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap' }}>
+              <a href={s.url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--brand-dark)', fontWeight: 700, fontSize: 14.5, textDecoration: 'underline' }}>
+                {s.label}
+              </a>
+              {s.note && <span style={{ fontSize: 12.5, color: '#8a7c66' }}>({s.note})</span>}
+            </li>
+          ))}
+        </ul>
+        <p style={{ margin: '14px 0 0', fontSize: 13, color: '#8a7c66', lineHeight: 1.6 }}>
+          המידע בעמוד זה מבוסס על החקיקה הרשמית. לאימות עצמאי של הנוסח המחייב, פנו למאגר החקיקה נבו או לאתר הכנסת.
+        </p>
+      </section>
+
       {/* CTA */}
-      <div style={{ marginTop: 40, padding: '20px 22px', background: '#fbf7ef', borderRadius: 16, textAlign: 'center' }}>
+      <div style={{ marginTop: 32, padding: '20px 22px', background: '#fbf7ef', borderRadius: 16, textAlign: 'center' }}>
         <p style={{ margin: '0 0 12px', fontSize: 15, color: '#5b4d3c' }}>
           מחפשים את הגזע הנכון? יש לנו מדריכים מקיפים ל-29 גזעים, או כלי התאמה אישי:
         </p>
