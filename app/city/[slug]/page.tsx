@@ -2,9 +2,11 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { buildMetadata, SITE_URL } from '@/lib/seo'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
-import { JsonLd } from '@/components/seo/JsonLd'
+import { JsonLd, breadcrumbSchema, faqSchema } from '@/components/seo/JsonLd'
 import { getCityHub, cityHubSlugs, allCityHubs } from '@/lib/cityHubs'
+import { buildCitySeo } from '@/lib/citySeo'
 import { CityParksList } from '@/components/city/CityParksList'
+import { CitySeoBlock } from '@/components/city/CitySeoBlock'
 import { SuggestMissing } from '@/components/city/SuggestMissing'
 import { JoinCommunityCard } from '@/components/fx/JoinCommunityCard'
 
@@ -16,9 +18,12 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
   const hub = getCityHub(params.slug)
   if (!hub) return buildMetadata({ title: 'עיר לא נמצאה', path: `/city/${params.slug}`, noindex: true })
   const { community, parks, walks } = hub
+  // ★ SEO title שמתחיל ב"גינות כלבים [עיר]" - המילה הראשונה הכי חזקה לגוגל.
+  // לפי המחקר: long-tail עם תחרות נמוכה וערך גבוה.
+  const title = `גינות כלבים ב${community.name} - ${parks.length} גינות מעודכנות + מסלולי טיול`
   return buildMetadata({
-    title: `כלבים ב${community.name}: גינות ומסלולי טיול`,
-    description: `המדריך לבעלי כלבים ב${community.name}: ${parks.length} גינות כלבים ו-${walks.length} מסלולי טיול באזור. הכול במקום אחד.`,
+    title,
+    description: `${parks.length} גינות כלבים ב${community.name} על מפה אינטראקטיבית, ${walks.length} מסלולי טיול עם הכלב באזור, חוקים, וטרינרים ועוד. מעודכן ע"י הקהילה.`,
     path: `/city/${community.slug}`,
   })
 }
@@ -37,18 +42,34 @@ export default function CityPage({ params }: { params: { slug: string } }) {
   if (!hub) notFound()
   const { community, parks, walks } = hub
   const others = allCityHubs().filter((h) => h.community.slug !== community.slug).slice(0, 8)
+  const seo = buildCitySeo(community, parks.length, walks.length)
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
-    name: `כלבים ב${community.name}`,
-    description: `גינות כלבים ומסלולי טיול ב${community.name}.`,
-    url: `${SITE_URL}/city/${community.slug}`,
-  }
+  // ── Schema graph: CollectionPage + BreadcrumbList + FAQPage ──
+  const schemas: Record<string, unknown>[] = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: `גינות כלבים ב${community.name}`,
+      description: `${parks.length} גינות כלבים ו-${walks.length} מסלולי טיול ב${community.name}.`,
+      url: `${SITE_URL}/city/${community.slug}`,
+      inLanguage: 'he-IL',
+      about: {
+        '@type': 'Place',
+        name: community.name,
+        address: { '@type': 'PostalAddress', addressLocality: community.name, addressCountry: 'IL' },
+      },
+    },
+    breadcrumbSchema([
+      { name: 'בית', path: '/' },
+      { name: 'מדריכי ערים', path: '/cities' },
+      { name: community.name, path: `/city/${community.slug}` },
+    ]),
+    faqSchema(seo.faq),
+  ]
 
   return (
     <main className="page" style={{ maxWidth: 860 }}>
-      <JsonLd data={jsonLd} />
+      <JsonLd data={schemas} />
 
       {/* HERO */}
       <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 28, padding: '6px 4px 18px', marginBottom: 14 }}>
@@ -56,11 +77,10 @@ export default function CityPage({ params }: { params: { slug: string } }) {
         <div style={{ position: 'relative', zIndex: 2 }}>
           <span className="section-tag">מדריך עירוני</span>
           <h1 className="page-title" style={{ fontSize: 44 }}>
-            כלבים ב<span className="grad-text">{community.name}</span>
+            גינות כלבים ב{community.name}
           </h1>
           <p className="page-sub" style={{ maxWidth: 600, fontSize: 17.5, color: '#5b4d3c', lineHeight: 1.7 }}>
-            כל מה שבעל כלב ב{community.name} צריך במקום אחד - איפה משחררים רצועה, לאן יוצאים לטייל,
-            ואיפה מקבלים אתכם עם הכלב.
+            {parks.length} {parks.length === 1 ? 'גינה' : 'גינות'} פעילות{walks.length > 0 ? ` ו-${walks.length} ${walks.length === 1 ? 'מסלול טיול' : 'מסלולי טיול'} באזור` : ''} - מעודכן ע"י הקהילה.
           </p>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 16 }}>
             {parks.length > 0 && <Stat n={parks.length} label="גינות כלבים" />}
@@ -68,6 +88,9 @@ export default function CityPage({ params }: { params: { slug: string } }) {
           </div>
         </div>
       </div>
+
+      {/* ★ בלוק SEO - תשובה מהירה + FAQ */}
+      <CitySeoBlock city={community.name} seo={seo} />
 
       {/* גינות כלבים */}
       {parks.length > 0 && (
