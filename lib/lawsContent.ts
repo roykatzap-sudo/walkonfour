@@ -6,10 +6,10 @@
 export type LawLink = { label: string; url: string; note?: string }
 
 export const officialSources: LawLink[] = [
-  { label: 'חוק להסדרת הפיקוח על כלבים, תשס"ג-2002', url: 'https://www.nevo.co.il/law_html/Law01/P209_001.htm', note: 'נבו - מאגר חקיקה' },
-  { label: 'פקודת הכלבים, 1934', url: 'https://www.nevo.co.il/law_html/Law01/P035_001.htm', note: 'נבו - מאגר חקיקה' },
-  { label: 'חוק צער בעלי חיים (הגנה על בעלי חיים), תשנ"ד-1994', url: 'https://www.nevo.co.il/law_html/Law01/P160_001.htm', note: 'נבו - מאגר חקיקה' },
-  { label: 'תקנות הפיקוח על כלבים מסוכנים, תשס"ה-2004', url: 'https://www.nevo.co.il/law_html/Law01/T209_001.htm', note: 'נבו - מאגר חקיקה' },
+  { label: 'חוק להסדרת הפיקוח על כלבים, תשס"ג-2002', url: 'https://www.nevo.co.il/law_html/law00/73608.htm', note: 'נבו - מאגר חקיקה' },
+  { label: 'תקנות להסדרת הפיקוח על כלבים (כלבים מסוכנים), תשס"ה-2005', url: 'https://www.nevo.co.il/law_html/law00/70390.htm', note: 'נבו - מאגר חקיקה' },
+  { label: 'חוק צער בעלי חיים (הגנה על בעלי חיים), תשנ"ד-1994', url: 'https://www.nevo.co.il/law_html/law01/p200m2_002.htm', note: 'נבו - מאגר חקיקה' },
+  { label: 'פקודת הכלבת', url: 'https://www.nevo.co.il/law_html/law01/212_017.htm', note: 'נבו - מאגר חקיקה' },
   { label: 'משרד החקלאות - פיקוח על כלבים', url: 'https://www.moag.gov.il/vet/Subjects/dogs/Pages/default.aspx', note: 'משרד החקלאות ופיתוח הכפר' },
   { label: 'יחידת פיצו"ח - דיווח על התעללות בבעלי חיים', url: 'https://www.moag.gov.il/vet/Subjects/AnimalWelfare/Pages/default.aspx', note: 'טלפון: 1-800-260-260' },
 ]
