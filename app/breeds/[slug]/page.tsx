@@ -1,7 +1,17 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { breeds, getBreed } from '@/lib/breeds'
+import { getBreedDetail } from '@/lib/breedDetails'
+import { getBreedSeo } from '@/lib/breedSeo'
 import { BreedProfile } from '@/components/breeds/BreedProfile'
+import { BreedSeoBlock } from '@/components/breeds/BreedSeoBlock'
+import {
+  JsonLd,
+  articleSchema,
+  breadcrumbSchema,
+  breedThingSchema,
+  faqSchema,
+} from '@/components/seo/JsonLd'
 import { absoluteUrl, clampDescription, ogImageUrl } from '@/lib/seo'
 
 export function generateStaticParams() {
@@ -35,5 +45,48 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
 export default function BreedPage({ params }: { params: { slug: string } }) {
   const b = getBreed(params.slug)
   if (!b) notFound()
-  return <BreedProfile breed={b} />
+
+  const detail = getBreedDetail(b.slug)
+  const seo = getBreedSeo(b.slug)
+  const desc = `מדריך הגזע ${b.name} (${b.en}): אופי, התאמה, בריאות וטיפוח. אורך חיים ${b.lifespan} שנים.`
+
+  // ── Schema graph: Article + Thing(Breed) + FAQPage + BreadcrumbList ──
+  const schemas: Record<string, unknown>[] = [
+    breadcrumbSchema([
+      { name: 'בית', path: '/' },
+      { name: 'גזעי כלבים', path: '/breeds' },
+      { name: b.name, path: `/breeds/${b.slug}` },
+    ]),
+    articleSchema({
+      title: `${b.name} - מדריך גזע מלא`,
+      description: desc,
+      path: `/breeds/${b.slug}`,
+      section: 'מדריכי גזעים',
+    }),
+    breedThingSchema({
+      slug: b.slug,
+      name: b.name,
+      alternateNames: [b.en],
+      description: b.blurb,
+      wikipediaHeSlug: seo?.wikipediaSlug,
+      wikipediaEnSlug: seo?.wikipediaEnSlug,
+      wikidataId: seo?.wikidataId,
+    }),
+  ]
+  if (seo?.faq && seo.faq.length > 0) {
+    schemas.push(faqSchema(seo.faq))
+  }
+
+  return (
+    <>
+      <JsonLd data={schemas} />
+      {/* בלוק SEO חדש - מוצג מעל ה-BreedProfile הוויזואלי המלא */}
+      {(seo || detail) && (
+        <div className="page" style={{ paddingTop: 84, paddingBottom: 0 }}>
+          <BreedSeoBlock breed={b} detail={detail} seo={seo} />
+        </div>
+      )}
+      <BreedProfile breed={b} />
+    </>
+  )
 }

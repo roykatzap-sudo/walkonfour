@@ -168,6 +168,37 @@ export function faqSchema(items: FaqItem[]): JsonLdObject {
 export type HowToStep = { name: string; text: string }
 
 /**
+ * סכמת Thing לגזע כלב.
+ * schema.org אין סוג Animal/Dog/Breed (issue פתוח מ-2015 לא נסגר),
+ * אז משתמשים ב-Thing עם sameAs ל-Wikipedia + Wikidata.
+ * הקישור ל-Knowledge Graph של Google הוא הטריק הנדיר - מעט אתרי גזעים עושים.
+ */
+export function breedThingSchema(input: {
+  slug: string
+  name: string
+  alternateNames: string[]
+  description: string
+  wikipediaHeSlug?: string
+  wikipediaEnSlug?: string
+  wikidataId?: string
+}): JsonLdObject {
+  const sameAs: string[] = []
+  if (input.wikipediaHeSlug) sameAs.push(`https://he.wikipedia.org/wiki/${input.wikipediaHeSlug}`)
+  if (input.wikipediaEnSlug) sameAs.push(`https://en.wikipedia.org/wiki/${input.wikipediaEnSlug}`)
+  if (input.wikidataId) sameAs.push(`https://www.wikidata.org/wiki/${input.wikidataId}`)
+  const schema: JsonLdObject = {
+    '@context': 'https://schema.org',
+    '@type': 'Thing',
+    '@id': `${absoluteUrl(`/breeds/${input.slug}`)}#breed`,
+    name: input.name,
+    alternateName: input.alternateNames,
+    description: input.description,
+  }
+  if (sameAs.length > 0) schema.sameAs = sameAs
+  return schema
+}
+
+/**
  * סכמת מדריך-שלבים (HowTo) - לפי המלצת מומחי GEO, תוכן how-to עם
  * שלבים מובנים צץ ב-AI Overviews לשאילתות "איך עושים X".
  */
