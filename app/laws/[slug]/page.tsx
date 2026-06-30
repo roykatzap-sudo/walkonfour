@@ -53,8 +53,16 @@ export default function LawSpokePage({ params }: { params: { slug: string } }) {
         </div>
       </div>
 
+      {/* באנר הסתייגות משפטית */}
+      <div role="note" style={{ marginTop: 8, padding: '14px 18px', background: '#fdf6f0', border: '1.5px solid #e8c49a', borderRadius: 14, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+        <span style={{ fontSize: 18, flexShrink: 0 }}>⚖️</span>
+        <p style={{ margin: 0, fontSize: 14, color: '#6b4c2a', lineHeight: 1.65 }}>
+          <strong>המידע באתר זה הוא מידע כללי בלבד ואינו מהווה ייעוץ משפטי.</strong> הוא אינו תחליף לפנייה לעורך דין. במצב של מחלוקת, תביעה, קנס או שאלה משפטית קונקרטית - פנו לייעוץ מקצועי.
+        </p>
+      </div>
+
       {/* תשובה מהירה */}
-      <section style={{ marginTop: 8, padding: '20px 22px', background: 'linear-gradient(135deg,#fff8ea,#fef0d8)', border: '2px solid rgba(201,154,91,.35)', borderRadius: 18 }}>
+      <section style={{ marginTop: 16, padding: '20px 22px', background: 'linear-gradient(135deg,#fff8ea,#fef0d8)', border: '2px solid rgba(201,154,91,.35)', borderRadius: 18 }}>
         <div style={{ fontWeight: 900, color: 'var(--brand-dark)', fontSize: 14, letterSpacing: 0.5, marginBottom: 8 }}>⚡ תשובה מהירה</div>
         <p style={{ margin: 0, fontSize: 16.5, color: 'var(--ink)', lineHeight: 1.7 }}>{s.quickAnswer}</p>
       </section>
