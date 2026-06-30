@@ -11,8 +11,9 @@ export const dynamic = 'force-dynamic'
  */
 export async function POST(req: Request) {
   const ip = clientIp(req)
-  // הגנה: מקסימום 3 בקשות OTP פר 5 דקות פר IP
-  if (rateLimited(`${ip}:otp-req`, 3, 5 * 60_000)) {
+  // הגנה: 6 בקשות OTP פר דקה פר IP - מספיק טוב כדי לעצור botim,
+  // וגם סבלני לטעויות הקלדה של משתמש אמיתי שעושה typo במייל.
+  if (rateLimited(`${ip}:otp-req`, 6, 60_000)) {
     return NextResponse.json({ ok: false, error: 'rate' }, { status: 429 })
   }
   if (Number(req.headers.get('content-length') || 0) > 500) {
