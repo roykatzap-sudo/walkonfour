@@ -5,6 +5,9 @@ import { getBreedDetail } from '@/lib/breedDetails'
 import { getBreedSeo } from '@/lib/breedSeo'
 import { BreedProfile } from '@/components/breeds/BreedProfile'
 import { BreedSeoBlock } from '@/components/breeds/BreedSeoBlock'
+import { RelatedBreedsBlock } from '@/components/breeds/RelatedBreedsBlock'
+import { comparisons } from '@/lib/comparisons'
+import Link from 'next/link'
 import {
   JsonLd,
   articleSchema,
@@ -87,6 +90,28 @@ export default function BreedPage({ params }: { params: { slug: string } }) {
         </div>
       )}
       <BreedProfile breed={b} />
+      <div className="page" style={{ paddingTop: 0, paddingBottom: 60, maxWidth: 860 }}>
+        {/* קישורים להשוואות הרלוונטיות שמערבות את הגזע */}
+        {(() => {
+          const related = comparisons.filter((c) => c.breedA === b.slug || c.breedB === b.slug)
+          if (related.length === 0) return null
+          return (
+            <section style={{ marginTop: 28, padding: '20px 22px', background: '#fff', border: '1px solid rgba(201,154,91,.22)', borderRadius: 16 }}>
+              <h2 style={{ margin: '0 0 10px', fontSize: 20, fontWeight: 900, color: 'var(--ink)' }}>
+                השוואות שמערבות את {b.name}
+              </h2>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {related.map((c) => (
+                  <Link key={c.slug} href={`/compare/${c.slug}`} className="chip3d" style={{ textDecoration: 'none', fontSize: 14 }}>
+                    {c.title.split(' - ')[0]} →
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )
+        })()}
+        <RelatedBreedsBlock currentSlug={b.slug} />
+      </div>
     </>
   )
 }

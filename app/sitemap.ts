@@ -4,6 +4,7 @@ import { breeds } from '@/lib/breeds'
 import { breedArticles } from '@/lib/articles'
 import { guides } from '@/lib/guides'
 import { cityHubSlugs } from '@/lib/cityHubs'
+import { comparisons } from '@/lib/comparisons'
 
 /**
  * מפת אתר דינמית (Next.js 14 native).
@@ -46,6 +47,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/food-calculator', priority: 0.85, changeFrequency: 'monthly' },
     { path: '/health', priority: 0.8, changeFrequency: 'monthly' },
     { path: '/dog-food-prices', priority: 0.85, changeFrequency: 'weekly' },
+    // pillar SEO חדש - תוכן שאף מתחרה לא בנה ברצינות
+    { path: '/laws', priority: 0.9, changeFrequency: 'monthly' },
     // הצטרפות
     { path: '/waitlist', priority: 0.8, changeFrequency: 'weekly' },
     // אינפו
@@ -93,11 +96,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }))
 
+  // השוואות גזעים - /compare/[slug] - long-tail commercial-intent
+  const compareEntries: MetadataRoute.Sitemap = comparisons.map((c) => ({
+    url: join(`/compare/${c.slug}`),
+    lastModified: now,
+    changeFrequency: 'monthly',
+    priority: 0.8,
+  }))
+
   return [
     ...staticEntries,
     ...breedEntries,
     ...articleEntries,
     ...guideEntries,
     ...cityEntries,
+    ...compareEntries,
   ]
 }
