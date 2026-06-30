@@ -89,11 +89,9 @@ export default function LawSpokePage({ params }: { params: { slug: string } }) {
         <h2 style={{ fontSize: 16, fontWeight: 900, color: 'var(--ink)', margin: '0 0 12px' }}>מקורות רשמיים</h2>
         <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'grid', gap: 6 }}>
           {officialSources.map((src, i) => (
-            <li key={i}>
-              <a href={src.url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--brand-dark)', fontWeight: 600, fontSize: 14, textDecoration: 'underline' }}>
-                {src.label}
-              </a>
-              {src.note && <span style={{ fontSize: 12, color: '#8a7c66', marginRight: 6 }}>({src.note})</span>}
+            <li key={i} style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--ink)' }}>{src.label}</span>
+              <span style={{ fontSize: 12, color: '#8a7c66', direction: 'ltr', textAlign: 'right' }}>{src.url}{src.note ? ` · ${src.note}` : ''}</span>
             </li>
           ))}
         </ul>

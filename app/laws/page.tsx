@@ -114,11 +114,9 @@ export default function LawsPage() {
         <h2 style={{ fontSize: 18, fontWeight: 900, color: 'var(--ink)', margin: '0 0 14px' }}>מקורות רשמיים</h2>
         <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'grid', gap: 8 }}>
           {officialSources.map((s, i) => (
-            <li key={i} style={{ display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap' }}>
-              <a href={s.url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--brand-dark)', fontWeight: 700, fontSize: 14.5, textDecoration: 'underline' }}>
-                {s.label}
-              </a>
-              {s.note && <span style={{ fontSize: 12.5, color: '#8a7c66' }}>({s.note})</span>}
+            <li key={i} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <span style={{ fontWeight: 700, fontSize: 14.5, color: 'var(--ink)' }}>{s.label}</span>
+              <span style={{ fontSize: 12.5, color: '#8a7c66', direction: 'ltr', textAlign: 'right' }}>{s.url}{s.note ? ` · ${s.note}` : ''}</span>
             </li>
           ))}
         </ul>
