@@ -154,7 +154,7 @@ export function AccountSettings() {
         </ul>
         <p style={{ fontSize: 13.5, color: '#5b4d3c', margin: 0, lineHeight: 1.6 }}>
           לכל בקשה ניתן לפנות במייל ל-
-          <a href="mailto:privacy@walkonfour.org" style={{ color: 'var(--brand-dark)', fontWeight: 700 }}>privacy@walkonfour.org</a>
+          <a href="mailto:ghjkfuik@gmail.com" style={{ color: 'var(--brand-dark)', fontWeight: 700 }}>ghjkfuik@gmail.com</a>
           . נענה תוך 30 יום.
         </p>
       </div>

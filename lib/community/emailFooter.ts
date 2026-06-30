@@ -50,7 +50,7 @@ export function emailFooterHtml(opts: { email: string; kind: EmailKind }): strin
     <div><strong>קהילה על ארבע</strong> · <a href="${SITE_URL}" style="color:#8a7c66">walkonfour.org</a></div>
     <div style="margin-top:6px">${kindLine}</div>
     <div style="margin-top:4px">נשלח דרך תשתית של ez-suit.org (אותו מפעיל). תגובות יגיעו ל-community@walkonfour.org.</div>
-    <div style="margin-top:4px">לשאלות פרטיות / עיון / מחיקה: <a href="mailto:privacy@walkonfour.org" style="color:#8a7c66">privacy@walkonfour.org</a></div>
+    <div style="margin-top:4px">לשאלות פרטיות / עיון / מחיקה: <a href="mailto:ghjkfuik@gmail.com" style="color:#8a7c66">ghjkfuik@gmail.com</a></div>
   </div>`
 }
 
@@ -63,5 +63,5 @@ export function emailFooterText(opts: { email: string; kind: EmailKind }): strin
 קהילה על ארבע · ${SITE_URL}
 ${kindLine}
 נשלח דרך תשתית של ez-suit.org (אותו מפעיל).
-פניות פרטיות: privacy@walkonfour.org`
+פניות פרטיות: ghjkfuik@gmail.com`
 }
