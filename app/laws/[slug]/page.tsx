@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { buildMetadata, SITE_URL } from '@/lib/seo'
+import { buildMetadata } from '@/lib/seo'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
-import { JsonLd, breadcrumbSchema, faqSchema } from '@/components/seo/JsonLd'
+import { JsonLd, articleSchema, breadcrumbSchema, faqSchema } from '@/components/seo/JsonLd'
 import { lawSpokes, getLawSpoke } from '@/lib/lawSpokes'
 import { officialSources } from '@/lib/lawsContent'
 
@@ -21,15 +21,14 @@ export default function LawSpokePage({ params }: { params: { slug: string } }) {
   if (!s) notFound()
 
   const schemas: Record<string, unknown>[] = [
-    {
-      '@context': 'https://schema.org',
-      '@type': 'Article',
-      headline: s.title,
+    articleSchema({
+      title: s.title,
       description: s.description,
-      url: `${SITE_URL}/laws/${s.slug}`,
-      inLanguage: 'he-IL',
-      author: { '@type': 'Organization', name: 'walkonfour' },
-    },
+      path: `/laws/${s.slug}`,
+      section: 'חוקים על כלבים',
+      datePublished: '2026-07-01',
+      dateModified: '2026-07-01',
+    }),
     breadcrumbSchema([
       { name: 'בית', path: '/' },
       { name: 'חוקים על כלבים', path: '/laws' },

@@ -4,6 +4,7 @@ import { Reveal3D } from '@/components/fx/Reveal3D'
 import { Tilt3D } from '@/components/fx/Tilt3D'
 
 export const metadata = {
+  alternates: { canonical: '/tools' },
   title: 'כלים חינמיים · קהילה על ארבע',
   description:
     'עשרה כלים שבנינו כי חיפשנו אותם בעצמנו: כמה באמת עולה כלב בחודש, איזה גזע יסתדר עם הסלון שלכם, כמה אוכל למדוד, מתי לרוץ לווטרינר. בלי הרשמה, בלי תשלום.',

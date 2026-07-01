@@ -18,8 +18,8 @@ export const relatedBreeds: Record<string, RelatedBreed[]> = {
   golden: [
     { slug: 'labrador', reason: 'משפחתי דומה, פחות סירוק' },
     { slug: 'goldendoodle', reason: 'הכלאה שלו עם פודל - נשירה מופחתת' },
-    { slug: 'bernese', reason: 'רגוע משפחתי גדול' },
-    { slug: 'cavalier', reason: 'משפחתי קטן ורגוע' },
+    { slug: 'saint-bernard', reason: 'ענק רגוע ומשפחתי' },
+    { slug: 'cocker', reason: 'משפחתי קטן ורגוע' },
   ],
   goldendoodle: [
     { slug: 'golden', reason: 'אחד מההורים' },
@@ -27,7 +27,7 @@ export const relatedBreeds: Record<string, RelatedBreed[]> = {
     { slug: 'labrador', reason: 'אופי דומה, יותר נשירה' },
   ],
   cocker: [
-    { slug: 'cavalier', reason: 'משפחתי קטן וחיבוקי' },
+    { slug: 'shih-tzu', reason: 'משפחתי קטן וחיבוקי' },
     { slug: 'beagle', reason: 'גודל דומה, אנרגטי' },
     { slug: 'golden', reason: 'אופי דומה, גדול יותר' },
   ],
@@ -111,22 +111,16 @@ export const relatedBreeds: Record<string, RelatedBreed[]> = {
     { slug: 'bulldog', reason: 'אח גדול יותר' },
     { slug: 'pomeranian', reason: 'קטן משפחתי' },
     { slug: 'corgi', reason: 'קומפקטי וחברותי' },
-    { slug: 'cavalier', reason: 'משפחתי רגוע קטן' },
+    { slug: 'shih-tzu', reason: 'משפחתי רגוע קטן' },
   ],
   bulldog: [
     { slug: 'french-bulldog', reason: 'גרסה קטנה יותר' },
     { slug: 'amstaff', reason: 'מבנה גוף דומה' },
     { slug: 'boxer', reason: 'קרוב משפחתית' },
   ],
-  cavalier: [
-    { slug: 'shih-tzu', reason: 'קטן ורגוע' },
-    { slug: 'maltese', reason: 'משפחתי קטן' },
-    { slug: 'french-bulldog', reason: 'רגוע ומשפחתי' },
-    { slug: 'cocker', reason: 'דומה בגודל ואופי' },
-  ],
   'shih-tzu': [
     { slug: 'maltese', reason: 'דומה - קטן ופרווה ארוכה' },
-    { slug: 'cavalier', reason: 'משפחתי קטן' },
+    { slug: 'french-bulldog', reason: 'משפחתי קטן ורגוע' },
     { slug: 'yorkshire', reason: 'קטן ופרווה ארוכה' },
   ],
   maltese: [
@@ -154,18 +148,14 @@ export const relatedBreeds: Record<string, RelatedBreed[]> = {
   poodle: [
     { slug: 'goldendoodle', reason: 'הכלאה שלו עם גולדן' },
     { slug: 'maltese', reason: 'אלגנטי וחכם' },
-    { slug: 'cavalier', reason: 'חברותי וחכם' },
+    { slug: 'cocker', reason: 'חברותי ולבבי' },
   ],
 
   // ─── ענקים ───
   'saint-bernard': [
-    { slug: 'bernese', reason: 'ענק רגוע משווייץ' },
+    { slug: 'labrador', reason: 'גדול רגוע ומשפחתי' },
     { slug: 'cane-corso', reason: 'גדול ורגוע' },
     { slug: 'golden', reason: 'משפחתי רגוע' },
-  ],
-  bernese: [
-    { slug: 'saint-bernard', reason: 'ענק שווייצרי' },
-    { slug: 'golden', reason: 'רגוע ומשפחתי' },
   ],
 
   // ─── ציד / טריירים ───

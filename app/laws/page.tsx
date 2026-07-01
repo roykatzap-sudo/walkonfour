@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import { buildMetadata, SITE_URL } from '@/lib/seo'
+import { buildMetadata } from '@/lib/seo'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
-import { JsonLd, breadcrumbSchema, faqSchema } from '@/components/seo/JsonLd'
+import { JsonLd, articleSchema, breadcrumbSchema, faqSchema } from '@/components/seo/JsonLd'
 import { lawsContent, officialSources } from '@/lib/lawsContent'
 
 const SPOKE_PAGES = [
@@ -22,15 +22,14 @@ export function generateMetadata() {
 
 export default function LawsPage() {
   const schemas: Record<string, unknown>[] = [
-    {
-      '@context': 'https://schema.org',
-      '@type': 'Article',
-      headline: lawsContent.title,
+    articleSchema({
+      title: lawsContent.title,
       description: lawsContent.description,
-      url: `${SITE_URL}/laws`,
-      inLanguage: 'he-IL',
-      author: { '@type': 'Organization', name: 'walkonfour' },
-    },
+      path: '/laws',
+      section: 'חוקים על כלבים',
+      datePublished: '2026-07-01',
+      dateModified: '2026-07-01',
+    }),
     breadcrumbSchema([
       { name: 'בית', path: '/' },
       { name: 'חוקים על כלבים בישראל', path: '/laws' },

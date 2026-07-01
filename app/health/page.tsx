@@ -8,6 +8,7 @@ import { EmergencyKit } from '@/components/health/EmergencyKit'
 import './health.css'
 
 export const metadata = {
+  alternates: { canonical: '/health' },
   title: 'מתי לרוץ לווטרינר · קהילה על ארבע',
   description:
     'מדריך כללי לרגעים שמפחידים: סימני אזהרה לפי דחיפות, ציר חיסונים לגור, וטיפים לקיץ הישראלי. מידע כללי בלבד - לא תחליף לווטרינר שמכיר את הכלב שלכם.',

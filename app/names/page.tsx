@@ -2,6 +2,7 @@ import { NameGenerator } from '@/components/tools/NameGenerator'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
 
 export const metadata = {
+  alternates: { canonical: '/names' },
   title: 'שמות לכלב · קהילה על ארבע',
   description:
     'נגמרו הרעיונות אחרי "מקס" ו"לונה"? הגרילו שמות בעברית ובלעז לפי אופי - חמוד, קשוח, מצחיק או קלאסי - ראו מה כל שם אומר ושמרו את האהובים.',

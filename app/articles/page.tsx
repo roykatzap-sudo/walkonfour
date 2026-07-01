@@ -3,6 +3,7 @@ import { ArticleSearch } from '@/components/articles/ArticleSearch'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
 
 export const metadata = {
+  alternates: { canonical: '/articles' },
   title: 'מדריכי הגזעים · קהילה על ארבע',
   description: 'מדריך מלא לכל גזע כלב - אופי, התאמה למשפחה, בריאות, טיפוח ואילוף. עברית, מקיף ומדויק.',
 }

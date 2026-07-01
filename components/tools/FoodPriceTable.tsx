@@ -100,7 +100,7 @@ export function FoodPriceTable() {
           <div style={{ background: '#fff', borderRadius: 12, padding: '10px 18px', minWidth: 120, textAlign: 'center', border: '1.5px solid var(--brand)' }}>
             <div style={{ fontSize: 12, color: '#8a7c66' }}>מחיר לק״ג</div>
             <div style={{ fontSize: 22, fontWeight: 900, color: 'var(--brand)', lineHeight: 1.1 }}>
-              {ppk !== null ? `₪${ppk.toFixed(1)}` : '—'}
+              {ppk !== null ? `₪${ppk.toFixed(1)}` : '-'}
             </div>
           </div>
         </div>

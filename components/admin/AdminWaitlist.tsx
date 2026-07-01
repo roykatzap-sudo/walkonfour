@@ -149,8 +149,8 @@ export function AdminWaitlist() {
                     {new Date(r.created_at).toLocaleDateString('he-IL')}
                   </td>
                   <td style={{ padding: '11px 14px', color: 'var(--ink)' }}>{r.email}</td>
-                  <td style={{ padding: '11px 14px', color: 'var(--ink)' }}>{r.name || '—'}</td>
-                  <td style={{ padding: '11px 14px', color: 'var(--ink)' }}>{r.city || '—'}</td>
+                  <td style={{ padding: '11px 14px', color: 'var(--ink)' }}>{r.name || '-'}</td>
+                  <td style={{ padding: '11px 14px', color: 'var(--ink)' }}>{r.city || '-'}</td>
                   <td style={{ padding: '11px 14px', textAlign: 'center' }}>
                     {r.marketing_consent ? (
                       <span style={{ background: 'var(--brand)', color: '#fff', borderRadius: 999, padding: '3px 10px', fontSize: 12.5, fontWeight: 800 }}>אישר</span>

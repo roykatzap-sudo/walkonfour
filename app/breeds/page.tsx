@@ -3,6 +3,7 @@ import { BreedGallery } from '@/components/breeds/BreedGallery'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
 
 export const metadata = {
+  alternates: { canonical: '/breeds' },
   title: 'גזעי כלבים - כל הגזעים הנפוצים בישראל | קהילה על ארבע',
   description:
     `מדריך גזעי כלבים מלא: סוגי כלבים, איזה כלב מתאים לכם, כלב לדירה, כלב לילדים - אופי, גודל, נטייה לתוקפנות, טיפוח ואילוף ל-${breeds.length} הגזעים הנפוצים בישראל.`,

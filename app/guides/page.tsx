@@ -6,6 +6,7 @@ import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { CostCalculator } from '@/components/tools/CostCalculator'
 
 export const metadata = {
+  alternates: { canonical: '/guides' },
   title: 'מדריכי טיפול ואילוף · קהילה על ארבע',
   description:
     'המדריכים שבאמת עוזרים: גמילה, משיכה ברצועה, חרדת נטישה, חום בקיץ הישראלי וזיקוקים. בלי תיאוריה מנופחת, רק מה שעובד.',
@@ -107,7 +108,7 @@ export default function GuidesPage() {
       {/* קישור צולב למדריכי הגזעים */}
       <div className="card" style={{ marginTop: 24, textAlign: 'center', padding: 28 }}>
         <h3 style={{ fontSize: 21, fontWeight: 900, marginBottom: 6 }}>מחפשים מידע על גזע מסוים?</h3>
-        <p className="muted" style={{ marginBottom: 18 }}>יש לנו מדריך מלא לכל אחד מ-27 הגזעים הנפוצים בארץ.</p>
+        <p className="muted" style={{ marginBottom: 18 }}>יש לנו מדריך מלא לכל אחד מ-29 הגזעים הנפוצים בארץ.</p>
         <Link href="/articles" className="btn btn-primary">למדריכי הגזעים</Link>
       </div>
     </main>

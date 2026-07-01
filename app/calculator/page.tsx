@@ -3,6 +3,7 @@ import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { JsonLd, softwareAppSchema } from '@/components/seo/JsonLd'
 
 export const metadata = {
+  alternates: { canonical: '/calculator' },
   title: 'כמה עולה כלב בחודש · קהילה על ארבע',
   description:
     'מזון, וטרינר, ביטוח, טיפוח ואבזור - המספר האמיתי שאף אחד לא אומר לכם לפני שהגור בבית. בוחרים גודל וסגנון, ומקבלים עלות חודשית ושנתית עם פירוק מלא.',

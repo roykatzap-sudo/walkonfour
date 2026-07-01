@@ -40,7 +40,6 @@ const fredoka = Fredoka({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  alternates: { canonical: SITE_URL },
   icons: {
     // אייקון יחיד וברור, מספיק גדול (512²) שגוגל יזהה - בלי כפילויות וה-sizes הקטן שבלבל אותו
     icon: [

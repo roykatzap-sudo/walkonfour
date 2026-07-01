@@ -55,6 +55,8 @@ export function Footer() {
         <Link href="/map">מפת גינות</Link>
         <Link href="/walks">מסלולי טיול</Link>
         <Link href="/cities">מדריכי ערים</Link>
+        <Link href="/laws">חוקים על כלבים</Link>
+        <Link href="/compare">השוואות גזעים</Link>
         <Link href="/canaan-dog">סיפור הכלב הכנעני</Link>
       </nav>
       <div className="kv-footer-copy" style={{ marginTop: 14 }}>

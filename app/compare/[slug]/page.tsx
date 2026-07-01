@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { buildMetadata, SITE_URL } from '@/lib/seo'
+import { buildMetadata } from '@/lib/seo'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
-import { JsonLd, breadcrumbSchema, faqSchema } from '@/components/seo/JsonLd'
+import { JsonLd, articleSchema, breadcrumbSchema, faqSchema } from '@/components/seo/JsonLd'
 import { comparisons, getComparison } from '@/lib/comparisons'
 import { breeds } from '@/lib/breeds'
 
@@ -23,15 +23,14 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
   const breedB = breeds.find((b) => b.slug === c.breedB)
 
   const schemas: Record<string, unknown>[] = [
-    {
-      '@context': 'https://schema.org',
-      '@type': 'Article',
-      headline: c.title,
+    articleSchema({
+      title: c.title,
       description: c.excerpt,
-      url: `${SITE_URL}/compare/${c.slug}`,
-      inLanguage: 'he-IL',
-      author: { '@type': 'Organization', name: 'walkonfour' },
-    },
+      path: `/compare/${c.slug}`,
+      section: 'השוואות גזעים',
+      datePublished: '2026-07-01',
+      dateModified: '2026-07-01',
+    }),
     breadcrumbSchema([
       { name: 'בית', path: '/' },
       { name: 'גזעים', path: '/breeds' },
