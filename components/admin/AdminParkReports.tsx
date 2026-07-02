@@ -9,45 +9,22 @@ const TABS: { key: string; label: string }[] = [
   { key: 'rejected', label: 'נדחו' },
 ]
 
-const LS_KEY = 'kv-admin-token'
-
 export function AdminParkReports() {
-  const [token, setToken] = useState('')
-  const [input, setInput] = useState('')
-  const [authed, setAuthed] = useState(false)
   const [configured, setConfigured] = useState(true)
   const [tab, setTab] = useState('pending')
   const [reports, setReports] = useState<ParkReport[]>([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [err, setErr] = useState('')
 
-  useEffect(() => {
-    const t = typeof window !== 'undefined' ? localStorage.getItem(LS_KEY) : null
-    if (t) {
-      setToken(t)
-      setAuthed(true)
-    }
-  }, [])
-
-  const load = useCallback(async (tk: string, status: string) => {
+  const load = useCallback(async (status: string) => {
     setLoading(true)
     setErr('')
     try {
-      const res = await fetch(`/api/admin/park-reports?status=${status}`, { headers: { 'x-admin-token': tk } })
+      const res = await fetch(`/api/admin/park-reports?status=${status}`, { cache: 'no-store' })
       const data = await res.json()
-      if (data.configured === false) {
-        setConfigured(false)
-        setAuthed(false)
-        return
-      }
-      if (res.status === 401) {
-        setErr('טוקן שגוי')
-        setAuthed(false)
-        localStorage.removeItem(LS_KEY)
-        return
-      }
+      if (data.configured === false) { setConfigured(false); return }
+      if (res.status === 401) { setErr('אין הרשאה - התחברו מחדש'); return }
       setReports(data.reports || [])
-      setAuthed(true)
     } catch {
       setErr('שגיאת רשת')
     } finally {
@@ -55,34 +32,16 @@ export function AdminParkReports() {
     }
   }, [])
 
-  useEffect(() => {
-    if (authed && token) load(token, tab)
-  }, [authed, token, tab, load])
-
-  function submitToken(e: React.FormEvent) {
-    e.preventDefault()
-    const t = input.trim()
-    if (!t) return
-    localStorage.setItem(LS_KEY, t)
-    setToken(t)
-    setAuthed(true)
-  }
+  useEffect(() => { load(tab) }, [tab, load])
 
   async function act(id: number, status: 'approved' | 'rejected') {
     setReports((prev) => prev.filter((r) => r.id !== id)) // optimistי
     await fetch('/api/admin/park-reports', {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, status }),
     })
-    load(token, tab)
-  }
-
-  function logout() {
-    localStorage.removeItem(LS_KEY)
-    setToken('')
-    setAuthed(false)
-    setInput('')
+    load(tab)
   }
 
   if (!configured) {
@@ -96,44 +55,26 @@ export function AdminParkReports() {
     )
   }
 
-  if (!authed) {
-    return (
-      <form onSubmit={submitToken} style={{ maxWidth: 360, margin: '0 auto', display: 'grid', gap: 12 }}>
-        <input
-          type="password"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="טוקן אדמין"
-          aria-label="טוקן אדמין"
-          style={{ padding: '13px 16px', borderRadius: 14, border: '1.5px solid rgba(201,154,91,.3)', fontSize: 16 }}
-        />
-        <button type="submit" className="btn btn-primary">כניסה</button>
-        {err && <div style={{ color: '#b04a3a', fontSize: 13.5, textAlign: 'center' }}>{err}</div>}
-      </form>
-    )
-  }
-
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
-        <div style={{ display: 'flex', gap: 8 }}>
-          {TABS.map((t) => (
-            <button
-              key={t.key}
-              type="button"
-              onClick={() => setTab(t.key)}
-              className={`chip3d${tab === t.key ? '' : ''}`}
-              style={{ cursor: 'pointer', background: tab === t.key ? 'var(--brand)' : '#fff', color: tab === t.key ? '#fff' : 'var(--ink)', border: '1px solid rgba(201,154,91,.3)' }}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-        <button type="button" onClick={logout} style={{ fontSize: 13, color: '#8a7c66', background: 'none', border: 'none', cursor: 'pointer' }}>יציאה</button>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+        {TABS.map((t) => (
+          <button
+            key={t.key}
+            type="button"
+            onClick={() => setTab(t.key)}
+            className="chip3d"
+            style={{ cursor: 'pointer', background: tab === t.key ? 'var(--brand)' : '#fff', color: tab === t.key ? '#fff' : 'var(--ink)', border: '1px solid rgba(201,154,91,.3)' }}
+          >
+            {t.label}
+          </button>
+        ))}
       </div>
 
       {loading ? (
         <p style={{ textAlign: 'center', color: '#8a7c66', padding: 30 }}>טוען…</p>
+      ) : err ? (
+        <p style={{ textAlign: 'center', color: '#b04a3a', padding: 30 }}>{err}</p>
       ) : reports.length === 0 ? (
         <p style={{ textAlign: 'center', color: '#8a7c66', padding: 30 }}>אין דיווחים בקטגוריה הזו.</p>
       ) : (

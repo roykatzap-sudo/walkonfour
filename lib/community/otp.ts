@@ -11,7 +11,7 @@ import { createHash, randomInt } from 'crypto'
 import type { Client } from 'pg'
 import { Resend } from 'resend'
 import { withCommunityDb, logAudit } from './db'
-import { OTP_TTL_MIN, OTP_MAX_ATTEMPTS } from './schema'
+import { OTP_TTL_MIN, OTP_MAX_ATTEMPTS, OTP_MAX_ATTEMPTS_PER_EMAIL, OTP_ATTEMPT_WINDOW_MIN } from './schema'
 import { emailFooterHtml, emailFooterText } from './emailFooter'
 
 const RESEND_KEY = process.env.RESEND_API_KEY
@@ -23,6 +23,11 @@ const REPLY_TO = process.env.COMMUNITY_EMAIL_REPLY_TO || 'community@walkonfour.o
 
 function hashCode(code: string): string {
   return createHash('sha256').update(code).digest('hex')
+}
+
+/** מסכה למייל בלוגים - שומר רק אות ראשונה ודומיין. a***@example.com */
+function maskEmail(email: string): string {
+  return email.replace(/(.).*(@.*)/, '$1***$2')
 }
 
 function generateCode(): string {
@@ -58,8 +63,10 @@ export async function requestOtp(email: string, ip: string | null): Promise<Requ
     }
     const code = generateCode()
     const expiresAt = new Date(Date.now() + OTP_TTL_MIN * 60_000)
-    // מחיקה של OTP קודמים פעילים לאותו מייל - רק אחד פעיל פר מייל
-    await client.query("delete from community_otp where lower(email) = lower($1) and used_at is null", [email])
+    // ביטול OTP קודמים פעילים (רק אחד פעיל פר מייל). מסמנים used_at במקום
+    // למחוק, כדי לשמר את מונה הניסיונות לחישוב lockout מצטבר (אנטי brute-force
+    // שלא ניתן לאיפוס ע"י בקשת קוד חדש).
+    await client.query("update community_otp set used_at = now() where lower(email) = lower($1) and used_at is null", [email])
     await client.query(
       'insert into community_otp (email, code_hash, expires_at) values ($1, $2, $3)',
       [email.toLowerCase(), hashCode(code), expiresAt],
@@ -78,7 +85,7 @@ export async function requestOtp(email: string, ip: string | null): Promise<Requ
       })
       if ((sendRes as { error?: { message?: string; name?: string } | null }).error) {
         const err = (sendRes as { error: { message?: string; name?: string } }).error
-        console.error('[otp] Resend rejected:', err.name, err.message, 'from:', FROM, 'to:', email)
+        console.error('[otp] Resend rejected:', err.name, err.message, 'from:', FROM, 'to:', maskEmail(email))
         await logAudit(client, null, 'otp.email_failed', ip, {
           email_lc: email.toLowerCase(),
           resend_error: err.message?.slice(0, 200) || 'unknown',
@@ -107,6 +114,18 @@ export type VerifyOtpResult =
  */
 export async function verifyOtp(email: string, code: string, ip: string | null): Promise<VerifyOtpResult> {
   const result = await withCommunityDb(async (client) => {
+    // lockout מצטבר לכל מייל: סופרים ניסיונות על פני כל הקודים בחלון הזמן
+    // (גם קודים שכבר סומנו used_at). מונע איפוס מונה ע"י בקשת קוד חדש שוב ושוב.
+    const totalRes = await client.query(
+      `select coalesce(sum(attempts), 0)::int as total
+       from community_otp
+       where lower(email) = lower($1) and created_at > now() - ($2 || ' minutes')::interval`,
+      [email, String(OTP_ATTEMPT_WINDOW_MIN)],
+    )
+    if ((totalRes.rows[0]?.total ?? 0) >= OTP_MAX_ATTEMPTS_PER_EMAIL) {
+      await logAudit(client, null, 'otp.verify.email_locked', ip, { email_lc: email.toLowerCase() })
+      return { ok: false as const, reason: 'too_many_attempts' as const }
+    }
     // מחפש OTP פעיל
     const otpRes = await client.query(
       `select id, code_hash, attempts, expires_at, used_at
@@ -117,6 +136,13 @@ export async function verifyOtp(email: string, code: string, ip: string | null):
     )
     const row = otpRes.rows[0]
     if (!row) {
+      // סופרים גם ניסיון על מייל בלי קוד פעיל - אחרת תוקף מבקש קוד, מבזבז 4
+      // ניסיונות, מבקש קוד חדש, וחוזר. רושמים ניסיון-כושל דמה בחלון.
+      await client.query(
+        `insert into community_otp (email, code_hash, expires_at, attempts, used_at)
+         values ($1, '', now(), 1, now())`,
+        [email.toLowerCase()],
+      )
       await logAudit(client, null, 'otp.verify.no_active_code', ip, { email_lc: email.toLowerCase() })
       return { ok: false as const, reason: 'invalid' as const }
     }

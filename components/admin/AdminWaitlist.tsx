@@ -11,32 +11,21 @@ type Row = {
   created_at: string
 }
 
-const LS_KEY = 'kv-admin-token'
-
 export function AdminWaitlist() {
-  const [token, setToken] = useState('')
-  const [input, setInput] = useState('')
-  const [authed, setAuthed] = useState(false)
   const [configured, setConfigured] = useState(true)
   const [rows, setRows] = useState<Row[]>([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [err, setErr] = useState('')
   const [query, setQuery] = useState('')
 
-  useEffect(() => {
-    const t = typeof window !== 'undefined' ? localStorage.getItem(LS_KEY) : null
-    if (t) { setToken(t); setAuthed(true) }
-  }, [])
-
-  const load = useCallback(async (tk: string) => {
+  const load = useCallback(async () => {
     setLoading(true); setErr('')
     try {
-      const res = await fetch('/api/admin/waitlist', { headers: { 'x-admin-token': tk } })
-      if (res.status === 503) { setConfigured(false); setAuthed(false); return }
+      const res = await fetch('/api/admin/waitlist', { cache: 'no-store' })
+      if (res.status === 503) { setConfigured(false); return }
+      if (res.status === 401) { setErr('אין הרשאה - התחברו מחדש'); return }
       const data = await res.json()
-      if (res.status === 401) { setErr('טוקן שגוי'); setAuthed(false); localStorage.removeItem(LS_KEY); return }
       setRows(data.rows || [])
-      setAuthed(true)
     } catch {
       setErr('שגיאת רשת')
     } finally {
@@ -44,13 +33,7 @@ export function AdminWaitlist() {
     }
   }, [])
 
-  useEffect(() => { if (authed && token) load(token) }, [authed, token, load])
-
-  function submitToken(e: React.FormEvent) {
-    e.preventDefault()
-    const t = input.trim(); if (!t) return
-    localStorage.setItem(LS_KEY, t); setToken(t); setAuthed(true)
-  }
+  useEffect(() => { load() }, [load])
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -90,22 +73,6 @@ export function AdminWaitlist() {
     )
   }
 
-  if (!authed) {
-    return (
-      <form onSubmit={submitToken} className="card" style={{ padding: 24, display: 'grid', gap: 12, maxWidth: 380, margin: '0 auto' }}>
-        <h2 style={{ fontSize: 20, fontWeight: 900, margin: 0 }}>פאנל אדמין</h2>
-        <p style={{ fontSize: 14, color: 'var(--text-muted)', margin: 0 }}>הזינו את טוקן האדמין כדי לצפות ברשימת ההמתנה.</p>
-        <input
-          type="password" value={input} onChange={(e) => setInput(e.target.value)}
-          placeholder="טוקן אדמין" aria-label="טוקן אדמין"
-          style={{ padding: '13px 16px', borderRadius: 14, border: '1.5px solid rgba(201,154,91,.35)', fontSize: 16 }}
-        />
-        <button type="submit" className="btn btn-primary">כניסה</button>
-        {err && <div role="alert" style={{ fontSize: 13.5, color: '#a23c2e', textAlign: 'center' }}>{err}</div>}
-      </form>
-    )
-  }
-
   return (
     <div style={{ display: 'grid', gap: 16 }}>
       <div className="card" style={{ padding: '14px 18px', display: 'flex', gap: 18, alignItems: 'center', flexWrap: 'wrap' }}>
@@ -128,6 +95,8 @@ export function AdminWaitlist() {
 
       {loading ? (
         <div className="card" style={{ padding: 30, textAlign: 'center', color: 'var(--text-muted)' }}>טוען...</div>
+      ) : err ? (
+        <div className="card" style={{ padding: 30, textAlign: 'center', color: '#b04a3a' }}>{err}</div>
       ) : filtered.length === 0 ? (
         <div className="card" style={{ padding: 30, textAlign: 'center', color: 'var(--text-muted)' }}>אין רשומות תואמות.</div>
       ) : (

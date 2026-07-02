@@ -1,12 +1,13 @@
 /* ════════════════════════════════════════════════════════════
    אחסון תמונות כלבים ב-Supabase Storage.
    - bucket: dog-photos (public read, רק שרת כותב/מוחק)
-   - שם קובץ: {user_id}/{dog_id}-{timestamp}.jpg (uniqueness + ownership)
+   - שם קובץ: {user_id}/{dog_id}-{uuid}.jpg (ownership + כתובת לא נחיזה)
    - עיבוד: sharp resize 1024px + JPEG q=80 + EXIF strip חובה
    - גודל מקסימלי לכניסה: 8MB. אחרי resize רוב התמונות = ~120-180KB
    ════════════════════════════════════════════════════════════ */
 
 import sharp from 'sharp'
+import { randomUUID } from 'crypto'
 import { createClient } from '@supabase/supabase-js'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || ''
@@ -44,7 +45,8 @@ export async function processDogImage(input: Buffer): Promise<Buffer> {
 /** העלאת תמונה אחרי עיבוד. מחזיר URL פומבי. */
 export async function uploadDogImage(userId: number, dogId: number, processed: Buffer): Promise<string | null> {
   if (!storageConfigured()) return null
-  const path = `${userId}/${dogId}-${Date.now()}.jpg`
+  // סיומת אקראית (UUID) - מונע ניחוש/enumeration של כתובות תמונות ב-bucket הציבורי
+  const path = `${userId}/${dogId}-${randomUUID()}.jpg`
   const supa = client()
   const { error } = await supa.storage.from(BUCKET).upload(path, processed, {
     contentType: 'image/jpeg',

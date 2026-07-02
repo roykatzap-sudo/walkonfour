@@ -1,4 +1,5 @@
 import { buildMetadata } from '@/lib/seo'
+import { AdminGate } from '@/components/admin/AdminGate'
 import { AdminParkReports } from '@/components/admin/AdminParkReports'
 
 export const metadata = buildMetadata({
@@ -16,7 +17,7 @@ export default function AdminParkReportsPage() {
       <p className="page-sub" style={{ fontSize: 15.5, color: '#6a6155', marginBottom: 24 }}>
         אשרו או דחו גינות שמשתמשים דיווחו עליהן. גינה שתאושר תופיע על המפה.
       </p>
-      <AdminParkReports />
+      <AdminGate><AdminParkReports /></AdminGate>
     </main>
   )
 }

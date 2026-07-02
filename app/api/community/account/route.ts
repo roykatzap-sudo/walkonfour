@@ -83,8 +83,9 @@ export async function DELETE(req: Request) {
     return { ok: (del.rowCount ?? 0) > 0, photoUrls }
   })
   if (!result?.ok) return NextResponse.json({ ok: false, error: 'not_found' }, { status: 404 })
-  // מחיקת כל התמונות מ-storage (async, לא חוסם)
-  for (const url of result.photoUrls) void deleteDogImage(url)
+  // מחיקת כל התמונות מ-storage. זכות להישכח - חייבים לחכות שהמחיקה תושלם בפועל
+  // ולא fire-and-forget, אחרת תמונה עלולה לשרוד ב-bucket ציבורי אחרי מחיקת החשבון.
+  await Promise.allSettled(result.photoUrls.map((url) => deleteDogImage(url)))
   const res = NextResponse.json({ ok: true })
   res.cookies.delete(COMMUNITY_COOKIE)
   res.cookies.delete(`${COMMUNITY_COOKIE}_pending`)

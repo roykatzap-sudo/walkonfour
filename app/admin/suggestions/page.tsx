@@ -1,4 +1,5 @@
 import { buildMetadata } from '@/lib/seo'
+import { AdminGate } from '@/components/admin/AdminGate'
 import { AdminSuggestions } from '@/components/admin/AdminSuggestions'
 
 export const metadata = buildMetadata({
@@ -16,7 +17,7 @@ export default function AdminSuggestionsPage() {
       <p className="page-sub" style={{ fontSize: 15.5, color: '#6a6155', marginBottom: 24 }}>
         כל ההצעות מהמשתמשים, מקובצות לפי העמוד שממנו נשלחו. לכל הצעה מסומן הסוג (גינה / מסלול / גזע / כללי).
       </p>
-      <AdminSuggestions />
+      <AdminGate><AdminSuggestions /></AdminGate>
     </main>
   )
 }

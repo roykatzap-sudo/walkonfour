@@ -4,6 +4,7 @@
    ════════════════════════════════════════════════════════════ */
 
 import { timingSafeEqual } from 'crypto'
+import { isAdminAuthed } from './adminSession'
 
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN
 
@@ -19,6 +20,15 @@ export function checkAdminToken(token: string | null | undefined): boolean {
   const b = Buffer.from(ADMIN_TOKEN!)
   if (a.length !== b.length) return false
   return timingSafeEqual(a, b)
+}
+
+/**
+ * אימות בקשת אדמין: קודם עוגיית ה-session ה-httpOnly (הדרך המומלצת),
+ * ובתאימות לאחור גם כותרת x-admin-token (לסקריפטים/כלים חיצוניים).
+ */
+export function isAdminRequest(req: Request): boolean {
+  if (isAdminAuthed()) return true
+  return checkAdminToken(req.headers.get('x-admin-token'))
 }
 
 /** אימות שם משתמש + סיסמה מול ADMIN_USERNAME / ADMIN_PASSWORD ב-env. */

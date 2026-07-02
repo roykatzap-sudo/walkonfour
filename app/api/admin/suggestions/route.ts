@@ -1,19 +1,15 @@
 import { NextResponse } from 'next/server'
-import { adminTokenSet, checkAdminToken } from '@/lib/adminAuth'
+import { adminTokenSet, isAdminRequest } from '@/lib/adminAuth'
 import { listSuggestions, setSuggestionStatus, suggestionsConfigured } from '@/lib/suggestions'
 
 export const dynamic = 'force-dynamic'
-
-function token(req: Request): string | null {
-  return req.headers.get('x-admin-token')
-}
 
 /** אדמין: רשימת הצעות (כל הסטטוסים או לפי status/city). מוגן בטוקן. */
 export async function GET(req: Request) {
   if (!suggestionsConfigured() || !adminTokenSet()) {
     return NextResponse.json({ configured: false }, { status: 200 })
   }
-  if (!checkAdminToken(token(req))) {
+  if (!isAdminRequest(req)) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
   const url = new URL(req.url)
@@ -27,7 +23,7 @@ export async function PATCH(req: Request) {
   if (!suggestionsConfigured() || !adminTokenSet()) {
     return NextResponse.json({ configured: false }, { status: 200 })
   }
-  if (!checkAdminToken(token(req))) {
+  if (!isAdminRequest(req)) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
   const body = await req.json().catch(() => ({}))

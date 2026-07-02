@@ -1,4 +1,5 @@
 import { buildMetadata } from '@/lib/seo'
+import { AdminGate } from '@/components/admin/AdminGate'
 import { AdminWaitlist } from '@/components/admin/AdminWaitlist'
 
 export const metadata = buildMetadata({
@@ -16,7 +17,7 @@ export default function AdminWaitlistPage() {
       <p className="page-sub" style={{ fontSize: 15.5, color: '#6a6155', marginBottom: 24 }}>
         כל מי שנרשם לרשימה. רואים מי אישר דיוור, אפשר לחפש לפי מייל / שם / עיר, ולהוריד CSV.
       </p>
-      <AdminWaitlist />
+      <AdminGate><AdminWaitlist /></AdminGate>
     </main>
   )
 }

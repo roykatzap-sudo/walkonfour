@@ -154,6 +154,9 @@ export const CURRENT_CONSENT_VERSION = '2026-06-29-v1-placeholder'
 /** TTL constants. */
 export const OTP_TTL_MIN = 10
 export const OTP_MAX_ATTEMPTS = 5
+/** תקרת ניסיונות מצטברת לכל מייל בחלון זמן - עמידה מול איפוס ע"י בקשת קוד חדש. */
+export const OTP_MAX_ATTEMPTS_PER_EMAIL = 10
+export const OTP_ATTEMPT_WINDOW_MIN = 15
 export const PLAN_GRACE_MIN = 30 // התיאום נשאר 30 דק׳ אחרי שעת ההגעה לפני שנמחק
 export const PLAN_HORIZON_HOURS = 24 // לא ניתן לתאם יותר מ-24 שעות קדימה
 export const CHAT_TTL_HOURS = 24
