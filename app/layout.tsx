@@ -43,6 +43,8 @@ export const metadata: Metadata = {
   icons: {
     // אייקון יחיד וברור, מספיק גדול (512²) שגוגל יזהה - בלי כפילויות וה-sizes הקטן שבלבל אותו
     icon: [
+      // 96x96 = כפולה של 48 - הגודל שגוגל ממליץ עליו רשמית לתוצאות חיפוש
+      { url: '/icon-96.png', type: 'image/png', sizes: '96x96' },
       { url: '/icon.png', type: 'image/png', sizes: '512x512' },
       { url: '/favicon.ico', sizes: 'any' },
     ],
