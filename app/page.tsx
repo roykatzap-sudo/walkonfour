@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Counter } from '@/components/shared/Counter'
 import { MapSection } from '@/components/map/MapSection'
 import { Reveal3D } from '@/components/fx/Reveal3D'
@@ -76,6 +76,21 @@ const srcSetFor = (id: string, widths: number[]) =>
 
 export default function Home() {
   const heroImgRef = useRef<HTMLDivElement>(null)
+
+  // CTA דביק לרשימת ההמתנה - מופיע אחרי גלילה קלה, ניתן לסגירה.
+  const [stickyCta, setStickyCta] = useState(false)
+  const [ctaDismissed, setCtaDismissed] = useState(false)
+
+  useEffect(() => {
+    if (ctaDismissed) return
+    const onScroll = () => {
+      // מופיע אחרי גלילה מעבר לגובה מסך אחד (עברנו את ההירו)
+      setStickyCta(window.scrollY > window.innerHeight * 0.9)
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [ctaDismissed])
 
   // פרלקס ישירות על ה-DOM דרך ref - בלי setState, בלי re-render לכל תזוזת עכבר.
   // throttle עם requestAnimationFrame + כיבוד prefers-reduced-motion.
@@ -357,6 +372,7 @@ export default function Home() {
                   <div className="kv-card" style={{ padding: '26px 24px', display: 'flex', flexDirection: 'column', height: '100%' }}>
                     <div
                       aria-hidden="true"
+                      className="kv-tool-icon"
                       style={{
                         fontSize: 34,
                         width: 64,
@@ -381,6 +397,25 @@ export default function Home() {
               </Tilt3D>
             </Reveal3D>
           ))}
+        </div>
+      </section>
+
+      {/* CTA חוזר - רשימת המתנה */}
+      <section className="wl-band" aria-labelledby="wl-band-heading">
+        <div className="wl-band-inner">
+          <span className="wl-band-paw" aria-hidden="true">🐾</span>
+          <h2 id="wl-band-heading" className="wl-band-title display">
+            הכלב שלכם כבר <em>בפנים?</em>
+          </h2>
+          <p className="wl-band-sub">
+            אנחנו בונים את הקהילה עכשיו. הצטרפו לרשימת ההמתנה ותהיו הראשונים לדעת כשנפתח בעיר שלכם.
+          </p>
+          <Reveal3D as="div">
+            <MagneticButton href="/waitlist" className="wl-band-btn">
+              הצטרפו לרשימת ההמתנה
+            </MagneticButton>
+          </Reveal3D>
+          <p className="wl-band-note">בלי התחייבות, בלי כרטיס אשראי. רק נעדכן כשיש חדש.</p>
         </div>
       </section>
 
@@ -422,6 +457,26 @@ export default function Home() {
         </div>
       </section>
 
+      {/* CTA דביק - מופיע אחרי גלילה, ניתן לסגירה */}
+      {!ctaDismissed && (
+        <div className={`wl-sticky${stickyCta ? ' show' : ''}`} role="region" aria-label="הצטרפות לרשימת ההמתנה" aria-hidden={!stickyCta}>
+          <span className="wl-sticky-txt">
+            <span aria-hidden="true">🐾</span> בונים קהילה לבעלי כלבים בישראל.
+          </span>
+          <Link href="/waitlist" className="wl-sticky-btn" tabIndex={stickyCta ? 0 : -1}>
+            הצטרפו לרשימת ההמתנה
+          </Link>
+          <button
+            type="button"
+            className="wl-sticky-close"
+            aria-label="סגירת פס ההצטרפות"
+            tabIndex={stickyCta ? 0 : -1}
+            onClick={() => setCtaDismissed(true)}
+          >
+            ×
+          </button>
+        </div>
+      )}
     </>
   )
 }

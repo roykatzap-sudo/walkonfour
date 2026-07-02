@@ -103,11 +103,29 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
               outline-offset: 3px;
               border-radius: 6px;
             }
+            .article-faq { transition: border-color .18s ease, box-shadow .18s ease; }
+            .article-faq:hover { box-shadow: 0 4px 16px rgba(42,32,24,.07); }
+            .article-faq[open] { box-shadow: 0 6px 20px rgba(42,32,24,.08); }
             .article-faq:focus-within {
               outline: 3px solid #c99a5b;
               outline-offset: 2px;
             }
-            .article-faq summary { list-style-position: inside; }
+            .article-faq summary {
+              list-style: none; display: flex; align-items: center;
+              justify-content: space-between; gap: 12px;
+            }
+            .article-faq summary::-webkit-details-marker { display: none; }
+            .article-faq summary::after {
+              content: '›'; font-size: 26px; line-height: 1; font-weight: 700;
+              color: #c99a5b; transform: rotate(90deg); transition: transform .25s ease; flex-shrink: 0;
+            }
+            .article-faq[open] summary::after { transform: rotate(-90deg); }
+            .article-faq[open] .article-faq-body { animation: articleFaqIn .28s ease; }
+            @keyframes articleFaqIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+            @media (prefers-reduced-motion: reduce) {
+              .article-faq, .article-faq summary::after { transition: none; }
+              .article-faq[open] .article-faq-body { animation: none; }
+            }
 
             /* ── צ'יפ קריא על גבי תמונה (אחיד עם כרטיסי הרשימה) ── */
             .chip-on-photo {
@@ -321,7 +339,9 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
                   <summary style={{ fontWeight: 800, fontSize: 16.5, cursor: 'pointer', color: '#2a2018', padding: '6px 0', lineHeight: 1.5 }}>
                     {item.q}
                   </summary>
-                  <p style={{ marginTop: 10, fontSize: 16, lineHeight: 1.85, color: '#3a3128' }}>{item.a}</p>
+                  <div className="article-faq-body">
+                    <p style={{ marginTop: 10, fontSize: 16, lineHeight: 1.85, color: '#3a3128' }}>{item.a}</p>
+                  </div>
                 </details>
               ))}
             </div>

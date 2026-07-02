@@ -27,18 +27,69 @@ export default function CitiesPage() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: 14 }}>
+      <style>{`
+        .city-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+        .city-card {
+          position: relative;
+          padding: 20px 22px;
+          text-decoration: none;
+          color: var(--ink);
+          overflow: hidden;
+          transition: transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s cubic-bezier(.2,.8,.2,1), border-color .28s;
+        }
+        .city-card::before {
+          content: '';
+          position: absolute;
+          inset-block-start: 0;
+          inset-inline: 0;
+          height: 3px;
+          background: linear-gradient(90deg, rgba(201,154,91,.85), rgba(232,200,135,.55));
+          transform: scaleX(0);
+          transform-origin: inline-end;
+          transition: transform .3s cubic-bezier(.2,.8,.2,1);
+        }
+        .city-card:hover, .city-card:focus-visible {
+          transform: translateY(-4px);
+          box-shadow: 0 16px 34px rgba(201,154,91,.22);
+          border-color: rgba(201,154,91,.5);
+        }
+        .city-card:hover::before, .city-card:focus-visible::before { transform: scaleX(1); }
+        .city-card .city-name { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .city-card .city-go {
+          color: var(--brand);
+          font-weight: 900;
+          opacity: 0;
+          transform: translateX(6px);
+          transition: opacity .28s, transform .28s;
+        }
+        .city-card:hover .city-go, .city-card:focus-visible .city-go { opacity: 1; transform: translateX(0); }
+        @media (prefers-reduced-motion: reduce) {
+          .city-card, .city-card::before, .city-card .city-go { transition: none; }
+          .city-card:hover, .city-card:focus-visible { transform: none; }
+        }
+      `}</style>
+      <div className="city-grid">
         {hubs.map((h) => (
           <Link
             key={h.community.slug}
             href={`/city/${h.community.slug}`}
-            className="card"
-            style={{ padding: '18px 20px', textDecoration: 'none', color: 'var(--ink)' }}
+            className="card city-card"
           >
-            <div style={{ fontSize: 21, fontWeight: 900, marginBottom: 8 }}>{h.community.name}</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, fontSize: 14.5, color: '#5b4d3c' }}>
-              {h.parks.length > 0 && <span>🐕 {h.parks.length} גינות</span>}
-              {h.walks.length > 0 && <span>· 🥾 {h.walks.length} מסלולים</span>}
+            <div className="city-name" style={{ marginBottom: 10 }}>
+              <span style={{ fontSize: 22, fontWeight: 900 }}>{h.community.name}</span>
+              <span className="city-go" aria-hidden="true">←</span>
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, fontSize: 15, color: '#5b4d3c' }}>
+              {h.parks.length > 0 && (
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(201,154,91,.1)', borderRadius: 999, padding: '4px 11px', fontWeight: 700 }}>
+                  🐕 {h.parks.length} גינות
+                </span>
+              )}
+              {h.walks.length > 0 && (
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(90,140,80,.1)', borderRadius: 999, padding: '4px 11px', fontWeight: 700 }}>
+                  🥾 {h.walks.length} מסלולים
+                </span>
+              )}
             </div>
           </Link>
         ))}

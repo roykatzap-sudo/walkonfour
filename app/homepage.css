@@ -356,3 +356,346 @@
 @media (prefers-reduced-motion: reduce) {
   .fn-card { transform: none; }
 }
+
+/* ============================================================
+   שדרוגי חיות ומיקרו-אינטראקציות (יולי 2026)
+   נשענים על ה-tokens ב-globals.css. פלטת קרם-לברדור בלבד.
+   כל אנימציה מכובדת תחת prefers-reduced-motion בתחתית הקובץ.
+   ============================================================ */
+
+/* ── היררכיה חזותית בהירו: כתם זוהר רך מאחורי הכותרת + הבלטת ה-em ── */
+.hero-left::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 18%;
+  inset-inline-start: 8%;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232, 200, 135, 0.16), transparent 68%);
+  filter: blur(8px);
+  pointer-events: none;
+  z-index: 0;
+}
+.hero-h1 em {
+  position: relative;
+}
+/* קו הדגשה זהוב מתחת ל"יותר מגוגל" - נמשח בכניסה */
+.hero-h1 em::after {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-end: 0.06em;
+  height: 0.14em;
+  width: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, var(--brand-light), rgba(232, 200, 135, 0.15));
+  transform: scaleX(0);
+  transform-origin: inline-start;
+  animation: hero-underline 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
+}
+@keyframes hero-underline {
+  to { transform: scaleX(1); }
+}
+
+/* כפתור ההמתנה הראשי - ריצוד עדין של הילה כדי למשוך את העין (לא agressive) */
+.hbm {
+  position: relative;
+}
+.hbm::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 100px;
+  border: 2px solid rgba(232, 200, 135, 0.55);
+  opacity: 0;
+  pointer-events: none;
+  animation: hbm-halo 3.4s ease-out infinite;
+}
+@keyframes hbm-halo {
+  0% { transform: scale(1); opacity: 0.55; }
+  70% { transform: scale(1.16); opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* ── כרטיסי כלים/גזעים/ערים: הרמה חלקה + הבהקה עדינה בקצה ── */
+.kv-card-link {
+  transition: transform 0.34s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.kv-card {
+  transition: box-shadow 0.34s ease, transform 0.34s ease;
+  position: relative;
+}
+.kv-card-link:hover {
+  transform: translateY(-6px);
+}
+.kv-card-link:hover .kv-card {
+  box-shadow: 0 22px 48px rgba(42, 32, 24, 0.18);
+}
+/* התמונה בכרטיס מתקרבת קלות ב-hover */
+.kv-card-media img {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.kv-card-link:hover .kv-card-media img {
+  transform: scale(1.07);
+}
+
+/* ── נגיעה כלבית: טביעת כף מופיעה בפינת הכרטיס ב-hover ── */
+.kv-card-media::after {
+  content: '🐾';
+  position: absolute;
+  inset-block-end: 10px;
+  inset-inline-end: 12px;
+  font-size: 18px;
+  opacity: 0;
+  transform: translateY(6px) rotate(-12deg);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
+  pointer-events: none;
+  z-index: 2;
+}
+.kv-card-link:hover .kv-card-media::after {
+  opacity: 0.9;
+  transform: translateY(0) rotate(0deg);
+}
+
+/* מד אנרגיה - הברקים "נדלקים" בגלים ב-hover של כרטיס גזע */
+.kv-card-link:hover .kv-energy {
+  animation: energy-glow 1.1s ease-in-out;
+}
+@keyframes energy-glow {
+  0%, 100% { filter: none; }
+  50% { filter: drop-shadow(0 0 6px rgba(201, 154, 91, 0.6)); }
+}
+
+/* ── כרטיס כלי (tools) - אייקון "קופץ" קלות ב-hover ── */
+.kv-tool-icon {
+  transition: transform 0.34s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.kv-card-link:hover .kv-tool-icon {
+  transform: translateY(-3px) rotate(-4deg) scale(1.05);
+}
+
+/* ── כרטיסי תמחור: הבלטה חמה יותר לכרטיס המומלץ ── */
+.pc.feat {
+  position: relative;
+}
+
+/* ============================================================
+   CTA דביק לרשימת ההמתנה - נגלל עם הדף, מופיע אחרי גלילה קלה.
+   RTL, נגיש, תא מגע גדול (יעד גיל 40+). מוסתר בהדפסה.
+   ============================================================ */
+.wl-sticky {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 20px;
+  background: rgba(42, 32, 24, 0.94);
+  backdrop-filter: blur(14px);
+  border-block-start: 1px solid rgba(232, 200, 135, 0.28);
+  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.28);
+  transform: translateY(120%);
+  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.wl-sticky.show {
+  transform: translateY(0);
+}
+.wl-sticky-txt {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.45;
+}
+.wl-sticky-txt span {
+  color: var(--brand-light);
+}
+.wl-sticky-btn {
+  background: var(--brand-light);
+  color: #241a12;
+  padding: 12px 28px;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 100px;
+  font-size: 15.5px;
+  font-weight: 800;
+  text-decoration: none;
+  font-family: inherit;
+  box-shadow: 0 8px 24px rgba(232, 200, 135, 0.25);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.wl-sticky-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 34px rgba(232, 200, 135, 0.4);
+}
+.wl-sticky-close {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 22px;
+  line-height: 1;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.2s ease, background 0.2s ease;
+  flex-shrink: 0;
+}
+.wl-sticky-close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+.wl-sticky-close:focus-visible {
+  outline: 2px solid var(--brand-light);
+  outline-offset: 2px;
+}
+@media (max-width: 600px) {
+  .wl-sticky {
+    gap: 10px;
+    padding: 10px 14px;
+  }
+  .wl-sticky-txt {
+    flex: 1;
+    min-width: 0;
+    font-size: 14px;
+  }
+  .wl-sticky-btn {
+    padding: 11px 20px;
+    font-size: 14.5px;
+  }
+}
+@media print {
+  .wl-sticky { display: none; }
+}
+
+/* ============================================================
+   סקשן CTA חוזר לרשימת ההמתנה - לפני התמחור, בטון כהה חם.
+   מחזק נראות ה-CTA באמצע המסע.
+   ============================================================ */
+.wl-band {
+  background: linear-gradient(135deg, #2a2018, #35271a);
+  padding: 72px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.wl-band-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.wl-band-paw {
+  font-size: 40px;
+  margin-bottom: 14px;
+  display: inline-block;
+  animation: wl-paw-bob 3.2s ease-in-out infinite;
+}
+@keyframes wl-paw-bob {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50% { transform: translateY(-7px) rotate(6deg); }
+}
+.wl-band-title {
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 900;
+  letter-spacing: -1px;
+  color: #fff;
+  margin-bottom: 12px;
+  line-height: 1.12;
+}
+.wl-band-title em {
+  color: var(--brand-light);
+  font-style: normal;
+}
+.wl-band-sub {
+  font-size: 16.5px;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.7;
+  margin-bottom: 30px;
+  max-width: 520px;
+  margin-inline: auto;
+}
+.wl-band-btn {
+  background: var(--brand-light);
+  color: #241a12;
+  padding: 16px 40px;
+  min-height: 54px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 100px;
+  font-size: 17px;
+  font-weight: 800;
+  text-decoration: none;
+  font-family: inherit;
+  box-shadow: 0 12px 40px rgba(232, 200, 135, 0.28);
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+}
+.wl-band-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 18px 52px rgba(232, 200, 135, 0.42);
+}
+.wl-band-note {
+  margin-top: 16px;
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.55);
+}
+/* טביעות כף רקע דקורטיביות בפינות הבאנד */
+.wl-band::before,
+.wl-band::after {
+  content: '🐾';
+  position: absolute;
+  font-size: 120px;
+  opacity: 0.05;
+  pointer-events: none;
+  filter: grayscale(1);
+}
+.wl-band::before {
+  inset-block-start: -20px;
+  inset-inline-start: 4%;
+  transform: rotate(-18deg);
+}
+.wl-band::after {
+  inset-block-end: -30px;
+  inset-inline-end: 5%;
+  transform: rotate(24deg);
+}
+@media (max-width: 600px) {
+  .wl-band { padding: 56px 18px; }
+  .wl-band::before, .wl-band::after { font-size: 80px; }
+}
+
+/* ── ריתמוס ריווח בין סקשנים במובייל: מעט אוויר נוסף ── */
+@media (max-width: 480px) {
+  .wl-band { padding: 48px 16px; }
+}
+
+/* ============================================================
+   כיבוד prefers-reduced-motion לכל האנימציות החדשות
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .hero-h1 em::after { animation: none; transform: scaleX(1); }
+  .hbm::before { animation: none; display: none; }
+  .kv-card-link,
+  .kv-card,
+  .kv-card-media img,
+  .kv-tool-icon,
+  .wl-sticky,
+  .wl-sticky-btn,
+  .wl-band-btn { transition: none; }
+  .kv-card-link:hover,
+  .kv-card-link:hover .kv-card-media img,
+  .kv-card-link:hover .kv-tool-icon { transform: none; }
+  .kv-card-link:hover .kv-energy { animation: none; }
+  .wl-band-paw { animation: none; }
+}

@@ -40,6 +40,42 @@ export default function LawsPage() {
   return (
     <main className="page" style={{ maxWidth: 860 }}>
       <JsonLd data={schemas} />
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            .law-faq { transition: border-color .18s ease, box-shadow .18s ease; }
+            .law-faq:hover { border-color: rgba(201,154,91,.5); box-shadow: 0 4px 16px rgba(42,32,24,.06); }
+            .law-faq[open] { border-color: rgba(201,154,91,.55); box-shadow: 0 6px 20px rgba(42,32,24,.07); }
+            .law-faq summary { list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+            .law-faq summary::-webkit-details-marker { display: none; }
+            .law-faq summary::after {
+              content: '›'; font-size: 24px; line-height: 1; font-weight: 700;
+              color: #c99a5b; transform: rotate(90deg); transition: transform .25s ease; flex-shrink: 0;
+            }
+            .law-faq[open] summary::after { transform: rotate(-90deg); }
+            .law-faq:focus-within { outline: 3px solid rgba(201,154,91,.5); outline-offset: 2px; }
+            .law-faq[open] .law-faq-body { animation: lawFaqIn .28s ease; }
+            @keyframes lawFaqIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+            .law-spoke {
+              display: flex; align-items: center; gap: 10px; padding: 15px 16px;
+              background: #fff; border: 1px solid rgba(201,154,91,.22); border-radius: 14px;
+              text-decoration: none; color: var(--ink); font-weight: 700; font-size: 15px;
+              transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+            }
+            .law-spoke:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(42,32,24,.09); border-color: rgba(201,154,91,.5); }
+            .law-spoke:focus-visible { outline: 3px solid rgba(201,154,91,.55); outline-offset: 3px; }
+            .law-spoke-arrow { margin-inline-start: auto; color: #c99a5b; transition: transform .18s ease; }
+            .law-spoke:hover .law-spoke-arrow { transform: translateX(-3px); }
+
+            @media (prefers-reduced-motion: reduce) {
+              .law-faq, .law-faq summary::after, .law-spoke, .law-spoke-arrow { transition: none; }
+              .law-faq[open] .law-faq-body { animation: none; }
+              .law-spoke:hover { transform: none; }
+            }
+          `,
+        }}
+      />
 
       <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 28, padding: '6px 4px 18px', marginBottom: 14 }}>
         <FloatingShapes />
@@ -63,9 +99,10 @@ export default function LawsPage() {
       </div>
 
       {/* ★ תשובה מהירה */}
-      <section style={{ marginTop: 16, padding: '20px 22px', background: 'linear-gradient(135deg,#fff8ea,#fef0d8)', border: '2px solid rgba(201,154,91,.35)', borderRadius: 18 }}>
+      <section style={{ position: 'relative', marginTop: 16, padding: '20px 24px', background: 'linear-gradient(135deg,#fff8ea,#fef0d8)', border: '2px solid rgba(201,154,91,.35)', borderRadius: 18, boxShadow: '0 6px 22px rgba(201,154,91,.12)', overflow: 'hidden' }}>
+        <span aria-hidden="true" style={{ position: 'absolute', top: 0, insetInlineStart: 0, width: 5, height: '100%', background: 'linear-gradient(180deg,#c99a5b,#e8c887)' }} />
         <div style={{ fontWeight: 900, color: 'var(--brand-dark)', fontSize: 14, letterSpacing: 0.5, marginBottom: 8 }}>⚡ תשובה מהירה</div>
-        <p style={{ margin: 0, fontSize: 16.5, color: 'var(--ink)', lineHeight: 1.7 }}>{lawsContent.quickAnswer}</p>
+        <p style={{ margin: 0, fontSize: 16.5, color: 'var(--ink)', lineHeight: 1.75, maxWidth: '68ch' }}>{lawsContent.quickAnswer}</p>
       </section>
 
       {/* תוכן עניינים - חשוב ל-UX וגם ל-SEO */}
@@ -95,9 +132,11 @@ export default function LawsPage() {
         <h2 style={{ fontSize: 22, fontWeight: 900, color: 'var(--ink)', margin: '0 0 14px' }}>שאלות נפוצות</h2>
         <div style={{ display: 'grid', gap: 10 }}>
           {lawsContent.faq.map((f, i) => (
-            <details key={i} style={{ background: '#fff', border: '1px solid rgba(201,154,91,.22)', borderRadius: 12, padding: '12px 16px' }}>
-              <summary style={{ cursor: 'pointer', fontWeight: 800, color: 'var(--ink)', fontSize: 15.5 }}>{f.q}</summary>
-              <p style={{ margin: '8px 0 0', fontSize: 14.5, color: '#5b4d3c', lineHeight: 1.7 }}>{f.a}</p>
+            <details key={i} className="law-faq" style={{ background: '#fff', border: '1px solid rgba(201,154,91,.22)', borderRadius: 14, padding: '14px 18px' }}>
+              <summary style={{ cursor: 'pointer', fontWeight: 800, color: 'var(--ink)', fontSize: 16 }}>{f.q}</summary>
+              <div className="law-faq-body">
+                <p style={{ margin: '10px 0 0', fontSize: 15.5, color: '#5b4d3c', lineHeight: 1.75 }}>{f.a}</p>
+              </div>
             </details>
           ))}
         </div>
@@ -108,9 +147,10 @@ export default function LawsPage() {
         <h2 style={{ fontSize: 22, fontWeight: 900, color: 'var(--ink)', margin: '0 0 14px' }}>מדריכים מעמיקים לפי נושא</h2>
         <div style={{ display: 'grid', gap: 10, gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}>
           {SPOKE_PAGES.map((s) => (
-            <Link key={s.slug} href={`/laws/${s.slug}`} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '14px 16px', background: '#fff', border: '1px solid rgba(201,154,91,.22)', borderRadius: 14, textDecoration: 'none', color: 'var(--ink)', fontWeight: 700, fontSize: 15, transition: 'border-color .15s' }}>
-              <span style={{ fontSize: 20 }}>{s.icon}</span>
-              {s.label} →
+            <Link key={s.slug} href={`/laws/${s.slug}`} className="law-spoke">
+              <span style={{ fontSize: 20 }} aria-hidden="true">{s.icon}</span>
+              <span>{s.label}</span>
+              <span className="law-spoke-arrow" aria-hidden="true">→</span>
             </Link>
           ))}
         </div>

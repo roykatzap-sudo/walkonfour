@@ -148,9 +148,9 @@ function InfoRow({ label, value }: { label: string; value: string }) {
       <th
         scope="row"
         style={{
-          padding: '11px 18px',
+          padding: '12px 18px',
           textAlign: 'start',
-          fontSize: 13.5,
+          fontSize: 14.5,
           fontWeight: 700,
           color: '#5b4d3c',
           width: '38%',
@@ -159,7 +159,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
       >
         {label}
       </th>
-      <td style={{ padding: '11px 18px', color: 'var(--ink)', fontSize: 15 }}>{value}</td>
+      <td style={{ padding: '12px 18px', color: 'var(--ink)', fontSize: 15 }}>{value}</td>
     </tr>
   )
 }
@@ -169,6 +169,7 @@ function IsraelRow({ icon, label, text, highlight }: { icon: string; label: stri
     <div
       style={{
         display: 'flex',
+        alignItems: 'flex-start',
         gap: 12,
         padding: '12px 14px',
         background: highlight ? 'rgba(180,80,46,.06)' : '#fbf7ef',
@@ -176,12 +177,25 @@ function IsraelRow({ icon, label, text, highlight }: { icon: string; label: stri
         borderRadius: 10,
       }}
     >
-      <div style={{ fontSize: 20, flexShrink: 0 }} aria-hidden="true">
+      <div
+        aria-hidden="true"
+        style={{
+          flexShrink: 0,
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 38,
+          height: 38,
+          borderRadius: 12,
+          fontSize: 20,
+          background: highlight ? 'rgba(180,80,46,.1)' : 'rgba(201,154,91,.12)',
+        }}
+      >
         {icon}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 13, fontWeight: 800, color: '#5b4d3c', marginBottom: 3 }}>{label}</div>
-        <div style={{ fontSize: 14.5, color: 'var(--ink)', lineHeight: 1.6 }}>{text}</div>
+        <div style={{ fontSize: 14, fontWeight: 800, color: '#5b4d3c', marginBottom: 3 }}>{label}</div>
+        <div style={{ fontSize: 15, color: 'var(--ink)', lineHeight: 1.6 }}>{text}</div>
       </div>
     </div>
   )

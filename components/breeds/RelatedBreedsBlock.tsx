@@ -35,7 +35,7 @@ export function RelatedBreedsBlock({ currentSlug }: { currentSlug: string }) {
       <h2 style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 900, color: 'var(--ink)', letterSpacing: '-.3px' }}>
         גזעים דומים שכדאי להכיר
       </h2>
-      <p style={{ margin: '0 0 18px', fontSize: 14.5, color: '#5b4d3c', lineHeight: 1.55 }}>
+      <p style={{ margin: '0 0 18px', fontSize: 15, color: '#5b4d3c', lineHeight: 1.55 }}>
         אם הגעתם לכאן ושוקלים את הגזע - שווה לבדוק גם:
       </p>
       <div
@@ -51,21 +51,24 @@ export function RelatedBreedsBlock({ currentSlug }: { currentSlug: string }) {
             href={`/breeds/${b.slug}`}
             style={{
               display: 'block',
-              padding: '14px 16px',
-              background: '#fbf7ef',
+              padding: '16px 18px',
+              background: 'linear-gradient(165deg, #fffdf8, #fbf7ef)',
               border: '1.5px solid rgba(201,154,91,.2)',
-              borderRadius: 12,
+              borderRadius: 14,
               textDecoration: 'none',
               transition: 'all .2s',
             }}
-            className="related-breed-card"
+            className="related-breed-card kv-lift"
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
-              <span style={{ fontWeight: 900, fontSize: 16, color: 'var(--ink)' }}>{b.name}</span>
+              <span style={{ fontWeight: 900, fontSize: 16.5, color: 'var(--ink)' }}>
+                <span aria-hidden="true" style={{ marginInlineEnd: 6 }}>🐾</span>
+                {b.name}
+              </span>
               <span style={{ color: 'var(--brand-dark)', fontWeight: 800 }} aria-hidden="true">←</span>
             </div>
-            <div style={{ fontSize: 12.5, color: '#8a7c66', marginBottom: 6 }}>{b.en}</div>
-            <div style={{ fontSize: 13.5, color: '#5b4d3c', lineHeight: 1.5 }}>{b.reason}</div>
+            <div lang="en" style={{ fontSize: 13, color: '#8a7c66', marginBottom: 6 }}>{b.en}</div>
+            <div style={{ fontSize: 14, color: '#5b4d3c', lineHeight: 1.55 }}>{b.reason}</div>
           </Link>
         ))}
       </div>

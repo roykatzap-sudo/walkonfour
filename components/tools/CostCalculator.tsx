@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Reveal3D } from '@/components/fx/Reveal3D'
+import { useCountUp } from './useCountUp'
 import { breeds, type BreedSize } from '@/lib/breeds'
 import { getBreedDetail } from '@/lib/breedDetails'
 import {
@@ -218,6 +219,11 @@ export function CostCalculator({ presetBreed }: { presetBreed?: string } = {}) {
     setDirty(false)
   }
 
+  // ===== מונים מתגלגלים לשני מספרי ה"פרס" (מכבד reduced-motion) =====
+  // מבוססים על ה-snapshot המוצג; 0 כשעדיין אין תוצאה. הפורמט נשאר shekel().
+  const animatedTotal = useCountUp(snap ? snap.projection.total : 0)
+  const animatedMonthly = useCountUp(snap ? snap.result.monthly : 0)
+
   return (
     <div className="cc-wrap">
       <div className="cc-grid">
@@ -332,7 +338,7 @@ export function CostCalculator({ presetBreed }: { presetBreed?: string } = {}) {
                       {snap.breedName ? `${snap.breedName} · ` : ''}עלות כוללת ל־{snap.projection.years} שנים
                     </span>
                     <div className="cc-big">
-                      <span className="cc-big-num">{shekel(snap.projection.total)}</span>
+                      <span className="cc-big-num">{shekel(animatedTotal)}</span>
                     </div>
                     <div className="cc-proj-meta">
                       <span>🦴 ציוד ראשוני: <strong>{shekel(snap.projection.oneTimeGear)}</strong></span>
@@ -350,7 +356,7 @@ export function CostCalculator({ presetBreed }: { presetBreed?: string } = {}) {
                   <div className="cc-summary card">
                     <span className="cc-summary-tag">העלות המשוערת שלך</span>
                     <div className="cc-big">
-                      <span className="cc-big-num">{shekel(snap.result.monthly)}</span>
+                      <span className="cc-big-num">{shekel(animatedMonthly)}</span>
                       <span className="cc-big-unit">לחודש</span>
                     </div>
                     <div className="cc-year">

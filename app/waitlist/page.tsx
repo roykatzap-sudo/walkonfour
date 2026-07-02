@@ -70,11 +70,34 @@ export default async function WaitlistPage() {
         )}
       </section>
 
+      {/* שורת אמון - הבטחות פשוטות, בלי מספרים מומצאים */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', margin: '-14px 0 30px' }}>
+        {[
+          ['🔒', 'הפרטים שלכם נשמרים אצלנו בלבד'],
+          ['✉️', 'עדכון אחד כשנפתחים - בלי הצפה'],
+          ['🎁', 'חינם, ותמיד יישאר חינם'],
+        ].map(([icon, label]) => (
+          <span
+            key={label}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 7,
+              background: '#fff', border: '1px solid rgba(201,154,91,.22)',
+              borderRadius: 999, padding: '8px 16px',
+              fontSize: 14, fontWeight: 700, color: 'var(--ink)',
+              boxShadow: '0 4px 14px rgba(42,32,24,.05)',
+            }}
+          >
+            <span aria-hidden="true" style={{ fontSize: 16 }}>{icon}</span>
+            {label}
+          </span>
+        ))}
+      </div>
+
       {/* מה קורה בפנים */}
       <h2 style={{ fontSize: 24, fontWeight: 900, color: 'var(--ink)', textAlign: 'center', margin: '0 0 18px' }}>מה קורה בפנים?</h2>
       <div style={{ display: 'grid', gap: 12 }}>
         {INSIDE.map(([icon, title, desc]) => (
-          <div key={title} style={{ display: 'flex', gap: 14, background: '#fff', border: '1px solid rgba(201,154,91,.18)', borderRadius: 16, padding: '16px 18px' }}>
+          <div key={title} className="kv-lift" style={{ display: 'flex', gap: 14, background: '#fff', border: '1px solid rgba(201,154,91,.18)', borderRadius: 16, padding: '16px 18px' }}>
             <div style={{ fontSize: 28, flexShrink: 0 }} aria-hidden="true">{icon}</div>
             <div>
               <div style={{ fontWeight: 900, fontSize: 16.5, color: 'var(--ink)' }}>{title}</div>

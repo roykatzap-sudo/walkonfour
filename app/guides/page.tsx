@@ -12,6 +12,15 @@ export const metadata = {
     'המדריכים שבאמת עוזרים: גמילה, משיכה ברצועה, חרדת נטישה, חום בקיץ הישראלי וזיקוקים. בלי תיאוריה מנופחת, רק מה שעובד.',
 }
 
+/** גוון חם מובחן לכל קטגוריה - נגיעת צבע שקטה שעוזרת לזהות סוג מדריך במבט. */
+const CATEGORY_ACCENT: Record<string, string> = {
+  'אילוף': '#c99a5b',
+  'בטיחות': '#c26b3e',
+  'גור חדש': '#b58a3c',
+  'התנהגות': '#a8763f',
+}
+const accentFor = (cat: string) => CATEGORY_ACCENT[cat] ?? '#c99a5b'
+
 export default function GuidesPage() {
   return (
     <main className="page" style={{ maxWidth: 1180 }}>
@@ -53,6 +62,7 @@ export default function GuidesPage() {
                     borderRadius: 20,
                     overflow: 'hidden',
                     border: '1px solid rgba(42,32,24,.08)',
+                    borderTop: `3px solid ${accentFor(g.category)}`,
                     boxShadow: '0 4px 18px rgba(42,32,24,.06)',
                     height: '100%',
                   }}
@@ -75,9 +85,9 @@ export default function GuidesPage() {
                   </div>
                   <div className="lift-3d-sm" style={{ padding: 18 }}>
                     <h2 style={{ margin: 0, fontSize: 19, fontWeight: 800, lineHeight: 1.35 }}>{g.title}</h2>
-                    <p style={{ margin: '8px 0 14px', fontSize: 14.5, color: '#5f574c', lineHeight: 1.65 }}>{g.excerpt}</p>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: '#a87a3e' }}>
-                      קריאה של {g.readMinutes} דקות ←
+                    <p style={{ margin: '8px 0 14px', fontSize: 15, color: '#5f574c', lineHeight: 1.7 }}>{g.excerpt}</p>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 13.5, fontWeight: 700, color: accentFor(g.category) }}>
+                      קריאה של {g.readMinutes} דקות <span aria-hidden="true">←</span>
                     </span>
                   </div>
                 </article>

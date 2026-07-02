@@ -227,12 +227,33 @@ export function BreedProfile({ breed }: { breed: Breed }) {
             ].map((s) => (
               <div
                 key={s.label}
-                className="card"
-                style={{ padding: '20px 18px', borderRadius: 18, textAlign: 'center' }}
+                className="card kv-lift"
+                style={{
+                  padding: '22px 18px',
+                  borderRadius: 18,
+                  textAlign: 'center',
+                  background: 'linear-gradient(165deg, #fffdf8, #fbf7ef)',
+                  border: '1px solid rgba(201,154,91,.18)',
+                }}
               >
-                <div style={{ fontSize: 26 }} aria-hidden>{s.icon}</div>
-                <div className="muted" style={{ fontSize: 13, margin: '6px 0 4px' }}>{s.label}</div>
-                <div style={{ fontWeight: 800, fontSize: 16, color: '#241a12', lineHeight: 1.35 }}>{s.value}</div>
+                <div
+                  aria-hidden
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 52,
+                    height: 52,
+                    borderRadius: 16,
+                    fontSize: 26,
+                    background: 'rgba(201,154,91,.12)',
+                    marginBottom: 4,
+                  }}
+                >
+                  {s.icon}
+                </div>
+                <div className="muted" style={{ fontSize: 14, margin: '6px 0 4px' }}>{s.label}</div>
+                <div style={{ fontWeight: 800, fontSize: 17, color: '#241a12', lineHeight: 1.35 }}>{s.value}</div>
               </div>
             ))}
           </div>
@@ -258,11 +279,25 @@ export function BreedProfile({ breed }: { breed: Breed }) {
           {/* אנרגיה */}
           <Tilt3D max={10}>
             <div className="lift-3d" style={{ padding: 26 }}>
-              <div style={{ fontSize: 32 }} aria-hidden>⚡</div>
-              <h3 style={{ fontWeight: 800, fontSize: 18, margin: '8px 0 4px' }}>אנרגיה</h3>
+              <div
+                aria-hidden
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 56,
+                  height: 56,
+                  borderRadius: 18,
+                  fontSize: 30,
+                  background: 'rgba(201,154,91,.12)',
+                }}
+              >
+                ⚡
+              </div>
+              <h3 style={{ fontWeight: 800, fontSize: 18, margin: '10px 0 4px' }}>אנרגיה</h3>
               <div
                 className="muted"
-                style={{ marginBottom: 14, fontSize: 14, display: 'flex', alignItems: 'baseline', gap: 8 }}
+                style={{ marginBottom: 14, fontSize: 15, display: 'flex', alignItems: 'baseline', gap: 8 }}
               >
                 <span>{ENERGY_LABEL[breed.energy]}</span>
                 <strong style={{ color: '#c99a5b', fontSize: 15 }}>{breed.energy}/5</strong>
@@ -273,9 +308,13 @@ export function BreedProfile({ breed }: { breed: Breed }) {
                     key={n}
                     style={{
                       flex: 1,
-                      height: 8,
+                      height: 11,
                       borderRadius: 99,
-                      background: n <= breed.energy ? '#c99a5b' : '#e5e2da',
+                      background:
+                        n <= breed.energy
+                          ? 'linear-gradient(135deg, #dcb072, #c99a5b)'
+                          : '#e5e2da',
+                      boxShadow: n <= breed.energy ? '0 1px 3px rgba(201,154,91,.35)' : 'none',
                       transition: 'background .2s',
                     }}
                   />
@@ -287,11 +326,25 @@ export function BreedProfile({ breed }: { breed: Breed }) {
           {/* נטייה לתוקפנות */}
           <Tilt3D max={10}>
             <div className="lift-3d" style={{ padding: 26 }}>
-              <div style={{ fontSize: 32 }} aria-hidden>🛡️</div>
-              <h3 style={{ fontWeight: 800, fontSize: 18, margin: '8px 0 4px' }}>נטייה לתוקפנות</h3>
+              <div
+                aria-hidden
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 56,
+                  height: 56,
+                  borderRadius: 18,
+                  fontSize: 30,
+                  background: 'rgba(201,154,91,.12)',
+                }}
+              >
+                🛡️
+              </div>
+              <h3 style={{ fontWeight: 800, fontSize: 18, margin: '10px 0 4px' }}>נטייה לתוקפנות</h3>
               <div
                 className="muted"
-                style={{ marginBottom: 14, fontSize: 14, display: 'flex', alignItems: 'baseline', gap: 8 }}
+                style={{ marginBottom: 14, fontSize: 15, display: 'flex', alignItems: 'baseline', gap: 8 }}
               >
                 <span>{AGGRESSION_LABEL[breed.aggression]}</span>
                 <strong style={{ color: aggColor(breed.aggression, breed.aggression), fontSize: 15 }}>
@@ -304,9 +357,10 @@ export function BreedProfile({ breed }: { breed: Breed }) {
                     key={n}
                     style={{
                       flex: 1,
-                      height: 8,
+                      height: 11,
                       borderRadius: 99,
                       background: aggColor(breed.aggression, n),
+                      boxShadow: n <= breed.aggression ? '0 1px 3px rgba(0,0,0,.12)' : 'none',
                       transition: 'background .2s',
                     }}
                   />
@@ -318,9 +372,23 @@ export function BreedProfile({ breed }: { breed: Breed }) {
           {/* גודל */}
           <Tilt3D max={10}>
             <div className="lift-3d" style={{ padding: 26 }}>
-              <div style={{ fontSize: 32 }} aria-hidden>📏</div>
-              <h3 style={{ fontWeight: 800, fontSize: 18, margin: '8px 0 4px' }}>גודל</h3>
-              <div className="muted" style={{ marginBottom: 14 }}>מבנה הגוף</div>
+              <div
+                aria-hidden
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 56,
+                  height: 56,
+                  borderRadius: 18,
+                  fontSize: 30,
+                  background: 'rgba(201,154,91,.12)',
+                }}
+              >
+                📏
+              </div>
+              <h3 style={{ fontWeight: 800, fontSize: 18, margin: '10px 0 4px' }}>גודל</h3>
+              <div className="muted" style={{ marginBottom: 14, fontSize: 15 }}>מבנה הגוף</div>
               <div style={{ fontSize: 28, fontWeight: 900, color: '#c99a5b', lineHeight: 1 }}>
                 {breed.size}
               </div>
@@ -330,9 +398,23 @@ export function BreedProfile({ breed }: { breed: Breed }) {
           {/* אופי */}
           <Tilt3D max={10}>
             <div className="lift-3d" style={{ padding: 26 }}>
-              <div style={{ fontSize: 32 }} aria-hidden>🐶</div>
-              <h3 style={{ fontWeight: 800, fontSize: 18, margin: '8px 0 4px' }}>אופי</h3>
-              <div className="muted" style={{ marginBottom: 14 }}>תכונות בולטות</div>
+              <div
+                aria-hidden
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 56,
+                  height: 56,
+                  borderRadius: 18,
+                  fontSize: 30,
+                  background: 'rgba(201,154,91,.12)',
+                }}
+              >
+                🐶
+              </div>
+              <h3 style={{ fontWeight: 800, fontSize: 18, margin: '10px 0 4px' }}>אופי</h3>
+              <div className="muted" style={{ marginBottom: 14, fontSize: 15 }}>תכונות בולטות</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {breed.temperament.map((t) => (
                   <span key={t} className="chip3d">
@@ -346,9 +428,23 @@ export function BreedProfile({ breed }: { breed: Breed }) {
           {/* קבוצת ייעוד */}
           <Tilt3D max={10}>
             <div className="lift-3d" style={{ padding: 26 }}>
-              <div style={{ fontSize: 32 }} aria-hidden>🎯</div>
-              <h3 style={{ fontWeight: 800, fontSize: 18, margin: '8px 0 4px' }}>קבוצת ייעוד</h3>
-              <div className="muted" style={{ marginBottom: 14 }}>למה הגזע נועד</div>
+              <div
+                aria-hidden
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 56,
+                  height: 56,
+                  borderRadius: 18,
+                  fontSize: 30,
+                  background: 'rgba(201,154,91,.12)',
+                }}
+              >
+                🎯
+              </div>
+              <h3 style={{ fontWeight: 800, fontSize: 18, margin: '10px 0 4px' }}>קבוצת ייעוד</h3>
+              <div className="muted" style={{ marginBottom: 14, fontSize: 15 }}>למה הגזע נועד</div>
               <div style={{ fontSize: 24, fontWeight: 900, color: '#c99a5b', lineHeight: 1.1 }}>
                 {breed.group}
               </div>
@@ -388,9 +484,23 @@ export function BreedProfile({ breed }: { breed: Breed }) {
             }}
           >
             {/* כמה עובדות */}
-            <div className="card" style={{ padding: 26, borderRadius: 20 }}>
-              <div style={{ fontSize: 30 }} aria-hidden>💡</div>
-              <h3 style={{ fontWeight: 900, fontSize: 19, margin: '8px 0 14px' }}>כמה עובדות</h3>
+            <div className="card kv-lift" style={{ padding: 26, borderRadius: 20 }}>
+              <div
+                aria-hidden
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 54,
+                  height: 54,
+                  borderRadius: 16,
+                  fontSize: 28,
+                  background: 'rgba(201,154,91,.12)',
+                }}
+              >
+                💡
+              </div>
+              <h3 style={{ fontWeight: 900, fontSize: 19, margin: '10px 0 14px' }}>כמה עובדות</h3>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 10 }}>
                 {detail.quickFacts.map((f, i) => (
                   <li key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 15, lineHeight: 1.6, color: '#3a3128' }}>
@@ -402,9 +512,23 @@ export function BreedProfile({ breed }: { breed: Breed }) {
             </div>
 
             {/* בריאות */}
-            <div className="card" style={{ padding: 26, borderRadius: 20 }}>
-              <div style={{ fontSize: 30 }} aria-hidden>🩺</div>
-              <h3 style={{ fontWeight: 900, fontSize: 19, margin: '8px 0 14px' }}>בריאות - על מה לשים לב</h3>
+            <div className="card kv-lift" style={{ padding: 26, borderRadius: 20 }}>
+              <div
+                aria-hidden
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 54,
+                  height: 54,
+                  borderRadius: 16,
+                  fontSize: 28,
+                  background: 'rgba(180,80,46,.1)',
+                }}
+              >
+                🩺
+              </div>
+              <h3 style={{ fontWeight: 900, fontSize: 19, margin: '10px 0 14px' }}>בריאות - על מה לשים לב</h3>
               <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 12px', display: 'grid', gap: 10 }}>
                 {detail.health.map((h, i) => (
                   <li key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 15, lineHeight: 1.6, color: '#3a3128' }}>
@@ -413,15 +537,29 @@ export function BreedProfile({ breed }: { breed: Breed }) {
                   </li>
                 ))}
               </ul>
-              <p className="muted" style={{ fontSize: 12.5, lineHeight: 1.6, margin: 0 }}>
+              <p className="muted" style={{ fontSize: 14, lineHeight: 1.6, margin: 0 }}>
                 נטיות גזעיות נפוצות - לא גזר דין. כדאי לברר מול המגדל ולעשות בדיקות ווטרינר תקופתיות.
               </p>
             </div>
 
             {/* טיפוח */}
-            <div className="card" style={{ padding: 26, borderRadius: 20 }}>
-              <div style={{ fontSize: 30 }} aria-hidden>🧴</div>
-              <h3 style={{ fontWeight: 900, fontSize: 19, margin: '8px 0 14px' }}>טיפוח</h3>
+            <div className="card kv-lift" style={{ padding: 26, borderRadius: 20 }}>
+              <div
+                aria-hidden
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 54,
+                  height: 54,
+                  borderRadius: 16,
+                  fontSize: 28,
+                  background: 'rgba(201,154,91,.12)',
+                }}
+              >
+                🧴
+              </div>
+              <h3 style={{ fontWeight: 900, fontSize: 19, margin: '10px 0 14px' }}>טיפוח</h3>
               <p style={{ fontSize: 15, lineHeight: 1.7, color: '#3a3128', margin: 0 }}>{detail.grooming}</p>
             </div>
           </div>
@@ -461,7 +599,20 @@ export function BreedProfile({ breed }: { breed: Breed }) {
                 >
                   <span
                     aria-hidden
-                    style={{ color: '#c99a5b', fontWeight: 900, fontSize: 18, lineHeight: 1.4 }}
+                    style={{
+                      flexShrink: 0,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: 26,
+                      height: 26,
+                      borderRadius: 999,
+                      background: 'rgba(201,154,91,.16)',
+                      color: '#a97b3f',
+                      fontWeight: 900,
+                      fontSize: 15,
+                      marginTop: 2,
+                    }}
                   >
                     ✓
                   </span>

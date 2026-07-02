@@ -52,6 +52,27 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
   return (
     <main>
       <JsonLd data={structuredData} />
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            .guide-section-h { position: relative; padding-top: 20px; }
+            .guide-section-h::before {
+              content: ''; position: absolute; top: 0; inset-inline-start: 0;
+              width: 52px; height: 3px; border-radius: 2px;
+              background: linear-gradient(90deg,#c99a5b,#e8c887);
+            }
+            .guide-related-card {
+              border-radius: 16px; overflow: hidden; position: relative; height: 130px;
+              transition: transform .2s cubic-bezier(.2,.7,.3,1), box-shadow .2s ease;
+            }
+            a:hover .guide-related-card { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(42,32,24,.14); }
+            @media (prefers-reduced-motion: reduce) {
+              .guide-related-card { transition: none; }
+              a:hover .guide-related-card { transform: none; }
+            }
+          `,
+        }}
+      />
 
       {/* HERO */}
       <section style={{ position: 'relative', minHeight: 420, display: 'flex', alignItems: 'flex-end', overflow: 'hidden' }}>
@@ -88,9 +109,9 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
           {guide.sections.map((s, i) => (
             <Reveal3D key={i} as="section">
               <div style={{ marginBottom: 34 }}>
-                <h2 style={{ fontSize: 25, fontWeight: 900, marginBottom: 12, color: '#2a2018' }}>{s.heading}</h2>
+                <h2 className="guide-section-h" style={{ fontSize: 25, fontWeight: 900, marginBottom: 12, color: '#2a2018' }}>{s.heading}</h2>
                 {s.paragraphs.map((p, j) => (
-                  <p key={j} style={{ fontSize: 16.5, lineHeight: 1.9, color: '#3a3128', marginBottom: 14 }}>{p}</p>
+                  <p key={j} style={{ fontSize: 16.5, lineHeight: 1.9, color: '#3a3128', marginBottom: 14, maxWidth: '66ch' }}>{p}</p>
                 ))}
               </div>
             </Reveal3D>
@@ -126,7 +147,7 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
             {related.map((g) => (
               <Link key={g.slug} href={`/guides/${g.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <Tilt3D className="sweep" max={6} glare>
-                  <div style={{ borderRadius: 16, overflow: 'hidden', position: 'relative', height: 130 }}>
+                  <div className="guide-related-card">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img loading="lazy" decoding="async" src={guideImg(g.photo, 500)} alt={g.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(42,32,24,.9), transparent 65%)' }} />

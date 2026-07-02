@@ -476,9 +476,10 @@ export function DogParksMap() {
         </button>
         <button
           type="button"
+          className="report-park-btn"
           onClick={startReport}
           aria-pressed={reportMode}
-          style={{ background: reportMode ? '#a97c46' : 'rgba(42,32,24,.82)', color: '#fff', border: '1px solid rgba(255,255,255,.25)', borderRadius: 999, padding: '10px 16px', fontSize: 13.5, fontWeight: 800, cursor: 'pointer' }}
+          style={{ background: reportMode ? '#a97c46' : 'rgba(42,32,24,.82)' }}
         >
           🚩 {reportMode ? 'לחצו על המפה…' : 'דווח על גינה חסרה'}
         </button>
@@ -498,10 +499,10 @@ export function DogParksMap() {
           backdrop-filter: blur(10px);
           border: 1px solid rgba(232,200,135,.35);
           color: var(--brand-light);
-          padding: 11px 16px;
+          padding: 12px 16px;
           padding-inline-end: 36px;
           border-radius: 100px;
-          font-size: 14px;
+          font-size: 14.5px;
           font-weight: 700;
           cursor: pointer;
           font-family: inherit;
@@ -518,7 +519,35 @@ export function DogParksMap() {
           background-color: rgba(232,200,135,.12);
           outline: none;
         }
+        .map-city-select:focus-visible {
+          outline: 2px solid var(--brand-light);
+          outline-offset: 2px;
+        }
         .map-city-select option { background: #2a2018; color: var(--brand-light); }
+
+        /* כפתור דיווח - תואם בגובה ובקריאות לכפתור "גינות לידי" */
+        .report-park-btn {
+          color: #fff;
+          border: 1px solid rgba(255,255,255,.25);
+          border-radius: 999px;
+          padding: 11px 18px;
+          font-size: 14.5px;
+          font-weight: 800;
+          cursor: pointer;
+          font-family: inherit;
+          transition: filter .2s, transform .12s;
+        }
+        .report-park-btn:hover { filter: brightness(1.12); }
+        .report-park-btn:active { transform: scale(.97); }
+        .report-park-btn:focus-visible {
+          outline: 2px solid var(--brand-light);
+          outline-offset: 2px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .report-park-btn { transition: none; }
+          .report-park-btn:active { transform: none; }
+        }
+
         @media (max-width: 720px) {
           .map-controls {
             position: absolute;
@@ -534,16 +563,25 @@ export function DogParksMap() {
             width: 100%;
             box-sizing: border-box;
             font-size: 16px;
+            min-height: 48px;
           }
           .map-controls .map-city-select {
             width: 100%;
             box-sizing: border-box;
-            font-size: 15px;
+            font-size: 16px;
+            min-height: 48px;
           }
           .map-bottom-bar {
-            gap: 6px;
+            gap: 8px;
             flex-wrap: wrap;
           }
+          /* יעדי מגע גדולים במובייל - נוח לבני 40+ */
+          .map-bottom-bar .locate-me-btn,
+          .map-bottom-bar .report-park-btn {
+            min-height: 48px;
+            font-size: 15px;
+          }
+          .map-count-chip { font-size: 14px; }
         }
       `}</style>
 

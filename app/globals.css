@@ -148,6 +148,10 @@ body {
 .tc-title {
   font-family: var(--font-display), 'Frank Ruhl Libre', Georgia, serif;
   letter-spacing: -0.4px;
+  /* ריתמוס טיפוגרפי לכותרות עבריות - איזון גובה שורה + טקסט מאוזן.
+     לא משנה גדלי פונט, רק את הריווח האנכי והקיפול. */
+  line-height: 1.12;
+  text-wrap: balance;
 }
 
 /* ═════════════ A11Y: FOCUS-VISIBLE גלובלי ═════════════ */
@@ -759,7 +763,10 @@ textarea.input { resize: vertical; min-height: 110px; }
   .floaty,
   .spin3d,
   .paws-layer span,
-  .pop-in { animation: none !important; }
+  .pop-in,
+  .kv-fade-in,
+  .kv-slide-in,
+  .kv-shimmer-el::after { animation: none !important; }
 
   /* פריטים שמופיעים דרך reveal - לוודא שהם תמיד גלויים */
   .r,
@@ -783,5 +790,98 @@ textarea.input { resize: vertical; min-height: 110px; }
   .ev-btn:hover,
   .flip:hover .flip-inner,
   .flip.flipped .flip-inner,
-  .feat-row:hover .fi { transform: none !important; }
+  .feat-row:hover .fi,
+  .kv-lift:hover { transform: none !important; }
+}
+
+/* ═════════════ מערכת עיצוב גלובלית - כלים לשימוש חוזר ═════════════ */
+/* יחידות פרימיום גנריות שכל רכיב יכול לצרוך: הרמת כרטיס, טבעות מיקוד,
+   כניסה עדינה (fade/slide), shimmer, יעדי מגע, ולחיצה עדינה על כפתורים.
+   כל אנימציה עטופה ב-prefers-reduced-motion ומכובה בבלוק הגלובלי מעלה. */
+
+/* ── בחירת טקסט (::selection) בגוון המותג ── */
+::selection { background: rgba(201,154,91,.28); color: var(--ink); }
+::-moz-selection { background: rgba(201,154,91,.28); color: var(--ink); }
+
+/* ── טבעת מיקוד אלגנטית לשימוש חוזר (a11y, בגוון המותג) ──
+   הוסיפו .kv-focus-ring לכל אלמנט מותאם אישית שאין לו טבעת ברירת מחדל. */
+.kv-focus-ring:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 8px;
+  box-shadow: 0 0 0 5px rgba(201,154,91,.16);
+}
+/* גרסה בהירה לרקעים כהים */
+.kv-focus-ring-light:focus-visible {
+  outline: 3px solid var(--brand-light);
+  outline-offset: 3px;
+  border-radius: 8px;
+  box-shadow: 0 0 0 5px rgba(232,200,135,.2);
+}
+
+/* ── הרמת כרטיס חלקה עם צל רך (hover lift) ──
+   .kv-lift על כל כרטיס/קישור נותן ריחוף עדין וצל מתגבר. */
+.kv-lift {
+  transition: transform .32s cubic-bezier(.22,1,.36,1),
+              box-shadow .32s cubic-bezier(.22,1,.36,1);
+  will-change: transform;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .kv-lift:hover { transform: var(--hover-lift-sm); box-shadow: var(--hover-shadow-sm); }
+  .kv-lift-md:hover { transform: var(--hover-lift-md); box-shadow: var(--hover-shadow-md); }
+}
+
+/* ── כניסה עדינה: fade + slide-in ──
+   הוסיפו את הקלאס; ה-JS/IntersectionObserver לא נדרש - זו כניסה חד-פעמית. */
+@media (prefers-reduced-motion: no-preference) {
+  .kv-fade-in { animation: kvFadeIn .6s cubic-bezier(.22,1,.36,1) both; }
+  .kv-slide-in { animation: kvSlideIn .6s cubic-bezier(.22,1,.36,1) both; }
+  .kv-slide-in.d1 { animation-delay: .08s; }
+  .kv-slide-in.d2 { animation-delay: .16s; }
+  .kv-slide-in.d3 { animation-delay: .24s; }
+  .kv-slide-in.d4 { animation-delay: .32s; }
+  .kv-fade-in.d1 { animation-delay: .08s; }
+  .kv-fade-in.d2 { animation-delay: .16s; }
+  .kv-fade-in.d3 { animation-delay: .24s; }
+  .kv-fade-in.d4 { animation-delay: .32s; }
+}
+@keyframes kvFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes kvSlideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── shimmer לשלד טעינה כללי (skeleton) ──
+   .kv-shimmer-el על כל תיבה ריקה מפיק זוהר נע. משלים את .kv-skel הקיים. */
+.kv-shimmer-el {
+  position: relative;
+  overflow: hidden;
+  background: #efe9dd;
+  border-radius: 10px;
+}
+.kv-shimmer-el::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.6), transparent);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .kv-shimmer-el::after { animation: kvShimmer 1.4s infinite; }
+}
+
+/* ── לחיצה עדינה על כפתורים (press) + יעד מגע ≥44px במובייל ── */
+@media (prefers-reduced-motion: no-preference) {
+  .btn:active { transform: scale(.97); }
+  .hbm:active,
+  .kv-nav-btn:active,
+  .gc-btn:active,
+  .pc-btn:active,
+  .ev-btn:active { transform: scale(.97); }
+}
+@media (max-width: 720px) {
+  .btn { min-height: max(48px, var(--tap)); }
 }
