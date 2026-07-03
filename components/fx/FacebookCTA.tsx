@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation'
  * הזמנה עדינה (משנית) להצטרף לקבוצת הפייסבוק - "בינתיים, בזמן שאנחנו בונים".
  * ה-CTA הראשי באתר הוא רשימת ההמתנה; הנדנוד הזה לא מתחרה בו: הוא לא מופיע
  * בדף הבית (שם נמצא ה-hero של הרשמה) ולא ב-/waitlist (שם נמצא הטופס).
- * מופיע פעם אחת בלבד - אחרי 18 שניות או אחרי גלילה של חצי עמוד (המוקדם מביניהם),
+ * מופיע פעם אחת בלבד - אחרי 5 שניות או אחרי גלילה של רבע עמוד (המוקדם מביניהם),
  * נסגר ב-X / Escape ולא חוזר (localStorage). לא ספאם, לא חוזר.
  */
 const FB_GROUP = 'https://www.facebook.com/share/g/18wnLhr9tn/'
@@ -40,7 +40,7 @@ export function FacebookCTA() {
       const scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight || 1)
       if (scrolled > 0.25) reveal()
     }
-    const timer = window.setTimeout(reveal, 8000)
+    const timer = window.setTimeout(reveal, 5000)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => {
       window.clearTimeout(timer)
