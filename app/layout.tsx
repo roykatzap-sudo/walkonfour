@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Heebo, Fredoka } from 'next/font/google'
 import './globals.css'
 import './fx3d.css'
+import './signature.css'
 import './homepage.css'
 import { Navbar } from '@/components/nav/Navbar'
 import { Footer } from '@/components/shared/Footer'
@@ -13,6 +14,7 @@ import { ClickBurst } from '@/components/fx/ClickBurst'
 import { FacebookCTA } from '@/components/fx/FacebookCTA'
 import { GlobalSuggest } from '@/components/fx/GlobalSuggest'
 import { RouteProgress } from '@/components/fx/RouteProgress'
+import { SignatureMotion } from '@/components/fx/useSignatureMotion'
 import { JsonLd, organizationSchema, websiteSchema } from '@/components/seo/JsonLd'
 import { Analytics } from '@vercel/analytics/next'
 import {
@@ -92,6 +94,7 @@ export default function RootLayout({
         <JsonLd data={[organizationSchema(), websiteSchema()]} />
         <ToastProvider>
           <RouteProgress />
+          <SignatureMotion />
           <SkipLink />
           <CursorFX />
           <Navbar />

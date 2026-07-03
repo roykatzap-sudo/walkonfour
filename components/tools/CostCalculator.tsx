@@ -313,7 +313,7 @@ export function CostCalculator({ presetBreed }: { presetBreed?: string } = {}) {
                 בחרו גזע או גודל, מזון, וטרינר, טיפוח, אבזור ומספר שנים - ואנחנו נבנה לכם
                 תחזית עלות מותאמת אישית לאורך כל חיי הכלב.
               </p>
-              <button type="button" className="btn btn-primary cc-compute-btn" onClick={compute}>
+              <button type="button" className="btn btn-primary cc-compute-btn kv-press kv-glow" onClick={compute}>
                 ✨ בנו לי תחזית עלות
               </button>
             </div>
@@ -327,7 +327,7 @@ export function CostCalculator({ presetBreed }: { presetBreed?: string } = {}) {
                 {dirty && (
                   <div className="cc-stale-bar">
                     <span>שיניתם בחירה - התחזית למטה אינה מעודכנת.</span>
-                    <button type="button" className="btn btn-primary cc-recalc-btn" onClick={compute}>
+                    <button type="button" className="btn btn-primary cc-recalc-btn kv-press" onClick={compute}>
                       חשבו מחדש
                     </button>
                   </div>
@@ -475,6 +475,11 @@ export function CostCalculator({ presetBreed }: { presetBreed?: string } = {}) {
         .cc-opt:hover {
           border-color: var(--brand);
           transform: translateY(-2px);
+        }
+        .cc-opt:active {
+          transform: scale(0.975);
+          transition-duration: 0.18s;
+          transition-timing-function: cubic-bezier(0.34, 1.4, 0.5, 1);
         }
         .cc-opt.on {
           border-color: var(--brand);
@@ -641,7 +646,9 @@ export function CostCalculator({ presetBreed }: { presetBreed?: string } = {}) {
           padding: 13px 15px;
           cursor: pointer;
           appearance: none;
-          background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a9743e' stroke-width='2.4' stroke-linecap='round'><polyline points='6 9 12 15 18 9'/></svg>");
+          /* data-URI מקודד-URL במלואו: רצפי // ו-: ו-<> שבורים שוברים את מנתח
+             ה-CSS של styled-jsx ומפילים את כל הכללים שאחריהם - הקידוד מנטרל זאת. */
+          background-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width=%2714%27%20height=%2714%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%23a9743e%27%20stroke-width=%272.4%27%20stroke-linecap=%27round%27%3E%3Cpolyline%20points=%276%209%2012%2015%2018%209%27%2F%3E%3C%2Fsvg%3E");
           background-repeat: no-repeat;
           background-position: left 15px center;
         }
@@ -775,11 +782,23 @@ export function CostCalculator({ presetBreed }: { presetBreed?: string } = {}) {
           padding: 15px 30px;
         }
 
-        /* ---- חשיפת התוצאה ---- */
-        .cc-reveal { animation: cc-reveal-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
+        /* ---- חשיפת התוצאה: נחיתה כמו פרס (glide חתום + ספרינג עדין) ----
+           הערה: בתוך shorthand של animation לא משתמשים ב-var() עם fallback
+           שמכיל פסיקים (שובר את מנתח ה-CSS של styled-jsx) - משתמשים בערך
+           הליטרלי של עקומת ה-glide/spring החתומה. */
+        .cc-reveal { animation: cc-reveal-in 0.62s cubic-bezier(0.16, 0.84, 0.28, 1) both; }
         @keyframes cc-reveal-in {
-          from { opacity: 0; transform: translateY(14px); }
-          to { opacity: 1; transform: translateY(0); }
+          from { opacity: 0; transform: translateY(18px) scale(0.99); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        /* המספר הגדול "מתמקם" בקפיצה עדינה כשהתחזית נכנסת */
+        .cc-reveal:not(.stale) .cc-big-num {
+          animation: cc-num-pop 0.6s cubic-bezier(0.34, 1.4, 0.5, 1) 0.08s both;
+        }
+        @keyframes cc-num-pop {
+          0% { transform: scale(0.92); }
+          55% { transform: scale(1.04); }
+          100% { transform: scale(1); }
         }
         .cc-reveal.stale {
           opacity: 0.45;
@@ -808,8 +827,16 @@ export function CostCalculator({ presetBreed }: { presetBreed?: string } = {}) {
           .cc-bar-fill {
             transition: none;
           }
+          .cc-opt:active { transform: none; }
           .cc-reveal { animation: none; }
+          .cc-reveal:not(.stale) .cc-big-num { animation: none; }
         }
+        html.kv-a11y-reduce-motion .cc-reveal,
+        html[data-reduce-motion='1'] .cc-reveal { animation: none; }
+        html.kv-a11y-reduce-motion .cc-reveal .cc-big-num,
+        html[data-reduce-motion='1'] .cc-reveal .cc-big-num { animation: none; }
+        html.kv-a11y-reduce-motion .cc-opt:active,
+        html[data-reduce-motion='1'] .cc-opt:active { transform: none; }
       `}</style>
     </div>
   )

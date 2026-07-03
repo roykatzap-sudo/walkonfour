@@ -6,6 +6,7 @@ import { JsonLd, articleSchema, breadcrumbSchema, faqSchema } from '@/components
 import { lawSpokes, getLawSpoke } from '@/lib/lawSpokes'
 import { officialSources } from '@/lib/lawsContent'
 import { WaitlistCTA } from '@/components/shared/WaitlistCTA'
+import { ReadingProgress } from '@/components/articles/ReadingProgress'
 
 export function generateStaticParams() {
   return lawSpokes.map((s) => ({ slug: s.slug }))
@@ -41,22 +42,24 @@ export default function LawSpokePage({ params }: { params: { slug: string } }) {
   return (
     <main className="page" style={{ maxWidth: 860 }}>
       <JsonLd data={schemas} />
+      <ReadingProgress />
       <style
         dangerouslySetInnerHTML={{
           __html: `
-            .law-faq { transition: border-color .18s ease, box-shadow .18s ease; }
+            .law-faq { transition: border-color var(--kv-dur-2,.34s) var(--kv-ease-warm,ease), box-shadow var(--kv-dur-2,.34s) var(--kv-ease-warm,ease); }
             .law-faq:hover { border-color: rgba(201,154,91,.5); box-shadow: 0 4px 16px rgba(42,32,24,.06); }
             .law-faq[open] { border-color: rgba(201,154,91,.55); box-shadow: 0 6px 20px rgba(42,32,24,.07); }
             .law-faq summary { list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
             .law-faq summary::-webkit-details-marker { display: none; }
             .law-faq summary::after {
               content: '›'; font-size: 24px; line-height: 1; font-weight: 700;
-              color: #c99a5b; transform: rotate(90deg); transition: transform .25s ease; flex-shrink: 0;
+              color: #c99a5b; transform: rotate(90deg);
+              transition: transform var(--kv-dur-2,.34s) var(--kv-ease-spring,ease); flex-shrink: 0;
             }
             .law-faq[open] summary::after { transform: rotate(-90deg); }
             .law-faq:focus-within { outline: 3px solid rgba(201,154,91,.5); outline-offset: 2px; }
-            .law-faq[open] .law-faq-body { animation: lawFaqIn .28s ease; }
-            @keyframes lawFaqIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+            .law-faq[open] .law-faq-body { animation: lawFaqIn var(--kv-dur-3,.5s) var(--kv-ease-spring,ease); }
+            @keyframes lawFaqIn { from { opacity: 0; transform: translateY(-7px); } to { opacity: 1; transform: translateY(0); } }
             @media (prefers-reduced-motion: reduce) {
               .law-faq, .law-faq summary::after { transition: none; }
               .law-faq[open] .law-faq-body { animation: none; }
@@ -67,12 +70,13 @@ export default function LawSpokePage({ params }: { params: { slug: string } }) {
 
       <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 28, padding: '6px 4px 18px', marginBottom: 14 }}>
         <FloatingShapes />
-        <div style={{ position: 'relative', zIndex: 2 }}>
+        <div className="kv-reveal" style={{ position: 'relative', zIndex: 2 }}>
           <Link href="/laws" style={{ fontSize: 13.5, color: 'var(--brand-dark)', textDecoration: 'none', fontWeight: 700 }}>
             ← חוקים על כלבים בישראל
           </Link>
           <h1 className="page-title" style={{ fontSize: 36, marginTop: 10 }}>{s.title.split(' - ')[0]}</h1>
           <p className="page-sub" style={{ maxWidth: 620, fontSize: 17, color: '#5b4d3c', lineHeight: 1.7 }}>{s.description}</p>
+          <span className="kv-shimmer-line" aria-hidden="true" style={{ marginTop: 14 }} />
         </div>
       </div>
 
@@ -85,16 +89,17 @@ export default function LawSpokePage({ params }: { params: { slug: string } }) {
       </div>
 
       {/* תשובה מהירה */}
-      <section style={{ position: 'relative', marginTop: 16, padding: '20px 24px', background: 'linear-gradient(135deg,#fff8ea,#fef0d8)', border: '2px solid rgba(201,154,91,.35)', borderRadius: 18, boxShadow: '0 6px 22px rgba(201,154,91,.12)', overflow: 'hidden' }}>
+      <section className="kv-reveal" style={{ position: 'relative', marginTop: 16, padding: '20px 24px', background: 'linear-gradient(135deg,#fff8ea,#fef0d8)', border: '2px solid rgba(201,154,91,.35)', borderRadius: 18, boxShadow: '0 6px 22px rgba(201,154,91,.12)', overflow: 'hidden' }}>
         <span aria-hidden="true" style={{ position: 'absolute', top: 0, insetInlineStart: 0, width: 5, height: '100%', background: 'linear-gradient(180deg,#c99a5b,#e8c887)' }} />
         <div style={{ fontWeight: 900, color: 'var(--brand-dark)', fontSize: 14, letterSpacing: 0.5, marginBottom: 8 }}>⚡ תשובה מהירה</div>
         <p style={{ margin: 0, fontSize: 16.5, color: 'var(--ink)', lineHeight: 1.75, maxWidth: '68ch' }}>{s.quickAnswer}</p>
+        <span className="kv-shimmer-line" aria-hidden="true" style={{ marginTop: 14 }} />
       </section>
 
-      {/* פרוזה */}
+      {/* פרוזה - חשיפת גלילה חתומה, סקשן-אחר-סקשן */}
       <article style={{ marginTop: 32 }}>
         {s.sections.map((sec, i) => (
-          <section key={i} style={{ marginBottom: 32 }}>
+          <section key={i} className="kv-reveal" style={{ marginBottom: 32 }}>
             <h2 style={{ fontSize: 22, fontWeight: 900, color: 'var(--ink)', margin: '0 0 12px', borderBottom: '2px solid rgba(201,154,91,.25)', paddingBottom: 8 }}>{sec.heading}</h2>
             {sec.paragraphs.map((p, j) => (
               <p key={j} style={{ fontSize: 16.5, color: '#3a2e22', lineHeight: 1.85, margin: '0 0 12px', maxWidth: '66ch' }}>{p}</p>
@@ -103,13 +108,16 @@ export default function LawSpokePage({ params }: { params: { slug: string } }) {
         ))}
       </article>
 
+      {/* מפריד כף-רגל ממותג לפני השאלות הנפוצות */}
+      <div className="kv-paw-divider" aria-hidden="true" style={{ marginTop: 20 }} />
+
       {/* FAQ */}
-      <section style={{ marginTop: 36 }}>
+      <section className="kv-reveal" style={{ marginTop: 16 }}>
         <h2 style={{ fontSize: 22, fontWeight: 900, color: 'var(--ink)', margin: '0 0 14px' }}>שאלות נפוצות</h2>
         <div style={{ display: 'grid', gap: 10 }}>
           {s.faq.map((f, i) => (
             <details key={i} className="law-faq" style={{ background: '#fff', border: '1px solid rgba(201,154,91,.22)', borderRadius: 14, padding: '14px 18px' }}>
-              <summary style={{ cursor: 'pointer', fontWeight: 800, color: 'var(--ink)', fontSize: 16 }}>{f.q}</summary>
+              <summary className="kv-press" style={{ cursor: 'pointer', fontWeight: 800, color: 'var(--ink)', fontSize: 16 }}>{f.q}</summary>
               <div className="law-faq-body">
                 <p style={{ margin: '10px 0 0', fontSize: 15.5, color: '#5b4d3c', lineHeight: 1.75 }}>{f.a}</p>
               </div>
@@ -131,7 +139,9 @@ export default function LawSpokePage({ params }: { params: { slug: string } }) {
         </ul>
       </section>
 
-      <WaitlistCTA variant="laws" />
+      <div className="kv-reveal">
+        <WaitlistCTA variant="laws" />
+      </div>
 
       {/* ניווט חזרה */}
       <div style={{ marginTop: 36, display: 'flex', gap: 10, flexWrap: 'wrap' }}>

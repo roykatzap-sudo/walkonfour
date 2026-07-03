@@ -113,7 +113,8 @@ export function FoodCalculator() {
         <span className="fc-prize-tag" aria-hidden="true">🦴 המנה היומית שלכם</span>
         <div className="fc-prize-grid">
           <div className="fc-prize-hero">
-            <div className="fc-prize-num">{gramsPerDay}</div>
+            {/* key על שלב-החיים: כשמשנים מצב, המספר "מתמקם" בקפיצה עדינה (פרס חדש) */}
+            <div className="fc-prize-num" key={modeId}>{gramsPerDay}</div>
             <div className="fc-prize-unit">גרם ביום</div>
           </div>
           <div className="fc-prize-side">
@@ -232,6 +233,11 @@ export function FoodCalculator() {
           border-color: var(--brand);
           transform: translateY(-2px);
         }
+        .fc-mode:active {
+          transform: scale(0.975);
+          transition-duration: 0.18s;
+          transition-timing-function: cubic-bezier(0.34, 1.4, 0.5, 1);
+        }
         .fc-mode.on {
           background: #fdf6e9;
           border-color: var(--brand);
@@ -287,6 +293,15 @@ export function FoodCalculator() {
           color: #e8c887;
           font-variant-numeric: tabular-nums;
           text-shadow: 0 4px 18px rgba(232, 200, 135, 0.28);
+          /* מתמקם בקפיצה עדינה כשהוא מתחלף (key על שלב-החיים).
+             ערך ליטרלי של עקומת ה-spring - var() בתוך shorthand של animation
+             עם fallback שמכיל פסיקים שובר את מנתח ה-CSS של styled-jsx. */
+          animation: fc-num-settle 0.55s cubic-bezier(0.34, 1.4, 0.5, 1) both;
+        }
+        @keyframes fc-num-settle {
+          0% { transform: scale(0.9); }
+          55% { transform: scale(1.05); }
+          100% { transform: scale(1); }
         }
         .fc-prize-unit {
           font-size: 15px;
@@ -319,11 +334,19 @@ export function FoodCalculator() {
           .fc-range::-webkit-slider-thumb {
             transition: none;
           }
+          .fc-mode:active { transform: none; }
           .fc-prize::before {
             animation: none;
             display: none;
           }
+          .fc-prize-hero .fc-prize-num { animation: none; }
         }
+        :global(html.kv-a11y-reduce-motion) .fc-prize-hero .fc-prize-num,
+        :global(html[data-reduce-motion='1']) .fc-prize-hero .fc-prize-num { animation: none; }
+        :global(html.kv-a11y-reduce-motion) .fc-prize::before,
+        :global(html[data-reduce-motion='1']) .fc-prize::before { animation: none; display: none; }
+        :global(html.kv-a11y-reduce-motion) .fc-mode:active,
+        :global(html[data-reduce-motion='1']) .fc-mode:active { transform: none; }
       `}</style>
     </div>
   )

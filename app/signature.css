@@ -1,0 +1,347 @@
+/* ════════════════════════ KELVANYA SIGNATURE LAYER ════════════════════════
+   שכבת התנועה החתומה של "קהילה על ארבע".
+   מטרה: להעניק לאתר תחושה מיוחדת, חמה, מלאכת-יד - לא תבנית.
+   כל אנימציה כאן היא transform/opacity בלבד (GPU), עטופה בהגנת
+   prefers-reduced-motion, ומכבדת גם את מתג הנגישות באתר
+   (html.kv-a11y-reduce-motion / html[data-reduce-motion="1"]).
+
+   שלוש ידיות עיצוב מרכזיות:
+   1. עקומות ה-EASING החתומות (--kv-ease-*)
+   2. חשיפת גלילה מדורגת עם כוונה (data-kv-reveal)
+   3. מבטא זהב/כף רגל עדין למעברי סקשן (kv-shimmer-line / kv-paw-divider)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── עקומות תנועה חתומות ──
+     kv-warm  = הכניסה הרכה/החמה (ease-out נדיב, ה-DNA של האתר).
+     kv-spring = קפיצי-עדין לפידבק מגע (over-shoot מרוסן, לא קרקסי).
+     kv-glide = מעבר החלקה ארוך ורגוע לסקשנים/מסכים גדולים. */
+  --kv-ease-warm: cubic-bezier(.22, 1, .36, 1);
+  --kv-ease-spring: cubic-bezier(.34, 1.4, .5, 1);
+  --kv-ease-glide: cubic-bezier(.16, .84, .28, 1);
+
+  /* ── משכי זמן סטנדרטיים (סולם קצר) ── */
+  --kv-dur-1: .18s;   /* פידבק מגע/לחיצה מיידי */
+  --kv-dur-2: .34s;   /* ריחוף/מעבר רגיל */
+  --kv-dur-3: .62s;   /* חשיפה */
+  --kv-dur-4: .9s;    /* מעבר סקשן גדול */
+
+  /* גוון הזהב החתום כמשתנה יחיד לשימוש חוזר במבטאים */
+  --kv-gold: 201, 154, 91;         /* --brand בערוצי RGB */
+  --kv-gold-light: 232, 200, 135;  /* --brand-light בערוצי RGB */
+}
+
+/* ════════════════════════ 1. חשיפת גלילה חתומה ════════════════════════
+   מונע ע"י data-attribute שה-hook (useSignatureMotion) מדליק כשהאלמנט
+   נכנס לתצוגה. לא fade גנרי: עלייה עדינה + דעיכה + סקייל זעיר = כוונה.
+   ה-hook מוסיף data-kv-reveal="in". עד אז המצב ההתחלתי מוסתר.
+   שימוש:  <div className="kv-reveal">…</div>
+           <div className="kv-reveal" data-kv-delay="2">…</div>   (מדורג) */
+@media (prefers-reduced-motion: no-preference) {
+  .kv-reveal {
+    opacity: 0;
+    transform: translateY(26px) scale(.985);
+    transition:
+      opacity var(--kv-dur-3) var(--kv-ease-warm),
+      transform var(--kv-dur-3) var(--kv-ease-warm);
+    will-change: transform, opacity;
+  }
+  /* חשיפה חד-פעמית: אחרי שהאלמנט נחשף הוא לא מונפש שוב, אז משחררים את
+     ה-will-change כדי לא להשאיר עשרות שכבות מקומפזרות בזיכרון לנצח. */
+  .kv-reveal[data-kv-reveal="in"],
+  [data-kv-stagger][data-kv-reveal="in"] > .kv-reveal { will-change: auto; }
+  /* וריאנטים כיווניים - נכונים ל-RTL דרך תכונות לוגיות של translate */
+  .kv-reveal.kv-reveal-start { transform: translateX(28px) scale(.99); }  /* נכנס מכיוון ההתחלה (ימין ב-RTL) */
+  .kv-reveal.kv-reveal-end   { transform: translateX(-28px) scale(.99); } /* נכנס מכיוון הסוף (שמאל ב-RTL) */
+
+  /* דירוג: data-kv-delay="1..6" נותן עיכוב מדורג עדין */
+  .kv-reveal[data-kv-delay="1"] { transition-delay: .06s; }
+  .kv-reveal[data-kv-delay="2"] { transition-delay: .12s; }
+  .kv-reveal[data-kv-delay="3"] { transition-delay: .18s; }
+  .kv-reveal[data-kv-delay="4"] { transition-delay: .24s; }
+  .kv-reveal[data-kv-delay="5"] { transition-delay: .30s; }
+  .kv-reveal[data-kv-delay="6"] { transition-delay: .36s; }
+
+  /* מצב חשוף (מודלק ע"י ה-hook) - עצמאי, וגם כילד של קונטיינר stagger שנחשף */
+  .kv-reveal[data-kv-reveal="in"],
+  [data-kv-stagger][data-kv-reveal="in"] > .kv-reveal {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+
+  /* דירוג-אוטומטי לילדים ישירים של קונטיינר (בלי לתייג כל ילד):
+     data-kv-stagger על ההורה + .kv-reveal על הילדים. ה-hook מדליק את
+     ההורה, וה-CSS נותן לכל ילד עיכוב לפי סדר ה-DOM. */
+  [data-kv-stagger] > .kv-reveal { transition-delay: 0s; }
+  [data-kv-stagger][data-kv-reveal="in"] > .kv-reveal:nth-child(1) { transition-delay: .04s; }
+  [data-kv-stagger][data-kv-reveal="in"] > .kv-reveal:nth-child(2) { transition-delay: .11s; }
+  [data-kv-stagger][data-kv-reveal="in"] > .kv-reveal:nth-child(3) { transition-delay: .18s; }
+  [data-kv-stagger][data-kv-reveal="in"] > .kv-reveal:nth-child(4) { transition-delay: .25s; }
+  [data-kv-stagger][data-kv-reveal="in"] > .kv-reveal:nth-child(5) { transition-delay: .32s; }
+  [data-kv-stagger][data-kv-reveal="in"] > .kv-reveal:nth-child(6) { transition-delay: .39s; }
+  [data-kv-stagger][data-kv-reveal="in"] > .kv-reveal:nth-child(n+7) { transition-delay: .46s; }
+}
+
+/* ════════════════════════ 2. מבטא זהב חתום ════════════════════════
+   שני מבטאים מבוססים על גוון הזהב של המותג, לשימוש חסכוני בלבד
+   (כותרת סקשן / מעבר בין סקשנים). לא רעש רקע - מבטא בודד. */
+
+/* קו-נצנוץ עדין: פס אופקי דק שהברק שלו זוחל פעם אחת עם החשיפה.
+   שימוש: <span className="kv-shimmer-line" /> מתחת לכותרת. */
+.kv-shimmer-line {
+  display: block;
+  height: 2px;
+  width: 54px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--kv-gold), 0) 0%,
+    rgba(var(--kv-gold), .95) 45%,
+    rgba(var(--kv-gold-light), 1) 55%,
+    rgba(var(--kv-gold), 0) 100%
+  );
+  background-size: 220% 100%;
+  background-position: 100% 0;   /* RTL: הברק זוחל מימין לשמאל */
+}
+@media (prefers-reduced-motion: no-preference) {
+  .kv-shimmer-line { transition: background-position var(--kv-dur-4) var(--kv-ease-glide); }
+  /* כשההורה נחשף - מזיזים את הברק פעם אחת (חד-פעמי, לא לולאה) */
+  [data-kv-reveal="in"] .kv-shimmer-line,
+  .kv-shimmer-line[data-kv-reveal="in"] { background-position: 0 0; }
+}
+
+/* מפריד סקשן ממותג: כף-רגל זהב עדינה בין שני קווים דקים.
+   שימוש:  <div className="kv-paw-divider" aria-hidden />
+   הכף היא ::after כ-mask, כך שאין תלות בנכס חיצוני (CSP). */
+.kv-paw-divider {
+  --paw: rgba(var(--kv-gold), .55);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  margin-block: 8px;
+}
+.kv-paw-divider::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(var(--kv-gold), .28) 22%,
+    rgba(var(--kv-gold), .28) 78%,
+    transparent
+  );
+}
+.kv-paw-divider::after {
+  content: '';
+  position: relative;
+  width: 22px;
+  height: 22px;
+  background: var(--paw);
+  /* כף-רגל דרך mask וקטורי מוטבע - בלי בקשת רשת (CSP-safe) */
+  -webkit-mask: var(--kv-paw-mask) center / contain no-repeat;
+  mask: var(--kv-paw-mask) center / contain no-repeat;
+  background-color: var(--cream);         /* דיסק רקע לניקוי הקו שמאחור */
+  box-shadow: 0 0 0 7px var(--cream);
+}
+/* כף-רגל וקטורית משותפת (data-URI). מוגדרת פעם אחת כמשתנה. */
+:root {
+  --kv-paw-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cellipse cx='256' cy='330' rx='120' ry='96'/%3E%3Cellipse cx='150' cy='180' rx='42' ry='56'/%3E%3Cellipse cx='362' cy='180' rx='42' ry='56'/%3E%3Cellipse cx='210' cy='110' rx='36' ry='48'/%3E%3Cellipse cx='302' cy='110' rx='36' ry='48'/%3E%3C/svg%3E");
+}
+.kv-paw-divider::after { background: var(--paw); }
+/* גרסה כהה - למעבר על רקע כהה (--ink) */
+.kv-paw-divider.on-dark::after { box-shadow: 0 0 0 7px var(--ink); }
+.kv-paw-divider.on-dark::before {
+  background: linear-gradient(90deg, transparent, rgba(var(--kv-gold-light), .3) 22%, rgba(var(--kv-gold-light), .3) 78%, transparent);
+}
+/* נשימה עדינה חד-פעמית של הכף בעת החשיפה (scale, GPU) */
+@media (prefers-reduced-motion: no-preference) {
+  .kv-paw-divider::after {
+    transform: scale(.82);
+    opacity: .6;
+    transition: transform var(--kv-dur-3) var(--kv-ease-spring), opacity var(--kv-dur-3) var(--kv-ease-warm);
+  }
+  .kv-paw-divider[data-kv-reveal="in"]::after,
+  [data-kv-reveal="in"] .kv-paw-divider::after { transform: scale(1); opacity: 1; }
+}
+
+/* ════════════════════════ 3. פידבק מגע מוקצן (tactile) ════════════════════════
+   שכבה שמעל ה-:active הקיים. .kv-press נותן שקיעה קפיצית עדינה בלחיצה
+   וריחוף רך במעבר עכבר. מוכן-מגנטי: מכבד transform שה-JS מזין דרך
+   translate (המגנט) בלי להתנגש - משתמשים ב-scale בלבד כאן דרך משתנה. */
+@media (prefers-reduced-motion: no-preference) {
+  .kv-press {
+    transition:
+      transform var(--kv-dur-1) var(--kv-ease-spring),
+      box-shadow var(--kv-dur-2) var(--kv-ease-warm),
+      filter var(--kv-dur-2) var(--kv-ease-warm);
+  }
+  /* מקדמים לשכבה נפרדת רק ברגע האינטראקציה - .kv-press יושב על כמעט כל
+     כפתור/קישור באתר, אז will-change קבוע = יותר מדי שכבות קבועות בזיכרון. */
+  .kv-press:hover,
+  .kv-press:active { will-change: transform; }
+  .kv-press:hover { filter: brightness(1.03); }
+  .kv-press:active { transform: scale(.955); }
+  /* לחצן-מגנט: המגנט מזיז ב-translate, וה-scale של הלחיצה נשמר דרך משתנה
+     כדי לא לדרוס את ה-translate של ה-JS. השתמשו ב-.kv-press-mag על .magnetic. */
+  .kv-press-mag:active { transform: translate(var(--mag-x, 0), var(--mag-y, 0)) scale(.955); }
+}
+
+/* טבעת-הילה זהב עדינה בלחיצה (מבטא, לא חובה) - .kv-glow על CTA ראשי */
+@media (prefers-reduced-motion: no-preference) {
+  .kv-glow { position: relative; }
+  .kv-glow::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: 0 0 0 0 rgba(var(--kv-gold-light), .5);
+    opacity: 0;
+    transition: box-shadow var(--kv-dur-3) var(--kv-ease-glide), opacity var(--kv-dur-3) var(--kv-ease-glide);
+  }
+  .kv-glow:active::after {
+    box-shadow: 0 0 0 8px rgba(var(--kv-gold-light), 0);
+    opacity: 1;
+    transition: box-shadow .5s var(--kv-ease-glide), opacity .5s var(--kv-ease-glide);
+  }
+}
+
+/* ════════════════════════ מבטא "עקבות כף" למעבר סקשן (hero) ════════════════════════
+   שורת עקבות זהב דקיקות שנחשפות בזו אחר זו כשהסקשן נכנס לתצוגה.
+   קישוט טהור (aria-hidden). חסכוני: 5 כפות, opacity/transform בלבד.
+   שימוש:  <div className="kv-paw-trail" aria-hidden>
+             <i/><i/><i/><i/><i/>
+           </div>  */
+.kv-paw-trail {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.kv-paw-trail i {
+  width: 16px;
+  height: 16px;
+  background: rgba(var(--kv-gold), .5);
+  -webkit-mask: var(--kv-paw-mask) center / contain no-repeat;
+  mask: var(--kv-paw-mask) center / contain no-repeat;
+  /* כל כף מוטה מעט לסירוגין - תחושת הליכה */
+}
+.kv-paw-trail i:nth-child(odd)  { transform: rotate(-12deg); }
+.kv-paw-trail i:nth-child(even) { transform: rotate(12deg) translateY(4px); }
+@media (prefers-reduced-motion: no-preference) {
+  .kv-paw-trail i {
+    opacity: 0;
+    transition: opacity var(--kv-dur-2) var(--kv-ease-warm), transform var(--kv-dur-2) var(--kv-ease-spring);
+  }
+  /* חשיפה מדורגת מכיוון ההתחלה (ימין ב-RTL) לכיוון הסוף */
+  .kv-paw-trail[data-kv-reveal="in"] i,
+  [data-kv-reveal="in"] .kv-paw-trail i { opacity: .85; }
+  .kv-paw-trail[data-kv-reveal="in"] i:nth-child(1),
+  [data-kv-reveal="in"] .kv-paw-trail i:nth-child(1) { transition-delay: .00s; }
+  .kv-paw-trail[data-kv-reveal="in"] i:nth-child(2),
+  [data-kv-reveal="in"] .kv-paw-trail i:nth-child(2) { transition-delay: .10s; }
+  .kv-paw-trail[data-kv-reveal="in"] i:nth-child(3),
+  [data-kv-reveal="in"] .kv-paw-trail i:nth-child(3) { transition-delay: .20s; }
+  .kv-paw-trail[data-kv-reveal="in"] i:nth-child(4),
+  [data-kv-reveal="in"] .kv-paw-trail i:nth-child(4) { transition-delay: .30s; }
+  .kv-paw-trail[data-kv-reveal="in"] i:nth-child(5),
+  [data-kv-reveal="in"] .kv-paw-trail i:nth-child(5) { transition-delay: .40s; }
+}
+
+/* ════════════════════════ מפריד גלי סקשן ממותג ════════════════════════
+   מעבר עקום עדין בין רקע כהה לקרם (ולהיפך) בגוון המותג, במקום קו חד.
+   שימוש: <div className="kv-wave-divider" aria-hidden /> בין סקשנים.
+   סטטי (בלי אנימציה) - נכס עיצוב, לא תנועה. */
+.kv-wave-divider {
+  height: 44px;
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(var(--kv-gold), .10), transparent 62%);
+  position: relative;
+}
+.kv-wave-divider::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: 1px;
+  transform: translateY(-50%);
+  background: linear-gradient(90deg, transparent, rgba(var(--kv-gold), .25) 30%, rgba(var(--kv-gold), .25) 70%, transparent);
+}
+
+/* ════════════════════════ כלי עזר: הדגשת קו-תחתון חתום ════════════════════════
+   קו-תחתון זהב שנמשח משמאל-לימין-נכון-ל-RTL במעבר עכבר. עדין, לקישורים
+   מודגשים בגוף הטקסט. שימוש: <a className="kv-underline">…</a> */
+.kv-underline {
+  position: relative;
+  text-decoration: none;
+  background-image: linear-gradient(90deg, rgba(var(--kv-gold), .9), rgba(var(--kv-gold-light), .9));
+  background-repeat: no-repeat;
+  background-position: 100% 100%;       /* RTL: מתחיל מימין */
+  background-size: 0% 2px;
+  padding-bottom: 2px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .kv-underline { transition: background-size var(--kv-dur-2) var(--kv-ease-warm); }
+  .kv-underline:hover,
+  .kv-underline:focus-visible { background-size: 100% 2px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* בלי אנימציה - הקו פשוט נוכח כדי לשמור על אפורדנס */
+  .kv-underline { background-size: 100% 2px; }
+}
+
+/* ════════════════════════ מתג-כיבוי גלובלי (KILL SWITCH) ════════════════════════
+   מכבד את שתי מערכות הפחתת-התנועה של האתר:
+   1. מערכת ההפעלה  → @media (prefers-reduced-motion: reduce)
+   2. מתג הנגישות באתר → html.kv-a11y-reduce-motion  /  html[data-reduce-motion="1"]
+   בכל אחד מהמצבים: כל אלמנטי החשיפה גלויים לחלוטין, כל המבטאים סטטיים,
+   ואף פידבק מגע לא מזיז/מרעיד. שום תוכן לא נשאר מוסתר. */
+
+/* — מערכת ההפעלה — */
+@media (prefers-reduced-motion: reduce) {
+  .kv-reveal,
+  .kv-reveal.kv-reveal-start,
+  .kv-reveal.kv-reveal-end {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .kv-shimmer-line { background-position: 0 0 !important; transition: none !important; }
+  .kv-paw-divider::after { transform: none !important; opacity: 1 !important; transition: none !important; }
+  .kv-paw-trail i { opacity: .85 !important; transition: none !important; }
+  .kv-press,
+  .kv-press:hover,
+  .kv-press:active,
+  .kv-press-mag:active { transform: none; filter: none; transition: none; }
+  .kv-glow::after { display: none; }
+}
+
+/* — מתג הנגישות באתר (class או data-attribute על <html>) — */
+html.kv-a11y-reduce-motion .kv-reveal,
+html[data-reduce-motion="1"] .kv-reveal,
+html.kv-a11y-reduce-motion .kv-reveal.kv-reveal-start,
+html[data-reduce-motion="1"] .kv-reveal.kv-reveal-start,
+html.kv-a11y-reduce-motion .kv-reveal.kv-reveal-end,
+html[data-reduce-motion="1"] .kv-reveal.kv-reveal-end {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+html.kv-a11y-reduce-motion .kv-shimmer-line,
+html[data-reduce-motion="1"] .kv-shimmer-line { background-position: 0 0 !important; transition: none !important; }
+html.kv-a11y-reduce-motion .kv-paw-divider::after,
+html[data-reduce-motion="1"] .kv-paw-divider::after { transform: none !important; opacity: 1 !important; transition: none !important; }
+html.kv-a11y-reduce-motion .kv-paw-trail i,
+html[data-reduce-motion="1"] .kv-paw-trail i { opacity: .85 !important; transition: none !important; }
+html.kv-a11y-reduce-motion .kv-press,
+html[data-reduce-motion="1"] .kv-press,
+html.kv-a11y-reduce-motion .kv-press:active,
+html[data-reduce-motion="1"] .kv-press:active { transform: none !important; filter: none !important; }
+html.kv-a11y-reduce-motion .kv-glow::after,
+html[data-reduce-motion="1"] .kv-glow::after { display: none !important; }

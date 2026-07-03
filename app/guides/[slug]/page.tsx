@@ -7,6 +7,7 @@ import { JoinCommunityCard } from '@/components/fx/JoinCommunityCard'
 import { Tilt3D } from '@/components/fx/Tilt3D'
 import { MagneticButton } from '@/components/fx/MagneticButton'
 import { JsonLd, articleSchema, breadcrumbSchema, howToSchema } from '@/components/seo/JsonLd'
+import { ReadingProgress } from '@/components/articles/ReadingProgress'
 
 export function generateStaticParams() {
   return guides.map((g) => ({ slug: g.slug }))
@@ -52,6 +53,7 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
   return (
     <main>
       <JsonLd data={structuredData} />
+      <ReadingProgress />
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -97,6 +99,7 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
             {guide.title}
           </h1>
           <p style={{ fontSize: 17.5, color: 'rgba(255,255,255,.9)', maxWidth: 620, lineHeight: 1.65 }}>{guide.excerpt}</p>
+          <span className="kv-shimmer-line" data-kv-reveal="in" aria-hidden="true" style={{ marginTop: 14 }} />
           <p style={{ marginTop: 12, fontSize: 14, color: 'rgba(255,255,255,.78)', fontWeight: 600 }}>
             זמן קריאה משוער: {guide.readMinutes} דקות
           </p>
@@ -118,12 +121,12 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
           ))}
         </article>
 
-        {/* TIPS */}
-        <div style={{ background: 'var(--ink)', borderRadius: 20, padding: '26px 28px', color: '#fff', marginTop: 12 }}>
+        {/* TIPS - כרטיס כהה עם חשיפה מדורגת חתומה */}
+        <div className="kv-reveal" style={{ background: 'var(--ink)', borderRadius: 20, padding: '26px 28px', color: '#fff', marginTop: 12 }}>
           <h2 style={{ margin: '0 0 14px', fontSize: 20, fontWeight: 900, color: '#e8c887' }}>נקודות מהירות</h2>
-          <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10 }} data-kv-stagger>
             {guide.tips.map((t, i) => (
-              <li key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 15.5, lineHeight: 1.6, color: 'rgba(255,255,255,.9)' }}>
+              <li key={i} className="kv-reveal kv-reveal-start" style={{ display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 15.5, lineHeight: 1.6, color: 'rgba(255,255,255,.9)' }}>
                 <span aria-hidden="true" style={{ color: '#e8c887', fontWeight: 900, flexShrink: 0 }}>✓</span>
                 <span>{t}</span>
               </li>

@@ -32,13 +32,19 @@ export function RelatedBreedsBlock({ currentSlug }: { currentSlug: string }) {
         borderRadius: 16,
       }}
     >
-      <h2 style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 900, color: 'var(--ink)', letterSpacing: '-.3px' }}>
-        גזעים דומים שכדאי להכיר
-      </h2>
-      <p style={{ margin: '0 0 18px', fontSize: 15, color: '#5b4d3c', lineHeight: 1.55 }}>
-        אם הגעתם לכאן ושוקלים את הגזע - שווה לבדוק גם:
-      </p>
+      {/* כותרת + מבטא זהב חתום שנצנץ פעם אחת עם החשיפה */}
+      <div className="kv-reveal">
+        <h2 style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 900, color: 'var(--ink)', letterSpacing: '-.3px' }}>
+          גזעים דומים שכדאי להכיר
+        </h2>
+        <span className="kv-shimmer-line" aria-hidden style={{ margin: '0 0 12px' }} />
+        <p style={{ margin: '0 0 18px', fontSize: 15, color: '#5b4d3c', lineHeight: 1.55 }}>
+          אם הגעתם לכאן ושוקלים את הגזע - שווה לבדוק גם:
+        </p>
+      </div>
+      {/* גריד עם חשיפה מדורגת חתומה: כל כרטיס עולה בתורו */}
       <div
+        data-kv-stagger
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
@@ -58,10 +64,10 @@ export function RelatedBreedsBlock({ currentSlug }: { currentSlug: string }) {
               textDecoration: 'none',
               transition: 'all .2s',
             }}
-            className="related-breed-card kv-lift"
+            className="related-breed-card kv-lift kv-reveal kv-press"
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
-              <span style={{ fontWeight: 900, fontSize: 16.5, color: 'var(--ink)' }}>
+              <span className="kv-underline" style={{ fontWeight: 900, fontSize: 16.5, color: 'var(--ink)' }}>
                 <span aria-hidden="true" style={{ marginInlineEnd: 6 }}>🐾</span>
                 {b.name}
               </span>

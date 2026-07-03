@@ -59,18 +59,19 @@ export default function CompareHubPage() {
 
       <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 28, padding: '6px 4px 18px', marginBottom: 14 }}>
         <FloatingShapes />
-        <div style={{ position: 'relative', zIndex: 2 }}>
+        <div className="kv-reveal" style={{ position: 'relative', zIndex: 2 }}>
           <span className="section-tag">השוואות גזעים</span>
           <h1 className="page-title" style={{ fontSize: 38 }}>איזה גזע מתאים לכם יותר?</h1>
           <p className="page-sub" style={{ maxWidth: 620, fontSize: 17, color: '#5b4d3c', lineHeight: 1.7 }}>
             השוואות כנות, צד-בצד: אופי, אנרגיה, מחיר, בריאות והתאמה לחיים בישראל - ובסוף פסק דין ברור.
           </p>
+          <span className="kv-shimmer-line" aria-hidden="true" style={{ marginTop: 14 }} />
         </div>
       </div>
 
-      <div style={{ display: 'grid', gap: 14, marginTop: 20 }}>
+      <div style={{ display: 'grid', gap: 14, marginTop: 20 }} data-kv-stagger>
         {comparisons.map((c) => (
-          <Link key={c.slug} href={`/compare/${c.slug}`} className="cmp-hub-card">
+          <Link key={c.slug} href={`/compare/${c.slug}`} className="cmp-hub-card kv-reveal">
             <div style={{ fontWeight: 900, fontSize: 19, color: 'var(--ink)', marginBottom: 6 }}>
               {nameOf(c.breedA)} מול {nameOf(c.breedB)}
             </div>

@@ -103,7 +103,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
               outline-offset: 3px;
               border-radius: 6px;
             }
-            .article-faq { transition: border-color .18s ease, box-shadow .18s ease; }
+            .article-faq { transition: border-color var(--kv-dur-2,.34s) var(--kv-ease-warm,ease), box-shadow var(--kv-dur-2,.34s) var(--kv-ease-warm,ease); }
             .article-faq:hover { box-shadow: 0 4px 16px rgba(42,32,24,.07); }
             .article-faq[open] { box-shadow: 0 6px 20px rgba(42,32,24,.08); }
             .article-faq:focus-within {
@@ -117,11 +117,12 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
             .article-faq summary::-webkit-details-marker { display: none; }
             .article-faq summary::after {
               content: '›'; font-size: 26px; line-height: 1; font-weight: 700;
-              color: #c99a5b; transform: rotate(90deg); transition: transform .25s ease; flex-shrink: 0;
+              color: #c99a5b; transform: rotate(90deg);
+              transition: transform var(--kv-dur-2,.34s) var(--kv-ease-spring,ease); flex-shrink: 0;
             }
             .article-faq[open] summary::after { transform: rotate(-90deg); }
-            .article-faq[open] .article-faq-body { animation: articleFaqIn .28s ease; }
-            @keyframes articleFaqIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+            .article-faq[open] .article-faq-body { animation: articleFaqIn var(--kv-dur-3,.5s) var(--kv-ease-spring,ease); }
+            @keyframes articleFaqIn { from { opacity: 0; transform: translateY(-7px); } to { opacity: 1; transform: translateY(0); } }
             @media (prefers-reduced-motion: reduce) {
               .article-faq, .article-faq summary::after { transition: none; }
               .article-faq[open] .article-faq-body { animation: none; }
@@ -250,7 +251,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
         <div className="article-main-col">
         {/* BREED STATS - מדדים + עובדות מהירות (אחיד עם עמוד הגזע) */}
         {breed ? (
-          <div className="card" style={{ padding: 22, marginBottom: 40 }}>
+          <div className="card kv-reveal" style={{ padding: 22, marginBottom: 40 }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 24 }}>
               {/* אנרגיה */}
               <div>
@@ -285,6 +286,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
           </div>
         ) : (
           <div
+            data-kv-stagger
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
@@ -293,7 +295,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
             }}
           >
             {article.quickFacts.map((f) => (
-              <div key={f.label} className="card" style={{ padding: 16, textAlign: 'center' }}>
+              <div key={f.label} className="card kv-reveal" style={{ padding: 16, textAlign: 'center' }}>
                 <div style={{ fontSize: 14, color: '#6e6052', fontWeight: 700, marginBottom: 4 }}>{f.label}</div>
                 <div style={{ fontSize: 16, fontWeight: 800, color: '#2a2018' }}>{f.value}</div>
               </div>
@@ -332,11 +334,12 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
         {/* FAQ */}
         {article.faq.length > 0 && (
           <section style={{ marginTop: 20 }}>
+            <div className="kv-paw-divider" aria-hidden="true" style={{ marginBottom: 8 }} />
             <h2 className="display" style={{ fontSize: 26, fontWeight: 800, marginBottom: 18, color: '#2a2018' }}>שאלות נפוצות</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {article.faq.map((item, i) => (
                 <details key={i} className="card article-faq" style={{ padding: '16px 20px' }}>
-                  <summary style={{ fontWeight: 800, fontSize: 16.5, cursor: 'pointer', color: '#2a2018', padding: '6px 0', lineHeight: 1.5 }}>
+                  <summary className="kv-press" style={{ fontWeight: 800, fontSize: 16.5, cursor: 'pointer', color: '#2a2018', padding: '6px 0', lineHeight: 1.5 }}>
                     {item.q}
                   </summary>
                   <div className="article-faq-body">

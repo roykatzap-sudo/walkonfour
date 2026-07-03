@@ -184,11 +184,53 @@
   z-index: 2;
 }
 
-/* ── תמונת ה-HERO עם הפרלקס (טרנספורם נשלט ב-ref) ── */
+/* ── תמונת ה-HERO עם הטיית-עכבר (טרנספורם נשלט ב-ref) ── */
 .hero-tilt {
   transform: perspective(900px) rotateY(0deg) rotateX(0deg);
   transition: transform 0.2s ease-out;
   height: 100%;
+}
+
+/* ── פרלקס-גלילה חתום ──
+   שני עוטפים נעים בקצב שונה. ה-JS כותב את ה-transform ישירות על שני
+   האלמנטים (דרך refs, כמו הטיית-העכבר), כך שאין תלות בפענוח calc ואין
+   התנגשות טרנספורמים: .hero-parallax הוא העוטף החיצוני של התמונה,
+   .hero-depth היא שכבת ה-blobs הדקורטיבית. transform בלבד (GPU).
+   ה-JS מכובד תחת reduced-motion ולא נוגע ב-transform במצב זה. */
+.hero-parallax {
+  height: 100%;
+  will-change: transform;
+}
+.hero-depth {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* החלקה עדינה של תזוזת הפרלקס בין פריימים */
+  .hero-parallax,
+  .hero-depth {
+    transition: transform 0.12s linear;
+  }
+}
+
+/* ── עקבות כף עדינות מתחת לכפתורי ההירו (מבטא חתום, חד-פעמי בכניסה) ── */
+.hero-paw-trail {
+  justify-content: flex-start;
+  margin-top: 30px;
+  margin-bottom: 4px;
+  opacity: 0.9;
+}
+.hero-paw-trail i {
+  width: 15px;
+  height: 15px;
+  background: rgba(var(--kv-gold-light), 0.5);
+}
+@media (max-width: 900px) {
+  /* במובייל ההירו נערם - העקבות מיותרות ומצטופפות, מסתירים */
+  .hero-paw-trail { display: none; }
 }
 
 /* ── מילוי גובה מלא (היה inline height:100% בכרטיסים) ── */
@@ -479,6 +521,38 @@
 /* ── כרטיסי תמחור: הבלטה חמה יותר לכרטיס המומלץ ── */
 .pc.feat {
   position: relative;
+}
+
+/* ════════════════════════════════════════════════════════════
+   מבטאי חתימה בעמוד הבית - קו-נצנוץ מתחת לכותרות + מפרידי כף.
+   נשענים על המחלקות של app/signature.css (בבעלות מנהל העיצוב).
+   כאן רק המיקום/הריווח שמתאים לפריסת עמוד הבית. מבטא בודד לסקשן.
+   ════════════════════════════════════════════════════════════ */
+
+/* קו-הנצנוץ מתחת לכותרת סקשן: מרווח עדין, מיושר להתחלה (RTL) */
+.section-title + .kv-shimmer-line,
+.split-title ~ .kv-shimmer-line,
+.pr-title + .kv-shimmer-line {
+  margin-top: 14px;
+}
+/* בכותרת ממורכזת (תמחור) - הקו במרכז */
+.kv-shimmer-center {
+  margin-inline: auto;
+  margin-top: 16px;
+}
+/* בכותרת ה-split הקו יושב מתחת לכותרת ומעל תת-הכותרת */
+.split-title ~ .kv-shimmer-line {
+  margin-bottom: 18px;
+}
+
+/* מפריד-כף בין סקשנים קרם-על-קרם: אוויר סביבו כדי שינשום */
+.kv-seam {
+  max-width: 1240px;
+  margin-inline: auto;
+  margin-block: 4px;
+}
+@media (max-width: 600px) {
+  .kv-seam { margin-block: 0; }
 }
 
 /* ============================================================

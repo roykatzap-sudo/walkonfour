@@ -23,6 +23,14 @@ type StyleFilter = DogNameStyle | 'any'
 const GENDERS: GenderFilter[] = ['any', 'male', 'female']
 const STYLES: StyleFilter[] = ['any', 'cute', 'tough', 'funny', 'classic']
 
+/** האם להפחית תנועה. מכבד OS + מתג הנגישות באתר. בטוח ל-SSR. */
+function reduceMotion(): boolean {
+  if (typeof window === 'undefined') return false
+  const root = document.documentElement
+  if (root.dataset.reduceMotion === '1' || root.classList.contains('kv-a11y-reduce-motion')) return true
+  return !!window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
 /** טבלת חיפוש מהירה: שם → DogName מהמאגר, לשחזור מטא-דאטה של מועדף שמור. */
 const NAMES_BY_NAME: Record<string, DogName> = DOG_NAMES.reduce(
   (acc, n) => {
@@ -42,7 +50,8 @@ export function NameGenerator() {
   const [style, setStyle] = useState<StyleFilter>('any')
   const [current, setCurrent] = useState<DogName | null>(null)
   const [rolling, setRolling] = useState(false)
-  const [bump, setBump] = useState(0) // טריגר לאנימציית pop-in בכל הגרלה
+  const [bump, setBump] = useState(0) // טריגר לאנימציה בכל תחלופת שם
+  const [landed, setLanded] = useState(0) // עולה רק כשהשם הסופי "נוחת" - טריגר לספרינג ההתמקמות
   const rollTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // השמות השמורים (מזהים) משוחזרים לאובייקטי DogName מלאים מהמאגר.
@@ -72,11 +81,15 @@ export function NameGenerator() {
     const next = pickRandomName(gender, style, current?.name)
     setCurrent(next)
     setBump((b) => b + 1)
+    setLanded((n) => n + 1) // השם הסופי נחת - הפעל את ספרינג ההתמקמות
   }, [gender, style, current])
 
   // "הגרל שם" עם הברקה קצרה של שמות מתחלפים - מהיר וכיפי.
+  // מכונת המזל מאיצה, ואז השם האחרון "נוחת" עם ספרינג נעים.
   const handleRoll = useCallback(() => {
     if (rolling) return
+    // תחת הפחתת-תנועה מדלגים על ההברקה - קופצים ישר לשם סופי.
+    if (reduceMotion()) { roll(); return }
     setRolling(true)
     let ticks = 0
     const tick = () => {
@@ -85,7 +98,8 @@ export function NameGenerator() {
       setBump((b) => b + 1)
       ticks += 1
       if (ticks < 7) {
-        rollTimer.current = setTimeout(tick, 70 + ticks * 14)
+        // האטה הדרגתית - תחושת גלגל שנעצר.
+        rollTimer.current = setTimeout(tick, 62 + ticks * ticks * 5)
       } else {
         roll()
         setRolling(false)
@@ -218,10 +232,10 @@ export function NameGenerator() {
         >
           {current ? (
             <div
+              // key={bump} מרענן את האנימציה בכל תחלופה; בזמן הגלגול זו הברקה
+              // קלה (ng-tick), ובנחיתה הסופית ספרינג התמקמות מלא (ng-settle).
               key={bump}
-              className="pop-in"
-              aria-live="polite"
-              aria-atomic="true"
+              className={rolling ? 'ng-tick' : 'ng-settle'}
               style={{ width: '100%' }}
             >
               <span className="chip3d" style={{ marginBottom: 14 }}>
@@ -251,6 +265,14 @@ export function NameGenerator() {
               >
                 {current.meaning}
               </p>
+              {/* עקבות כף זעירות שנוחתות עם השם הסופי - פלפל עדין, קישוט בלבד */}
+              <div
+                className={`ng-paws${rolling ? '' : ' ng-paws-in'}`}
+                aria-hidden="true"
+                key={`paws-${landed}`}
+              >
+                <i /><i /><i />
+              </div>
             </div>
           ) : (
             <div aria-live="polite">
@@ -267,6 +289,11 @@ export function NameGenerator() {
           )}
         </div>
 
+        {/* אזור חי לקוראי-מסך: מכריז רק על השם הסופי (לא על הברקת הגלגול) */}
+        <p className="ng-sr" aria-live="polite" aria-atomic="true">
+          {!rolling && current ? `${current.name} - ${current.meaning}` : ''}
+        </p>
+
         {/* ── פעולות ── */}
         <div
           style={{
@@ -278,7 +305,7 @@ export function NameGenerator() {
           }}
         >
           <MagneticButton
-            className="btn btn-primary"
+            className="btn btn-primary kv-press-mag kv-glow"
             onClick={handleRoll}
           >
             {current ? 'הגרל עוד' : 'הגרל שם'}
@@ -286,7 +313,7 @@ export function NameGenerator() {
 
           <button
             type="button"
-            className={isFav ? 'btn btn-primary' : 'btn btn-ghost'}
+            className={`kv-press ${isFav ? 'btn btn-primary' : 'btn btn-ghost'}`}
             onClick={toggleFav}
             disabled={!current}
             aria-pressed={isFav}
@@ -297,7 +324,7 @@ export function NameGenerator() {
 
           <button
             type="button"
-            className="btn btn-ghost"
+            className="btn btn-ghost kv-press"
             onClick={() => current && copyName(current)}
             disabled={!current}
             aria-label="העתק את השם"
@@ -308,7 +335,7 @@ export function NameGenerator() {
 
           <button
             type="button"
-            className="btn btn-dark"
+            className="btn btn-dark kv-press"
             onClick={() => current && shareName(current)}
             disabled={!current}
             aria-label="שתף את השם"
@@ -421,6 +448,67 @@ export function NameGenerator() {
         )}
       </Reveal3D>
       </div>
+
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            /* אזור חי נגיש - מוסתר ויזואלית, נשמע לקוראי-מסך בלבד */
+            .ng-sr {
+              position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+              overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+            }
+
+            /* ── מכונת מזל: הברקה קלה בכל תחלופה בזמן גלגול ── */
+            @keyframes ng-tick {
+              0%   { opacity: .35; transform: translateY(-9px) scale(.985); }
+              100% { opacity: 1;  transform: translateY(0) scale(1); }
+            }
+            .ng-tick { animation: ng-tick .1s var(--kv-ease-warm, cubic-bezier(.22,1,.36,1)) both; }
+
+            /* ── נחיתת השם הסופי: ספרינג התמקמות נעים (over-shoot מרוסן) ── */
+            @keyframes ng-settle {
+              0%   { opacity: 0; transform: translateY(14px) scale(.9); }
+              55%  { opacity: 1; transform: translateY(-3px) scale(1.045); }
+              100% { transform: translateY(0) scale(1); }
+            }
+            .ng-settle { animation: ng-settle .6s var(--kv-ease-spring, cubic-bezier(.34,1.4,.5,1)) both; }
+
+            /* ── עקבות כף שנוחתות מתחת לשם הסופי ── */
+            .ng-paws {
+              display: flex; gap: 12px; align-items: center; justify-content: center;
+              margin-top: 20px; height: 14px; pointer-events: none;
+            }
+            .ng-paws i {
+              width: 14px; height: 14px;
+              background: rgba(var(--kv-gold, 201,154,91), .5);
+              -webkit-mask: var(--kv-paw-mask) center / contain no-repeat;
+              mask: var(--kv-paw-mask) center / contain no-repeat;
+              opacity: 0;
+            }
+            /* הטיה קבועה לסירוגין (תחושת הליכה) - נשמרת דרך שכבת עטיפה */
+            .ng-paws i:nth-child(odd)  { transform: rotate(-12deg); }
+            .ng-paws i:nth-child(even) { transform: rotate(12deg) translateY(3px); }
+            /* נחיתה עדינה: רק opacity מונפש, כדי לא לדרוס את ההטיה הקבועה */
+            .ng-paws-in i { animation: ng-paw-in .34s var(--kv-ease-warm, cubic-bezier(.22,1,.36,1)) both; }
+            .ng-paws-in i:nth-child(1) { animation-delay: .18s; }
+            .ng-paws-in i:nth-child(2) { animation-delay: .27s; }
+            .ng-paws-in i:nth-child(3) { animation-delay: .36s; }
+            @keyframes ng-paw-in {
+              from { opacity: 0; }
+              to   { opacity: .85; }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+              .ng-tick, .ng-settle { animation: none; }
+              .ng-paws i, .ng-paws-in i { animation: none; opacity: 0; }
+            }
+            html.kv-a11y-reduce-motion .ng-tick, html[data-reduce-motion="1"] .ng-tick,
+            html.kv-a11y-reduce-motion .ng-settle, html[data-reduce-motion="1"] .ng-settle { animation: none; }
+            html.kv-a11y-reduce-motion .ng-paws i, html[data-reduce-motion="1"] .ng-paws i,
+            html.kv-a11y-reduce-motion .ng-paws-in i, html[data-reduce-motion="1"] .ng-paws-in i { animation: none; opacity: 0; }
+          `,
+        }}
+      />
     </div>
   )
 }

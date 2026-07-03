@@ -103,12 +103,77 @@ export function BreedProfile({ breed }: { breed: Breed }) {
                 background: linear-gradient(to top, rgba(42,32,24,.92) 0%, rgba(42,32,24,0) 55%);
               }
             }
+
+            /* ── מבטא חי על תמונת ההירו: ברק זהב עדין שחולף פעם אחת עם החשיפה ──
+               transform/opacity בלבד (GPU), חד-פעמי, לא לולאה. */
+            .breed-hero-sheen {
+              position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+              border-radius: inherit;
+            }
+            .breed-hero-sheen::before {
+              content: ''; position: absolute; top: -30%; bottom: -30%;
+              inset-inline-start: -40%; width: 45%;
+              background: linear-gradient(
+                100deg,
+                rgba(232,200,135,0) 0%,
+                rgba(232,200,135,.16) 45%,
+                rgba(255,255,255,.24) 50%,
+                rgba(232,200,135,.16) 55%,
+                rgba(232,200,135,0) 100%
+              );
+              transform: translateX(0) rotate(6deg);
+              opacity: 0;
+            }
+            @media (prefers-reduced-motion: no-preference) {
+              .breed-hero-sheen::before {
+                transition:
+                  transform 1.15s var(--kv-ease-glide),
+                  opacity .9s var(--kv-ease-warm);
+              }
+              /* ב-RTL הברק נע מכיוון ההתחלה (ימין) לכיוון הסוף (שמאל) */
+              [data-kv-reveal="in"] .breed-hero-sheen::before {
+                transform: translateX(-320%) rotate(6deg);
+                opacity: 1;
+              }
+            }
+
+            /* ── רצועות מדד שמתמלאות (scaleX) כשהכרטיס נחשף ──
+               כל מקטע מתחיל מכווץ מכיוון ההתחלה (ימין ב-RTL) וממלא בעדינות.
+               transform בלבד; העיכוב מדורג לתחושת "מילוי". */
+            .kv-meter { display: flex; gap: 6px; }
+            .kv-meter > span {
+              flex: 1; height: 11px; border-radius: 99px;
+              transform-origin: right center; /* RTL: המילוי מתחיל מימין */
+            }
+            @media (prefers-reduced-motion: no-preference) {
+              .kv-meter > span {
+                transform: scaleX(0);
+                transition: transform var(--kv-dur-3) var(--kv-ease-warm);
+              }
+              [data-kv-reveal="in"] .kv-meter > span { transform: scaleX(1); }
+              [data-kv-reveal="in"] .kv-meter > span:nth-child(1) { transition-delay: .05s; }
+              [data-kv-reveal="in"] .kv-meter > span:nth-child(2) { transition-delay: .12s; }
+              [data-kv-reveal="in"] .kv-meter > span:nth-child(3) { transition-delay: .19s; }
+              [data-kv-reveal="in"] .kv-meter > span:nth-child(4) { transition-delay: .26s; }
+              [data-kv-reveal="in"] .kv-meter > span:nth-child(5) { transition-delay: .33s; }
+            }
+
+            /* ── מתג הנגישות באתר (class/data על <html>) מכבה גם את המבטאים
+               המקומיים האלה: המקטעים מלאים, הברק כבוי. שום תוכן לא נעלם. ── */
+            html.kv-a11y-reduce-motion .kv-meter > span,
+            html[data-reduce-motion="1"] .kv-meter > span {
+              transform: none !important; transition: none !important;
+            }
+            html.kv-a11y-reduce-motion .breed-hero-sheen::before,
+            html[data-reduce-motion="1"] .breed-hero-sheen::before {
+              opacity: 0 !important; transition: none !important;
+            }
           `,
         }}
       />
       {/* ===== HERO ===== */}
       <section
-        className="glass-dark"
+        className="glass-dark kv-reveal"
         style={{
           position: 'relative',
           overflow: 'hidden',
@@ -139,6 +204,8 @@ export function BreedProfile({ breed }: { breed: Breed }) {
               }}
             />
             <div aria-hidden className="breed-hero-fade" />
+            {/* מבטא חי: ברק זהב עדין שחולף פעם אחת על התמונה עם החשיפה */}
+            <div aria-hidden className="breed-hero-sheen" />
           </div>
 
           {/* מידע */}
@@ -212,6 +279,7 @@ export function BreedProfile({ breed }: { breed: Breed }) {
       {detail && (
         <Reveal3D as="section">
           <div
+            data-kv-stagger
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
@@ -227,7 +295,7 @@ export function BreedProfile({ breed }: { breed: Breed }) {
             ].map((s) => (
               <div
                 key={s.label}
-                className="card kv-lift"
+                className="card kv-lift kv-reveal"
                 style={{
                   padding: '22px 18px',
                   borderRadius: 18,
@@ -261,9 +329,12 @@ export function BreedProfile({ breed }: { breed: Breed }) {
       )}
 
       <Reveal3D as="section">
-        <h2 className="section-title" style={{ fontSize: 26, fontWeight: 900, marginBottom: 4 }}>
-          מאפייני הגזע
-        </h2>
+        <div className="kv-reveal">
+          <h2 className="section-title" style={{ fontSize: 26, fontWeight: 900, marginBottom: 4 }}>
+            מאפייני הגזע
+          </h2>
+          <span className="kv-shimmer-line" aria-hidden style={{ margin: '10px 0 14px' }} />
+        </div>
         <p className="muted" style={{ marginBottom: 24 }}>
           הדברים שכדאי לדעת לפני שמתאהבים, לא אחרי.
         </p>
@@ -302,23 +373,22 @@ export function BreedProfile({ breed }: { breed: Breed }) {
                 <span>{ENERGY_LABEL[breed.energy]}</span>
                 <strong style={{ color: '#c99a5b', fontSize: 15 }}>{breed.energy}/5</strong>
               </div>
-              <div style={{ display: 'flex', gap: 6 }} aria-label={`${breed.energy} מתוך 5`}>
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <span
-                    key={n}
-                    style={{
-                      flex: 1,
-                      height: 11,
-                      borderRadius: 99,
-                      background:
-                        n <= breed.energy
-                          ? 'linear-gradient(135deg, #dcb072, #c99a5b)'
-                          : '#e5e2da',
-                      boxShadow: n <= breed.energy ? '0 1px 3px rgba(201,154,91,.35)' : 'none',
-                      transition: 'background .2s',
-                    }}
-                  />
-                ))}
+              {/* .kv-reveal מדליק את המילוי; .kv-meter נותן לכל מקטע scaleX מדורג */}
+              <div className="kv-reveal">
+                <div className="kv-meter" aria-label={`${breed.energy} מתוך 5`}>
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <span
+                      key={n}
+                      style={{
+                        background:
+                          n <= breed.energy
+                            ? 'linear-gradient(135deg, #dcb072, #c99a5b)'
+                            : '#e5e2da',
+                        boxShadow: n <= breed.energy ? '0 1px 3px rgba(201,154,91,.35)' : 'none',
+                      }}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </Tilt3D>
@@ -351,20 +421,18 @@ export function BreedProfile({ breed }: { breed: Breed }) {
                   {breed.aggression}/5
                 </strong>
               </div>
-              <div style={{ display: 'flex', gap: 6 }} aria-label={`${breed.aggression} מתוך 5`}>
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <span
-                    key={n}
-                    style={{
-                      flex: 1,
-                      height: 11,
-                      borderRadius: 99,
-                      background: aggColor(breed.aggression, n),
-                      boxShadow: n <= breed.aggression ? '0 1px 3px rgba(0,0,0,.12)' : 'none',
-                      transition: 'background .2s',
-                    }}
-                  />
-                ))}
+              <div className="kv-reveal">
+                <div className="kv-meter" aria-label={`${breed.aggression} מתוך 5`}>
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <span
+                      key={n}
+                      style={{
+                        background: aggColor(breed.aggression, n),
+                        boxShadow: n <= breed.aggression ? '0 1px 3px rgba(0,0,0,.12)' : 'none',
+                      }}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </Tilt3D>
@@ -580,10 +648,13 @@ export function BreedProfile({ breed }: { breed: Breed }) {
         >
           <FloatingPaws />
           <div style={{ position: 'relative', zIndex: 1, maxWidth: 720 }}>
-            <span className="section-tag">בדיקת התאמה</span>
-            <h2 style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-1px', margin: '2px 0 18px' }}>
-              {fit.headline}
-            </h2>
+            <div className="kv-reveal">
+              <span className="section-tag">בדיקת התאמה</span>
+              <h2 style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-1px', margin: '2px 0 12px' }}>
+                {fit.headline}
+              </h2>
+              <span className="kv-shimmer-line" aria-hidden style={{ marginBottom: 18 }} />
+            </div>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 14 }}>
               {fit.points.map((p, i) => (
                 <li
@@ -627,10 +698,13 @@ export function BreedProfile({ breed }: { breed: Breed }) {
       {/* ===== כמה עולה לגדל את הגזע? ===== */}
       <Reveal3D as="section">
         <div style={{ marginBottom: 64 }}>
-          <span className="section-tag">מחשבון עלות</span>
-          <h2 style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-1px', margin: '2px 0 6px' }}>
-            כמה עולה לגדל {breed.name}?
-          </h2>
+          <div className="kv-reveal">
+            <span className="section-tag">מחשבון עלות</span>
+            <h2 style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-1px', margin: '2px 0 6px' }}>
+              כמה עולה לגדל {breed.name}?
+            </h2>
+            <span className="kv-shimmer-line" aria-hidden style={{ margin: '4px 0 10px' }} />
+          </div>
           <p style={{ fontSize: 16, color: '#6a6155', lineHeight: 1.7, marginBottom: 22, maxWidth: 640 }}>
             מחשבון אישי שמותאם לגודל ולמשקל של {breed.name}. שחקו עם סוג המזון, הווטרינר
             והשנים - וראו את העלות המצטברת לאורך כל חיי הכלב.
@@ -638,6 +712,11 @@ export function BreedProfile({ breed }: { breed: Breed }) {
           <CostCalculator presetBreed={breed.slug} />
         </div>
       </Reveal3D>
+
+      {/* מעבר סקשן ממותג: כף-רגל זהב עדינה במקום מרווח יבש לפני ה-CTA */}
+      <div className="kv-reveal" style={{ marginBottom: 8 }}>
+        <div className="kv-paw-divider" aria-hidden />
+      </div>
 
       {/* ===== CTA ===== */}
       <Reveal3D as="section">
@@ -681,14 +760,14 @@ export function BreedProfile({ breed }: { breed: Breed }) {
               }}
             >
               {hasArticle(breed.slug) && (
-                <MagneticButton href={`/articles/${breed.slug}`} className="btn btn-primary">
+                <MagneticButton href={`/articles/${breed.slug}`} className="btn btn-primary kv-press kv-glow">
                   קראו את המדריך המלא על {breed.name}
                 </MagneticButton>
               )}
-              <MagneticButton href="/waitlist" className="btn btn-dark">
+              <MagneticButton href="/waitlist" className="btn btn-dark kv-press kv-glow">
                 הצטרפו לקהילה
               </MagneticButton>
-              <MagneticButton href="/breeds" className="btn btn-ghost">
+              <MagneticButton href="/breeds" className="btn btn-ghost kv-press">
                 ← לכל הגזעים
               </MagneticButton>
             </div>

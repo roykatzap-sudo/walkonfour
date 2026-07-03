@@ -1,12 +1,13 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { breedFace } from '@/lib/breeds'
 import { hasArticle } from '@/lib/articles'
 import { QUESTIONS, topMatches, type Answers, type MatchResult } from '@/lib/matcher'
 import { Reveal3D } from '@/components/fx/Reveal3D'
 import { MagneticButton } from '@/components/fx/MagneticButton'
+import { useCountUp } from './useCountUp'
 import { useToast } from '@/components/shared/Toast'
 import { FavButton } from '@/components/shared/FavButton'
 import { useFavorites } from '@/lib/useFavorites'
@@ -22,11 +23,24 @@ const TEXT = 'var(--text)'
 // לקהל ה-40+. עוקף את ברירת המחדל של .chip3d (12px) מבלי לגעת ב-CSS המשותף.
 const CHIP_DATA: React.CSSProperties = { fontSize: 14, padding: '6px 13px' }
 
+/** האם להפחית תנועה. מכבד OS + מתג הנגישות באתר. בטוח ל-SSR. */
+function reduceMotion(): boolean {
+  if (typeof window === 'undefined') return false
+  const root = document.documentElement
+  if (root.dataset.reduceMotion === '1' || root.classList.contains('kv-a11y-reduce-motion')) return true
+  return !!window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
 export function BreedMatcher() {
   const toast = useToast()
   const { toggle, isFav } = useFavorites()
   const [step, setStep] = useState(0) // 0..QUESTIONS.length-1, ואז === length = תוצאות
   const [answers, setAnswers] = useState<Answers>({})
+  // הבחירה שזה עתה נלחצה - נותנת רגע "נבחר!" קצר לפני המעבר לשאלה הבאה.
+  const [justPicked, setJustPicked] = useState<string | null>(null)
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => () => { if (advanceTimer.current) clearTimeout(advanceTimer.current) }, [])
 
   const total = QUESTIONS.length
   const isResults = step >= total
@@ -43,18 +57,28 @@ export function BreedMatcher() {
   )
 
   function choose(value: string) {
-    if (!current) return
+    if (!current || justPicked) return
     const id = current.id
     setAnswers((prev) => ({ ...prev, [id]: value }))
-    // מעבר עדין לשאלה הבאה
-    window.setTimeout(() => setStep((s) => s + 1), 180)
+    // רגע "נבחר!" קצר: הכפתור נדלק, מסמן וי, ואז מחליק לשאלה הבאה.
+    // תחת הפחתת-תנועה מדלגים על ההשהיה כדי שהמעבר יהיה מיידי.
+    setJustPicked(value)
+    const delay = reduceMotion() ? 0 : 460
+    advanceTimer.current = setTimeout(() => {
+      setStep((s) => s + 1)
+      setJustPicked(null)
+    }, delay)
   }
 
   function back() {
+    if (advanceTimer.current) clearTimeout(advanceTimer.current)
+    setJustPicked(null)
     setStep((s) => Math.max(0, s - 1))
   }
 
   function restart() {
+    if (advanceTimer.current) clearTimeout(advanceTimer.current)
+    setJustPicked(null)
     setAnswers({})
     setStep(0)
   }
@@ -111,19 +135,84 @@ export function BreedMatcher() {
         dangerouslySetInnerHTML={{
           __html: `
             @keyframes bm-fade-in {
-              from { opacity: 0; transform: translateY(14px) scale(.985); }
+              from { opacity: 0; transform: translateY(16px) scale(.982); }
               to   { opacity: 1; transform: translateY(0) scale(1); }
             }
-            .bm-stage { animation: bm-fade-in .42s cubic-bezier(.22,.61,.36,1) both; }
+            .bm-stage { animation: bm-fade-in var(--kv-dur-3, .62s) var(--kv-ease-warm, cubic-bezier(.22,1,.36,1)) both; }
+
+            /* ── כפתור בחירה: ריחוף רך + לחיצה קפיצית (DNA חתום) ── */
+            .bm-opt { transition: transform var(--kv-dur-2,.34s) var(--kv-ease-warm,cubic-bezier(.22,1,.36,1)), box-shadow var(--kv-dur-2,.34s) var(--kv-ease-warm,cubic-bezier(.22,1,.36,1)), border-color var(--kv-dur-2,.34s) var(--kv-ease-warm,cubic-bezier(.22,1,.36,1)), background var(--kv-dur-2,.34s) var(--kv-ease-warm,cubic-bezier(.22,1,.36,1)); }
             .bm-opt:hover { transform: translateY(-3px); border-color: ${PRIMARY}; box-shadow: 0 14px 30px rgba(201,154,91,.22); }
+            .bm-opt:active { transform: scale(.975); transition-duration: var(--kv-dur-1,.18s); }
             .bm-opt:focus-visible { outline: 3px solid ${DARK}; outline-offset: 3px; }
-            .bm-opt .bm-opt-arrow { opacity: 0; transform: translateX(6px); transition: .2s; }
+            .bm-opt .bm-opt-arrow { opacity: 0; transform: translateX(6px); transition: opacity var(--kv-dur-1,.18s), transform var(--kv-dur-1,.18s); }
             .bm-opt:hover .bm-opt-arrow, .bm-opt:focus-visible .bm-opt-arrow { opacity: 1; transform: translateX(0); }
-            .bm-step-dot { transition: background .3s, transform .3s; }
+
+            /* ── מצב "נבחר!": הכפתור נדלק בקפיצה עדינה, השאר עמעום ── */
+            .bm-opt.bm-chosen {
+              animation: bm-chosen-pop .5s var(--kv-ease-spring, cubic-bezier(.34,1.4,.5,1)) both;
+              border-color: ${PRIMARY};
+              box-shadow: 0 16px 34px rgba(201,154,91,.30);
+            }
+            @keyframes bm-chosen-pop {
+              0% { transform: scale(.975); }
+              45% { transform: scale(1.035); }
+              100% { transform: scale(1); }
+            }
+            .bm-opts-locked .bm-opt:not(.bm-chosen) { opacity: .5; transform: none; filter: saturate(.8); transition: opacity var(--kv-dur-2,.34s) var(--kv-ease-warm,cubic-bezier(.22,1,.36,1)), filter var(--kv-dur-2,.34s); }
+            /* וי אישור שנפתח בכף הבחירה */
+            .bm-check {
+              display: inline-flex; align-items: center; justify-content: center;
+              width: 26px; height: 26px; border-radius: 50%;
+              background: ${PRIMARY}; color: #fff; font-weight: 900; font-size: 15px;
+              flex: 0 0 auto;
+              transform: scale(0); opacity: 0;
+            }
+            .bm-chosen .bm-check { animation: bm-check-in .42s var(--kv-ease-spring, cubic-bezier(.34,1.4,.5,1)) .06s both; }
+            @keyframes bm-check-in { from { transform: scale(0) rotate(-25deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+
+            /* ── כף-רגל צועדת על סרגל ההתקדמות ── */
+            .bm-progress-paw {
+              position: absolute; top: 50%; width: 15px; height: 15px;
+              background: #fff;
+              -webkit-mask: var(--kv-paw-mask) center / contain no-repeat;
+              mask: var(--kv-paw-mask) center / contain no-repeat;
+              transform: translate(50%, -50%) rotate(90deg);
+              transition: inset-inline-end var(--kv-dur-3,.62s) var(--kv-ease-warm,cubic-bezier(.22,1,.36,1));
+              filter: drop-shadow(0 1px 2px rgba(120,85,30,.55));
+              pointer-events: none;
+            }
+            .bm-step-dot { transition: background var(--kv-dur-2,.34s) var(--kv-ease-warm,cubic-bezier(.22,1,.36,1)), width var(--kv-dur-2,.34s) var(--kv-ease-spring,cubic-bezier(.34,1.4,.5,1)); }
+
+            /* ── מד ההתאמה בכרטיס התוצאה: מתמלא כשהכרטיס נכנס ── */
+            .bm-meter-fill { transform-origin: inset-inline-start center; transition: width var(--kv-dur-4,.9s) var(--kv-ease-glide, cubic-bezier(.16,.84,.28,1)); }
+
+            /* ── רגע התוצאה: נצנוץ עדין חד-פעמי מעל כרטיס המנצח ── */
+            .bm-winner { position: relative; }
+            .bm-winner::before {
+              content: ''; position: absolute; inset: 0; border-radius: inherit; z-index: 3;
+              background: linear-gradient(115deg, transparent 32%, rgba(232,200,135,.30) 48%, transparent 64%);
+              transform: translateX(-120%); pointer-events: none;
+              animation: bm-sweep 1.4s var(--kv-ease-glide, cubic-bezier(.16,.84,.28,1)) .35s 1;
+            }
+            @keyframes bm-sweep { to { transform: translateX(120%); } }
+
             @media (prefers-reduced-motion: reduce) {
               .bm-stage { animation: none; }
-              .bm-opt:hover { transform: none; }
+              .bm-opt:hover, .bm-opt:active { transform: none; }
+              .bm-opt.bm-chosen { animation: none; }
+              .bm-chosen .bm-check { animation: none; transform: scale(1); opacity: 1; }
+              .bm-progress-paw, .bm-meter-fill { transition: none; }
+              .bm-winner::before { animation: none; display: none; }
             }
+            html.kv-a11y-reduce-motion .bm-stage,
+            html[data-reduce-motion="1"] .bm-stage { animation: none; }
+            html.kv-a11y-reduce-motion .bm-opt.bm-chosen,
+            html[data-reduce-motion="1"] .bm-opt.bm-chosen { animation: none; }
+            html.kv-a11y-reduce-motion .bm-chosen .bm-check,
+            html[data-reduce-motion="1"] .bm-chosen .bm-check { animation: none; transform: scale(1); opacity: 1; }
+            html.kv-a11y-reduce-motion .bm-winner::before,
+            html[data-reduce-motion="1"] .bm-winner::before { animation: none; display: none; }
           `,
         }}
       />
@@ -160,6 +249,7 @@ export function BreedMatcher() {
               : `התקדמות החידון: שאלה ${step + 1} מתוך ${total}`
           }
           style={{
+            position: 'relative',
             height: 12,
             borderRadius: 999,
             background: 'rgba(201,154,91,.16)',
@@ -172,9 +262,15 @@ export function BreedMatcher() {
               width: `${progress}%`,
               borderRadius: 999,
               background: `linear-gradient(90deg, ${PRIMARY}, ${ACCENT})`,
-              transition: 'width .5s cubic-bezier(.22,.61,.36,1)',
+              transition: 'width .62s cubic-bezier(.22,1,.36,1)',
               boxShadow: '0 0 14px rgba(232,200,135,.6)',
             }}
+          />
+          {/* כף-רגל צועדת שרוכבת על קצה המילוי - אישיות לסרגל */}
+          <span
+            className="bm-progress-paw"
+            aria-hidden="true"
+            style={{ insetInlineEnd: `${100 - progress}%` }}
           />
         </div>
 
@@ -232,15 +328,17 @@ export function BreedMatcher() {
               <div
                 role="group"
                 aria-label={current.title}
+                className={justPicked ? 'bm-opts-locked' : undefined}
                 style={{ display: 'grid', gap: 14 }}
               >
                 {current.options.map((opt) => {
                   const selected = answers[current.id] === opt.value
+                  const chosen = justPicked === opt.value
                   return (
                     <button
                       key={opt.value}
                       type="button"
-                      className="bm-opt"
+                      className={`bm-opt${chosen ? ' bm-chosen' : ''}`}
                       onClick={() => choose(opt.value)}
                       aria-pressed={selected}
                       style={{
@@ -253,11 +351,10 @@ export function BreedMatcher() {
                         padding: '18px 22px',
                         borderRadius: 18,
                         cursor: 'pointer',
-                        background: selected
+                        background: selected || chosen
                           ? 'linear-gradient(135deg, rgba(232,200,135,.35), rgba(201,154,91,.18))'
                           : '#fff',
-                        border: `2px solid ${selected ? PRIMARY : 'rgba(201,154,91,.22)'}`,
-                        transition: 'transform .2s, box-shadow .2s, border-color .2s, background .2s',
+                        border: `2px solid ${selected || chosen ? PRIMARY : 'rgba(201,154,91,.22)'}`,
                       }}
                     >
                       <span>
@@ -270,18 +367,22 @@ export function BreedMatcher() {
                           </span>
                         )}
                       </span>
-                      <span
-                        className="bm-opt-arrow"
-                        aria-hidden="true"
-                        style={{
-                          flex: '0 0 auto',
-                          fontSize: 22,
-                          color: PRIMARY,
-                          fontWeight: 900,
-                        }}
-                      >
-                        ←
-                      </span>
+                      {chosen ? (
+                        <span className="bm-check" aria-hidden="true">✓</span>
+                      ) : (
+                        <span
+                          className="bm-opt-arrow"
+                          aria-hidden="true"
+                          style={{
+                            flex: '0 0 auto',
+                            fontSize: 22,
+                            color: PRIMARY,
+                            fontWeight: 900,
+                          }}
+                        >
+                          ←
+                        </span>
+                      )}
                     </button>
                   )
                 })}
@@ -306,7 +407,11 @@ export function BreedMatcher() {
       {isResults && (
         <div className="bm-stage">
           <div style={{ textAlign: 'center', marginBottom: 26 }}>
-            <span className="section-tag">3 ההתאמות המובילות</span>
+            {/* עקבות כף שנחשפות בזו אחר זו - רגע חגיגי עדין לפני התוצאה */}
+            <div className="kv-paw-trail kv-reveal" aria-hidden="true" style={{ marginBottom: 16 }}>
+              <i /><i /><i /><i /><i />
+            </div>
+            <span className="section-tag" style={{ display: 'inline-block' }}>3 ההתאמות המובילות</span>
             <h2 className="grad-text" style={{ fontSize: 32, fontWeight: 900, margin: '10px 0 6px' }}>
               הגזעים שמתאימים לכם ביותר
             </h2>
@@ -334,16 +439,16 @@ export function BreedMatcher() {
               marginTop: 32,
             }}
           >
-            <MagneticButton onClick={saveAll} className="btn btn-primary">
+            <MagneticButton onClick={saveAll} className="btn btn-primary kv-press-mag kv-glow">
               {allSaved ? '★ שלוש ההתאמות שמורות' : '☆ שמרו את שלוש ההתאמות'}
             </MagneticButton>
-            <button type="button" className="btn btn-dark" onClick={share}>
+            <button type="button" className="btn btn-dark kv-press" onClick={share}>
               שתפו את התוצאה
             </button>
-            <button type="button" className="btn btn-ghost" onClick={restart}>
+            <button type="button" className="btn btn-ghost kv-press" onClick={restart}>
               למילוי החידון מחדש
             </button>
-            <Link href="/breeds" className="btn btn-ghost">
+            <Link href="/breeds" className="btn btn-ghost kv-press">
               לכל גזעי הכלבים
             </Link>
           </div>
@@ -368,9 +473,19 @@ function ResultCard({ result, rank }: { result: MatchResult; rank: number }) {
   const topReasons = reasons.slice(0, 3)
   const showArticle = hasArticle(breed.slug)
 
+  // "מילוי" מדורג: המד ועיגול האחוז מתחילים מ-0 וזוחלים ליעד אחרי הרכבה,
+  // כדי שהתוצאה תיחת כמו פרס. תחת הפחתת-תנועה - קופצים מיד ליעד.
+  const [filled, setFilled] = useState(false)
+  useEffect(() => {
+    if (reduceMotion()) { setFilled(true); return }
+    const t = setTimeout(() => setFilled(true), 90 + rank * 90)
+    return () => clearTimeout(t)
+  }, [rank])
+  const shown = filled ? score : 0
+
   return (
       <div
-        className="card"
+        className={`card${rank === 1 ? ' bm-winner' : ''}`}
         style={{
           display: 'flex',
           flexWrap: 'wrap',
@@ -450,10 +565,10 @@ function ResultCard({ result, rank }: { result: MatchResult; rank: number }) {
               </h3>
               <span style={{ fontSize: 14, color: '#8a8073' }}>{breed.en}</span>
             </div>
-            <MatchBadge score={score} />
+            <MatchBadge score={score} shown={shown} />
           </div>
 
-          {/* מד התאמה */}
+          {/* מד התאמה - מתמלא ליעד כשהכרטיס נכנס */}
           <div
             role="presentation"
             style={{
@@ -464,9 +579,10 @@ function ResultCard({ result, rank }: { result: MatchResult; rank: number }) {
             }}
           >
             <div
+              className="bm-meter-fill"
               style={{
                 height: '100%',
-                width: `${score}%`,
+                width: `${shown}%`,
                 borderRadius: 999,
                 background: `linear-gradient(90deg, ${PRIMARY}, ${ACCENT})`,
               }}
@@ -526,10 +642,18 @@ function ResultCard({ result, rank }: { result: MatchResult; rank: number }) {
   )
 }
 
-/** עיגול אחוז ההתאמה. */
-function MatchBadge({ score }: { score: number }) {
+/**
+ * עיגול אחוז ההתאמה.
+ * `score` הוא היעד הסופי (לתווית הנגישה), `shown` הוא הערך המונפש
+ * שזוחל מ-0 ליעד כשהכרטיס נכנס - הטבעת וה-מספר מתמלאים יחד כפרס.
+ */
+function MatchBadge({ score, shown }: { score: number; shown: number }) {
+  // המספר וטבעת ה-conic נגזרים מאותו ערך מונפש, כך שהם מתגלגלים בסנכרון
+  // מלא ליעד (score) כשהכרטיס נכנס. תחת הפחתת-תנועה useCountUp קופץ מיד.
+  const num = useCountUp(shown)
   return (
     <div
+      className="bm-badge-ring"
       style={{
         flex: '0 0 auto',
         width: 76,
@@ -537,9 +661,10 @@ function MatchBadge({ score }: { score: number }) {
         borderRadius: '50%',
         display: 'grid',
         placeItems: 'center',
-        background: `conic-gradient(${PRIMARY} ${score * 3.6}deg, rgba(201,154,91,.16) 0)`,
+        background: `conic-gradient(${PRIMARY} ${num * 3.6}deg, rgba(201,154,91,.16) 0)`,
       }}
-      aria-hidden="true"
+      role="img"
+      aria-label={`${score}% התאמה`}
     >
       <div
         style={{
@@ -552,7 +677,7 @@ function MatchBadge({ score }: { score: number }) {
           lineHeight: 1,
         }}
       >
-        <span style={{ fontWeight: 900, fontSize: 20, color: TEXT }}>{score}%</span>
+        <span style={{ fontWeight: 900, fontSize: 20, color: TEXT }} aria-hidden="true">{num}%</span>
       </div>
     </div>
   )

@@ -27,16 +27,22 @@ export default function BreedsPage() {
         }}
       >
         <FloatingShapes />
-        <div className="kv-fade-in" style={{ position: 'relative', zIndex: 1 }}>
+        <div className="kv-fade-in kv-reveal" style={{ position: 'relative', zIndex: 1 }}>
           <span className="section-tag">מדריך הגזעים</span>
           <h1 className="page-title" style={{ marginTop: 10 }}>
             איזה כלב באמת מתאים לכם?
           </h1>
+          {/* מבטא זהב חתום מתחת לכותרת - נצנוץ חד-פעמי עם החשיפה */}
+          <span className="kv-shimmer-line" aria-hidden style={{ margin: '14px auto 0' }} />
           <p className="page-sub" style={{ maxWidth: 640, margin: '12px auto 0' }}>
             {breeds.length} גזעים, מהכנעני שגדל פה ועד הסנט ברנרד הענק. כתבנו על כל אחד בכנות -
             כולל הנחירות, מי לא ישרוד את אוגוסט בלי מיזוג, ומי יפרק לכם את הסלון מרוב שעמום.
             סננו לפי גודל, אנרגיה והתאמה לילדים.
           </p>
+          {/* עקבות כף רגל - רגע ממותג, חי, שנחשף בזו אחר זו כשההירו נכנס */}
+          <div className="kv-paw-trail" aria-hidden style={{ marginTop: 26 }}>
+            <i /><i /><i /><i /><i />
+          </div>
         </div>
       </section>
 

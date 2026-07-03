@@ -76,6 +76,8 @@ const srcSetFor = (id: string, widths: number[]) =>
 
 export default function Home() {
   const heroImgRef = useRef<HTMLDivElement>(null)
+  const heroParallaxRef = useRef<HTMLDivElement>(null)
+  const heroDepthRef = useRef<HTMLDivElement>(null)
 
   // CTA דביק לרשימת ההמתנה - מופיע אחרי גלילה קלה, ניתן לסגירה.
   const [stickyCta, setStickyCta] = useState(false)
@@ -102,6 +104,44 @@ export default function Home() {
     reduceMotion.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     return () => {
       if (heroRaf.current !== null) cancelAnimationFrame(heroRaf.current)
+    }
+  }, [])
+
+  // ── פרלקס-גלילה חתום להירו: התמונה והשכבה הדקורטיבית נעות בקצב שונה
+  //    כשגוללים מעבר להירו, כדי לתת עומק "חי". transform בלבד (GPU),
+  //    rAF-throttled, כותב ישירות ל-DOM דרך refs (כמו הטיית-העכבר),
+  //    ומכבד גם את מערכת ההפעלה וגם את מתג הנגישות באתר.
+  useEffect(() => {
+    const root = document.documentElement
+    const reduce =
+      root.dataset.reduceMotion === '1' ||
+      root.classList.contains('kv-a11y-reduce-motion') ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduce) return
+
+    const parallax = heroParallaxRef.current
+    const depth = heroDepthRef.current
+    if (!parallax && !depth) return
+
+    let raf: number | null = null
+    const apply = () => {
+      raf = null
+      // 0 בראש הדף → 1 כשההירו יצא כמעט לגמרי מהמסך.
+      const p = Math.min(Math.max(window.scrollY / window.innerHeight, 0), 1.2)
+      // התמונה נעה מעט כלפי מעלה + סקייל זעיר; השכבה הדקורטיבית נעה
+      // מהר יותר לכיוון ההפוך = הפרדת עומק. transform בלבד.
+      if (parallax) parallax.style.transform = `translate3d(0, ${(-46 * p).toFixed(2)}px, 0) scale(${(1 + 0.03 * p).toFixed(4)})`
+      if (depth) depth.style.transform = `translate3d(0, ${(70 * p).toFixed(2)}px, 0)`
+    }
+    const onScroll = () => {
+      if (raf !== null) return
+      raf = requestAnimationFrame(apply)
+    }
+    apply()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      if (raf !== null) cancelAnimationFrame(raf)
     }
   }, [])
 
@@ -133,7 +173,9 @@ export default function Home() {
       {/* HERO */}
       <section className="hero" onMouseMove={onHeroMove} onMouseLeave={onHeroLeave}>
         <div className="hero-left hero-layer">
-          <FloatingShapes dark />
+          <div ref={heroDepthRef} className="hero-depth">
+            <FloatingShapes dark />
+          </div>
           <FloatingPaws />
           <div className="hero-content">
             <div className="hero-eyebrow">
@@ -147,29 +189,34 @@ export default function Home() {
               גינות, מסלולים ומה שאף ווטרינר לא יספיק לכם להגיד. מאנשים שכבר עברו את זה.
             </p>
             <div className="hero-btns">
-              <MagneticButton href="/waitlist" className="hbm">
+              <MagneticButton href="/waitlist" className="hbm kv-press-mag kv-glow">
                 הצטרפו לרשימת ההמתנה
               </MagneticButton>
-              <Link className="hbg" href="/cities" style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
+              <Link className="hbg kv-press" href="/cities" style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
                 תראו לי מה יש בעיר שלי
               </Link>
+            </div>
+            <div className="hero-paw-trail kv-paw-trail" data-kv-stagger aria-hidden="true">
+              <i /><i /><i /><i /><i />
             </div>
             <FounderNote />
           </div>
         </div>
         <div className="hero-right">
-          <div ref={heroImgRef} className="hero-tilt">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              loading="eager"
-              fetchPriority="high"
-              decoding="async"
-              src="/hero-opener.png"
-              width={1122}
-              height={1402}
-              sizes="(max-width: 900px) 100vw, 50vw"
-              alt="משפחות וכלבים נפגשות בפארק עירוני - קהילת קהילה על ארבע"
-            />
+          <div ref={heroParallaxRef} className="hero-parallax">
+            <div ref={heroImgRef} className="hero-tilt">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+                src="/hero-opener.png"
+                width={1122}
+                height={1402}
+                sizes="(max-width: 900px) 100vw, 50vw"
+                alt="משפחות וכלבים נפגשות בפארק עירוני - קהילת קהילה על ארבע"
+              />
+            </div>
           </div>
         </div>
         <div className="hero-stats">
@@ -197,8 +244,9 @@ export default function Home() {
           <div>
             <span className="section-tag">קרוב לבית</span>
             <h2 id="cities-heading" className="section-title display">מה יש בעיר שלכם</h2>
+            <span className="kv-shimmer-line" data-kv-stagger aria-hidden="true" />
           </div>
-          <Link href="/cities" className="btn btn-ghost">לכל מדריכי הערים →</Link>
+          <Link href="/cities" className="btn btn-ghost kv-press">לכל מדריכי הערים →</Link>
         </Reveal3D>
         <Carousel ariaLabel="קהילות לפי עיר" itemMinWidth={230}>
           {CITY_CARDS.map((c, i) => (
@@ -235,12 +283,16 @@ export default function Home() {
         </Carousel>
       </section>
 
+      {/* מפריד ממותג - כף זהב בין הערים לפוטו-גריד (מעבר רך, לא קו חד) */}
+      <div className="kv-paw-divider kv-seam" data-kv-stagger aria-hidden="true" />
+
       {/* PHOTO GRID */}
       <section className="pg-section">
         <Reveal3D className="pg-header">
           <div>
             <span className="section-tag">הקהילה שלנו</span>
             <h2 className="section-title display">הכלבים<br />של הקהילה</h2>
+            <span className="kv-shimmer-line" data-kv-stagger aria-hidden="true" />
           </div>
           <p className="pg-sub">מקס מתל אביב, לונה מחיפה. העיר שלכם בדרך.</p>
         </Reveal3D>
@@ -281,6 +333,7 @@ export default function Home() {
         <div className="split-content">
           <Reveal3D as="span" className="section-tag">מה מחכה בקהילה</Reveal3D>
           <Reveal3D><h2 id="split-heading" className="split-title display">מה אפשר<br />לעשות כאן</h2></Reveal3D>
+          <span className="kv-shimmer-line" data-kv-stagger aria-hidden="true" />
           <Reveal3D><p className="split-sub">להוריד את המחיר של שק המזון, למצוא חבר לטיול בוקר, ולשאול בלילה את מי שכבר עבר את זה. זה מה שאנחנו בונים.</p></Reveal3D>
           <div className="features-list">
             {FEATURES.map((f) => (
@@ -305,8 +358,9 @@ export default function Home() {
           <div>
             <span className="section-tag">מדריך הגזעים</span>
             <h2 id="breeds-heading" className="section-title display">הגזעים הנפוצים</h2>
+            <span className="kv-shimmer-line" data-kv-stagger aria-hidden="true" />
           </div>
-          <Link href="/breeds" className="btn btn-ghost">לכל הגזעים →</Link>
+          <Link href="/breeds" className="btn btn-ghost kv-press">לכל הגזעים →</Link>
         </Reveal3D>
         <Carousel ariaLabel="גזעים פופולריים" itemMinWidth={250}>
           {POPULAR_BREEDS.map((b, i) => (
@@ -351,14 +405,18 @@ export default function Home() {
         </Carousel>
       </section>
 
+      {/* מפריד ממותג - כף זהב בין הגזעים לכלים */}
+      <div className="kv-paw-divider kv-seam" data-kv-stagger aria-hidden="true" />
+
       {/* כלים חינמיים */}
       <section className="tools-home-section kv-section" aria-labelledby="tools-home-heading">
         <Reveal3D className="ev-head">
           <div>
             <span className="section-tag">חינם, בלי הרשמה</span>
             <h2 id="tools-home-heading" className="section-title display">כלים חינמיים</h2>
+            <span className="kv-shimmer-line" data-kv-stagger aria-hidden="true" />
           </div>
-          <Link href="/tools" className="btn btn-ghost">לכל הכלים →</Link>
+          <Link href="/tools" className="btn btn-ghost kv-press">לכל הכלים →</Link>
         </Reveal3D>
         <div className="kv-card-grid">
           {TOOLS.map((t, i) => (
@@ -411,7 +469,7 @@ export default function Home() {
             אנחנו בונים את הקהילה עכשיו. הצטרפו לרשימת ההמתנה ותהיו הראשונים לדעת כשנפתח בעיר שלכם.
           </p>
           <Reveal3D as="div">
-            <MagneticButton href="/waitlist" className="wl-band-btn">
+            <MagneticButton href="/waitlist" className="wl-band-btn kv-press-mag kv-glow">
               הצטרפו לרשימת ההמתנה
             </MagneticButton>
           </Reveal3D>
@@ -423,6 +481,7 @@ export default function Home() {
       <section className="pr-section" aria-labelledby="pr-heading">
         <div className="pr-inner">
           <Reveal3D><h2 id="pr-heading" className="pr-title display">חינם זה רוב מה שיש כאן</h2></Reveal3D>
+          <span className="kv-shimmer-line kv-shimmer-center" data-kv-stagger aria-hidden="true" />
           <Reveal3D><p className="pr-sub">מתחילים בחינם, בלי כרטיס אשראי. משדרגים רק אם בא לכם. אפשר גם לא - רוב מה שכאן פתוח ממילא.</p></Reveal3D>
           <div className="pr-cards">
             <Reveal3D as="div" delay={1} className="pc">
@@ -434,7 +493,7 @@ export default function Home() {
               <div className="pc-feat"><span className="ok">✓</span> פורום הקהילה</div>
               <div className="pc-feat"><span className="no">✗</span> שאל וטרינר</div>
               <div className="pc-feat"><span className="no">✗</span> מדריכים מעמיקים</div>
-              <Link href="/waitlist" className="pc-btn pc-out kv-block-link">
+              <Link href="/waitlist" className="pc-btn pc-out kv-block-link kv-press">
                 להצטרפות חינם
               </Link>
             </Reveal3D>
@@ -449,7 +508,7 @@ export default function Home() {
               <div className="pc-feat"><span className="ok">✓</span> מדריכים בלעדיים</div>
               <div className="pc-feat"><span className="ok">✓</span> עדיפות בהרשמה לאירועים</div>
               <div className="pc-feat"><span className="ok">✓</span> הנחות מהספונסרים</div>
-              <Link href="/auth/register?plan=premium" className="pc-btn pc-fill kv-block-link">
+              <Link href="/auth/register?plan=premium" className="pc-btn pc-fill kv-block-link kv-press kv-glow">
                 הצטרפו במחיר ההשקה
               </Link>
             </Reveal3D>
@@ -463,7 +522,7 @@ export default function Home() {
           <span className="wl-sticky-txt">
             <span aria-hidden="true">🐾</span> בונים קהילה לבעלי כלבים בישראל.
           </span>
-          <Link href="/waitlist" className="wl-sticky-btn" tabIndex={stickyCta ? 0 : -1}>
+          <Link href="/waitlist" className="wl-sticky-btn kv-press kv-glow" tabIndex={stickyCta ? 0 : -1}>
             הצטרפו לרשימת ההמתנה
           </Link>
           <button

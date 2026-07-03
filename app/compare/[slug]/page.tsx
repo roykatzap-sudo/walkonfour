@@ -6,6 +6,7 @@ import { JsonLd, articleSchema, breadcrumbSchema, faqSchema } from '@/components
 import { comparisons, getComparison } from '@/lib/comparisons'
 import { breeds } from '@/lib/breeds'
 import { WaitlistCTA } from '@/components/shared/WaitlistCTA'
+import { ReadingProgress } from '@/components/articles/ReadingProgress'
 
 export function generateStaticParams() {
   return comparisons.map((c) => ({ slug: c.slug }))
@@ -47,24 +48,26 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
   return (
     <main className="page" style={{ maxWidth: 860 }}>
       <JsonLd data={schemas} />
+      <ReadingProgress />
       <style
         dangerouslySetInnerHTML={{
           __html: `
-            /* ── אקורדיון שאלות נפוצות ── */
-            .cmp-faq { transition: border-color .18s ease, box-shadow .18s ease, background .18s ease; }
+            /* ── אקורדיון שאלות נפוצות (פתיחה קפיצית חתומה) ── */
+            .cmp-faq { transition: border-color var(--kv-dur-2, .34s) var(--kv-ease-warm, ease), box-shadow var(--kv-dur-2, .34s) var(--kv-ease-warm, ease), background var(--kv-dur-2, .34s) var(--kv-ease-warm, ease); }
             .cmp-faq:hover { border-color: rgba(201,154,91,.5); box-shadow: 0 4px 16px rgba(42,32,24,.06); }
             .cmp-faq[open] { border-color: rgba(201,154,91,.55); box-shadow: 0 6px 20px rgba(42,32,24,.07); }
             .cmp-faq summary { list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
             .cmp-faq summary::-webkit-details-marker { display: none; }
             .cmp-faq summary::after {
               content: '›'; font-size: 24px; line-height: 1; font-weight: 700;
-              color: #c99a5b; transform: rotate(90deg); transition: transform .25s ease; flex-shrink: 0;
+              color: #c99a5b; transform: rotate(90deg);
+              transition: transform var(--kv-dur-2, .34s) var(--kv-ease-spring, ease); flex-shrink: 0;
             }
             .cmp-faq[open] summary::after { transform: rotate(-90deg); }
             .cmp-faq:focus-within { outline: 3px solid rgba(201,154,91,.5); outline-offset: 2px; }
             .cmp-faq-body { overflow: hidden; }
-            .cmp-faq[open] .cmp-faq-body { animation: cmpFaqIn .28s ease; }
-            @keyframes cmpFaqIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+            .cmp-faq[open] .cmp-faq-body { animation: cmpFaqIn var(--kv-dur-3, .5s) var(--kv-ease-spring, ease); }
+            @keyframes cmpFaqIn { from { opacity: 0; transform: translateY(-7px); } to { opacity: 1; transform: translateY(0); } }
 
             /* ── טבלת השוואה: כותרת דביקה + פסים ── */
             .cmp-table-wrap { position: relative; }
@@ -80,6 +83,30 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
             }
             @media (max-width: 560px) { .cmp-scroll-hint { display: block; } }
 
+            /* ── תא מנצח "חי": הבזק זהב עדין חד-פעמי כשהטבלה נחשפת, וצ'ק שנושם ── */
+            .cmp-win { position: relative; }
+            .cmp-win .cmp-check {
+              display: inline-block; color: #4c8a4e; font-weight: 900;
+              margin-inline-end: 3px;
+            }
+            @media (prefers-reduced-motion: no-preference) {
+              .cmp-win::before {
+                content: ''; position: absolute; inset: 0; pointer-events: none;
+                background: linear-gradient(90deg, rgba(var(--kv-gold-light,232,200,135),.55), transparent 70%);
+                opacity: 0;
+              }
+              /* כשהטבלה נחשפת (ההורה מקבל data-kv-reveal="in") - הבזק זהב חד-פעמי זוחל על התא המנצח */
+              [data-kv-reveal="in"] .cmp-win::before { animation: cmpWinSweep var(--kv-dur-4, .9s) var(--kv-ease-glide, ease) .25s 1; }
+              [data-kv-reveal="in"] .cmp-win .cmp-check { animation: cmpCheckPop var(--kv-dur-3, .5s) var(--kv-ease-spring, ease) .35s 1; }
+              @keyframes cmpWinSweep { 0% { opacity: 0; } 30% { opacity: 1; } 100% { opacity: 0; } }
+              @keyframes cmpCheckPop { 0% { transform: scale(.4); opacity: 0; } 60% { transform: scale(1.18); } 100% { transform: scale(1); opacity: 1; } }
+            }
+            /* מתג הנגישות של האתר (OS לא בהכרח דלוק) - משתיק גם את הבזק התא המנצח */
+            html.kv-a11y-reduce-motion .cmp-win::before,
+            html[data-reduce-motion="1"] .cmp-win::before { display: none !important; }
+            html.kv-a11y-reduce-motion .cmp-win .cmp-check,
+            html[data-reduce-motion="1"] .cmp-win .cmp-check { animation: none !important; transform: none !important; }
+
             /* ── מפריד סקשן עקבי ── */
             .cmp-section-h { position: relative; padding-top: 4px; }
             .cmp-section-h::before {
@@ -91,6 +118,7 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
             @media (prefers-reduced-motion: reduce) {
               .cmp-faq, .cmp-faq summary::after, .cmp-table tbody tr { transition: none; }
               .cmp-faq[open] .cmp-faq-body { animation: none; }
+              .cmp-win::before, .cmp-win .cmp-check { animation: none !important; }
             }
           `,
         }}
@@ -105,15 +133,16 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
         </div>
       </div>
 
-      {/* ★ תשובה מהירה - Featured Snippet bait */}
-      <section style={{ position: 'relative', marginTop: 8, padding: '20px 24px', background: 'linear-gradient(135deg,#fff8ea,#fef0d8)', border: '2px solid rgba(201,154,91,.35)', borderRadius: 18, boxShadow: '0 6px 22px rgba(201,154,91,.12)', overflow: 'hidden' }}>
+      {/* ★ תשובה מהירה - Featured Snippet bait (כניסה חתומה + מבטא נצנוץ זהב) */}
+      <section className="kv-reveal" style={{ position: 'relative', marginTop: 8, padding: '20px 24px', background: 'linear-gradient(135deg,#fff8ea,#fef0d8)', border: '2px solid rgba(201,154,91,.35)', borderRadius: 18, boxShadow: '0 6px 22px rgba(201,154,91,.12)', overflow: 'hidden' }}>
         <span aria-hidden="true" style={{ position: 'absolute', top: 0, insetInlineStart: 0, width: 5, height: '100%', background: 'linear-gradient(180deg,#c99a5b,#e8c887)' }} />
         <div style={{ fontWeight: 900, color: 'var(--brand-dark)', fontSize: 14, letterSpacing: 0.5, marginBottom: 8 }}>⚡ תשובה מהירה</div>
         <p style={{ margin: 0, fontSize: 16.5, color: 'var(--ink)', lineHeight: 1.75, maxWidth: '68ch' }}>{c.quickAnswer}</p>
+        <span className="kv-shimmer-line" aria-hidden="true" style={{ marginTop: 14 }} />
       </section>
 
       {/* טבלת השוואה */}
-      <section style={{ marginTop: 40 }}>
+      <section className="kv-reveal" style={{ marginTop: 40 }}>
         <h2 className="cmp-section-h" style={{ fontSize: 24, fontWeight: 900, color: 'var(--ink)', margin: '0 0 14px' }}>השוואה צד-בצד</h2>
         <div className="cmp-table-wrap">
           <div className="cmp-table-scroll">
@@ -129,11 +158,11 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
                 {c.compareTable.map((row, i) => (
                   <tr key={i} style={{ borderTop: '1px solid rgba(201,154,91,.18)' }}>
                     <td style={{ padding: '12px 14px', fontWeight: 700, color: '#3a2e22' }}>{row.criterion}</td>
-                    <td style={{ padding: '12px 14px', color: '#5b4d3c', background: row.winner === 'a' ? 'rgba(76,175,80,.1)' : 'transparent', fontWeight: row.winner === 'a' ? 700 : 400 }}>
-                      {row.winner === 'a' && <span aria-hidden="true">✓ </span>}{row.valueA}
+                    <td className={row.winner === 'a' ? 'cmp-win' : undefined} style={{ padding: '12px 14px', color: '#5b4d3c', background: row.winner === 'a' ? 'rgba(76,175,80,.1)' : 'transparent', fontWeight: row.winner === 'a' ? 700 : 400 }}>
+                      {row.winner === 'a' && <span className="cmp-check" aria-hidden="true">✓</span>}{row.valueA}
                     </td>
-                    <td style={{ padding: '12px 14px', color: '#5b4d3c', background: row.winner === 'b' ? 'rgba(76,175,80,.1)' : 'transparent', fontWeight: row.winner === 'b' ? 700 : 400 }}>
-                      {row.winner === 'b' && <span aria-hidden="true">✓ </span>}{row.valueB}
+                    <td className={row.winner === 'b' ? 'cmp-win' : undefined} style={{ padding: '12px 14px', color: '#5b4d3c', background: row.winner === 'b' ? 'rgba(76,175,80,.1)' : 'transparent', fontWeight: row.winner === 'b' ? 700 : 400 }}>
+                      {row.winner === 'b' && <span className="cmp-check" aria-hidden="true">✓</span>}{row.valueB}
                     </td>
                   </tr>
                 ))}
@@ -144,10 +173,10 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
         </div>
       </section>
 
-      {/* פרוזה השוואה */}
+      {/* פרוזה השוואה - חשיפת גלילה חתומה, סקשן-אחר-סקשן */}
       <article style={{ marginTop: 44 }}>
         {c.sections.map((s, i) => (
-          <section key={i} style={{ marginBottom: 34 }}>
+          <section key={i} className="kv-reveal" style={{ marginBottom: 34 }}>
             <h2 className="cmp-section-h" style={{ fontSize: 22, fontWeight: 900, color: 'var(--ink)', margin: '0 0 12px' }}>{s.heading}</h2>
             {s.paragraphs.map((p, j) => (
               <p key={j} style={{ fontSize: 16.5, color: '#3a2e22', lineHeight: 1.85, margin: '0 0 12px', maxWidth: '66ch' }}>{p}</p>
@@ -156,8 +185,11 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
         ))}
       </article>
 
+      {/* מפריד כף-רגל ממותג לפני פסק הדין */}
+      <div className="kv-paw-divider" aria-hidden="true" />
+
       {/* פסיקה */}
-      <section style={{ marginTop: 28, padding: '22px 22px', background: '#fff', border: '2px solid rgba(201,154,91,.32)', borderRadius: 18 }}>
+      <section className="kv-reveal" style={{ marginTop: 28, padding: '22px 22px', background: '#fff', border: '2px solid rgba(201,154,91,.32)', borderRadius: 18 }}>
         <h2 style={{ fontSize: 22, fontWeight: 900, color: 'var(--ink)', margin: '0 0 14px' }}>אז במי לבחור?</h2>
         <div style={{ display: 'grid', gap: 14, gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
           <div style={{ padding: 16, background: '#fbf7ef', borderRadius: 12 }}>
@@ -176,12 +208,12 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
       </section>
 
       {/* FAQ */}
-      <section style={{ marginTop: 44 }}>
+      <section className="kv-reveal" style={{ marginTop: 44 }}>
         <h2 className="cmp-section-h" style={{ fontSize: 22, fontWeight: 900, color: 'var(--ink)', margin: '0 0 16px' }}>שאלות נפוצות</h2>
         <div style={{ display: 'grid', gap: 10 }}>
           {c.faq.map((f, i) => (
             <details key={i} className="cmp-faq" style={{ background: '#fff', border: '1px solid rgba(201,154,91,.22)', borderRadius: 14, padding: '14px 18px' }}>
-              <summary style={{ cursor: 'pointer', fontWeight: 800, color: 'var(--ink)', fontSize: 16 }}>{f.q}</summary>
+              <summary className="kv-press" style={{ cursor: 'pointer', fontWeight: 800, color: 'var(--ink)', fontSize: 16 }}>{f.q}</summary>
               <div className="cmp-faq-body">
                 <p style={{ margin: '10px 0 0', fontSize: 15.5, color: '#5b4d3c', lineHeight: 1.75 }}>{f.a}</p>
               </div>
@@ -202,7 +234,9 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
         </div>
       </section>
 
-      <WaitlistCTA variant="compare" />
+      <div className="kv-reveal">
+        <WaitlistCTA variant="compare" />
+      </div>
 
       <div style={{ marginTop: 24, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
         <Link href="/match" className="btn btn-primary">איזה כלב מתאים לכם? קבלו המלצה</Link>

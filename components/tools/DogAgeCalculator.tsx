@@ -86,7 +86,8 @@ export function DogAgeCalculator() {
       {/* תוצאה - כרטיס "פרס" */}
       <div className="da-prize" aria-live="polite">
         <div className="da-prize-tag">בשנות אדם</div>
-        <div className="da-prize-num" aria-label={`${human} בשנות אדם`}>
+        {/* key על גודל+שלב: כשמשנים בחירה, המספר "מתמקם" בקפיצה עדינה */}
+        <div className="da-prize-num" aria-label={`${human} בשנות אדם`} key={`${size}-${stage.label}`}>
           {humanAnimated}
         </div>
         <div className="da-prize-stage">
@@ -213,6 +214,11 @@ export function DogAgeCalculator() {
           border-color: var(--brand);
           transform: translateY(-2px);
         }
+        .da-size:active {
+          transform: scale(0.975);
+          transition-duration: 0.18s;
+          transition-timing-function: cubic-bezier(0.34, 1.4, 0.5, 1);
+        }
         .da-size.on {
           background: #fdf6e9;
           border-color: var(--brand);
@@ -260,6 +266,15 @@ export function DogAgeCalculator() {
           letter-spacing: -2px;
           font-variant-numeric: tabular-nums;
           text-shadow: 0 4px 20px rgba(232, 200, 135, 0.25);
+          /* מתמקם בקפיצה עדינה כשהבחירה מתחלפת (key על גודל+שלב).
+             ערך ליטרלי של עקומת ה-spring - var() בתוך shorthand של animation
+             עם fallback שמכיל פסיקים שובר את מנתח ה-CSS של styled-jsx. */
+          animation: da-num-settle 0.55s cubic-bezier(0.34, 1.4, 0.5, 1) both;
+        }
+        @keyframes da-num-settle {
+          0% { transform: scale(0.9); }
+          55% { transform: scale(1.05); }
+          100% { transform: scale(1); }
         }
         .da-prize-stage {
           font-size: 16px;
@@ -283,11 +298,19 @@ export function DogAgeCalculator() {
           .da-range::-webkit-slider-thumb {
             transition: none;
           }
+          .da-size:active { transform: none; }
           .da-prize::before {
             animation: none;
             display: none;
           }
+          .da-prize-num { animation: none; }
         }
+        :global(html.kv-a11y-reduce-motion) .da-prize-num,
+        :global(html[data-reduce-motion='1']) .da-prize-num { animation: none; }
+        :global(html.kv-a11y-reduce-motion) .da-prize::before,
+        :global(html[data-reduce-motion='1']) .da-prize::before { animation: none; display: none; }
+        :global(html.kv-a11y-reduce-motion) .da-size:active,
+        :global(html[data-reduce-motion='1']) .da-size:active { transform: none; }
       `}</style>
     </div>
   )
