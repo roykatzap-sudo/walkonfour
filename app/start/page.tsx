@@ -57,8 +57,8 @@ export default function StartPage() {
       <CtaBanner
         title="הכלב כבר ליד הדלת"
         text="ההרשמה בחינם ולוקחת דקה. השאר זה כבר אתם והוא."
-        primary={{ label: 'מצטרפים עכשיו', href: '/auth/register' }}
-        secondary={{ label: 'הסיפור שלנו', href: '/about' }}
+        primary={{ label: 'מצטרפים עכשיו', href: '/waitlist' }}
+        secondary={{ label: 'לכל הגזעים', href: '/breeds' }}
       />
     </main>
   )

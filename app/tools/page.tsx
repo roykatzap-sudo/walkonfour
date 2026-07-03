@@ -249,8 +249,8 @@ export default function ToolsPage() {
             <Link href="/waitlist" className="btn btn-primary">
               להצטרפות חינם
             </Link>
-            <Link href="/about" className="btn btn-ghost" style={{ color: '#fbf7ef', borderColor: 'rgba(251,247,239,.4)' }}>
-              הסיפור שלנו
+            <Link href="/breeds" className="btn btn-ghost" style={{ color: '#fbf7ef', borderColor: 'rgba(251,247,239,.4)' }}>
+              לכל הגזעים
             </Link>
           </div>
         </section>

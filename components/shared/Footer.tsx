@@ -64,7 +64,6 @@ export function Footer() {
           <Link href="/guides" className="kv-underline">אילוף וטיפול</Link>
           <Link href="/vet" className="kv-underline">שאלות לווטרינר</Link>
           <Link href="/faq" className="kv-underline">שאלות נפוצות</Link>
-          <Link href="/about" className="kv-underline">אודות</Link>
           <Link href="/contact" className="kv-underline">צרו קשר</Link>
         </nav>
       </div>

@@ -43,6 +43,12 @@ const nextConfig = {
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }]
   },
+  async redirects() {
+    return [
+      // עמוד האודות הוסר - מפנים לדף הבית כדי לא ליצור 404 (הדף היה מאונדקס).
+      { source: '/about', destination: '/', permanent: true },
+    ]
+  },
 }
 
 export default nextConfig
