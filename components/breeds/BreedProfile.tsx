@@ -685,8 +685,8 @@ export function BreedProfile({ breed }: { breed: Breed }) {
                   קראו את המדריך המלא על {breed.name}
                 </MagneticButton>
               )}
-              <MagneticButton href="/forum" className="btn btn-dark">
-                שאלו את הקהילה
+              <MagneticButton href="/waitlist" className="btn btn-dark">
+                הצטרפו לקהילה
               </MagneticButton>
               <MagneticButton href="/breeds" className="btn btn-ghost">
                 ← לכל הגזעים

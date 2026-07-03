@@ -5,6 +5,7 @@ import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { JsonLd, articleSchema, breadcrumbSchema, faqSchema } from '@/components/seo/JsonLd'
 import { lawSpokes, getLawSpoke } from '@/lib/lawSpokes'
 import { officialSources } from '@/lib/lawsContent'
+import { WaitlistCTA } from '@/components/shared/WaitlistCTA'
 
 export function generateStaticParams() {
   return lawSpokes.map((s) => ({ slug: s.slug }))
@@ -129,6 +130,8 @@ export default function LawSpokePage({ params }: { params: { slug: string } }) {
           ))}
         </ul>
       </section>
+
+      <WaitlistCTA variant="laws" />
 
       {/* ניווט חזרה */}
       <div style={{ marginTop: 36, display: 'flex', gap: 10, flexWrap: 'wrap' }}>

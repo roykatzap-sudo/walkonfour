@@ -20,7 +20,7 @@ export function PlanForm({ dogs, parks }: { dogs: Dog[]; parks: Park[] }) {
   // ברירת מחדל: שעה קרובה הקרובה (השעה הבאה כשהדף נטען)
   useEffect(() => {
     const now = new Date()
-    const next = new Date(now.getTime() + 60 * 60_000) // שעה מעכשiv
+    const next = new Date(now.getTime() + 60 * 60_000) // שעה מעכשיו
     const localDate = next.toISOString().slice(0, 10)
     const localTime = next.toTimeString().slice(0, 5)
     setDate(localDate)

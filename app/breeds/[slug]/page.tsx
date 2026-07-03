@@ -6,6 +6,7 @@ import { getBreedSeo } from '@/lib/breedSeo'
 import { BreedProfile } from '@/components/breeds/BreedProfile'
 import { BreedSeoBlock } from '@/components/breeds/BreedSeoBlock'
 import { RelatedBreedsBlock } from '@/components/breeds/RelatedBreedsBlock'
+import { WaitlistCTA } from '@/components/shared/WaitlistCTA'
 import { comparisons } from '@/lib/comparisons'
 import Link from 'next/link'
 import {
@@ -111,6 +112,7 @@ export default function BreedPage({ params }: { params: { slug: string } }) {
           )
         })()}
         <RelatedBreedsBlock currentSlug={b.slug} />
+        <WaitlistCTA variant="breed" />
       </div>
     </>
   )

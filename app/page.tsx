@@ -26,7 +26,7 @@ const PHOTOS = [
   { name: 'מקס', breed: 'לברדור · תל אביב', img: 'photo-1543466835-00a7907e9de1', cls: 'tall', d: 1 as const },
   { name: 'באדי', breed: 'גולדן · ירושלים', img: 'photo-1587300003388-59208cc962cb', cls: '', d: 2 as const },
   { name: 'לונה', breed: 'שפיץ · חיפה', img: 'photo-1548199973-03cce0bbc87b', cls: '', d: 3 as const },
-  { name: 'מפגש קהילתי', breed: 'תל אביב · מרץ 2025', img: 'photo-1601758228041-f3b2795255f1', cls: 'wide', d: 2 as const },
+  { name: 'רקס', breed: 'בורדר קולי · באר שבע', img: 'photo-1601758228041-f3b2795255f1', cls: 'wide', d: 2 as const },
   { name: "צ'רלי", breed: 'בולדוג · רמת גן', img: 'photo-1518020382113-a7e8fc38eac9', cls: '', d: 4 as const },
 ]
 
@@ -434,7 +434,7 @@ export default function Home() {
               <div className="pc-feat"><span className="ok">✓</span> פורום הקהילה</div>
               <div className="pc-feat"><span className="no">✗</span> שאל וטרינר</div>
               <div className="pc-feat"><span className="no">✗</span> מדריכים מעמיקים</div>
-              <Link href="/auth/register" className="pc-btn pc-out kv-block-link">
+              <Link href="/waitlist" className="pc-btn pc-out kv-block-link">
                 להצטרפות חינם
               </Link>
             </Reveal3D>

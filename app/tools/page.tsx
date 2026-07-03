@@ -246,11 +246,11 @@ export default function ToolsPage() {
             לשאול את הווטרינר. ההצטרפות בחינם.
           </p>
           <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/auth/register" className="btn btn-primary">
+            <Link href="/waitlist" className="btn btn-primary">
               להצטרפות חינם
             </Link>
-            <Link href="/start" className="btn btn-ghost" style={{ color: '#fbf7ef', borderColor: 'rgba(251,247,239,.4)' }}>
-              איך מתחילים
+            <Link href="/about" className="btn btn-ghost" style={{ color: '#fbf7ef', borderColor: 'rgba(251,247,239,.4)' }}>
+              הסיפור שלנו
             </Link>
           </div>
         </section>

@@ -5,6 +5,7 @@ import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { JsonLd, articleSchema, breadcrumbSchema, faqSchema } from '@/components/seo/JsonLd'
 import { comparisons, getComparison } from '@/lib/comparisons'
 import { breeds } from '@/lib/breeds'
+import { WaitlistCTA } from '@/components/shared/WaitlistCTA'
 
 export function generateStaticParams() {
   return comparisons.map((c) => ({ slug: c.slug }))
@@ -200,6 +201,8 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
           ))}
         </div>
       </section>
+
+      <WaitlistCTA variant="compare" />
 
       <div style={{ marginTop: 24, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
         <Link href="/match" className="btn btn-primary">איזה כלב מתאים לכם? קבלו המלצה</Link>

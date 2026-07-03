@@ -354,10 +354,10 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
             {breed ? `שוקלים ${breed.name}? יש קהילה שלמה שתשמח לעזור` : 'הצטרפו לקהילה'}
           </h3>
           <p className="muted" style={{ marginBottom: 20, color: '#5f574c', fontSize: 15.5, lineHeight: 1.6 }}>
-            שאלו שאלות, שתפו תמונות, וקבלו עצות מבעלים אחרים בדיוק כמוכם.
+            קהילת בעלי הכלבים בהקמה: קבוצות רכישה, גינות, המלצות ותשובות אמיתיות. הצטרפו לרשימה ותהיו מהראשונים.
           </p>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <MagneticButton href="/forum" className="btn btn-primary">לפורום הקהילה</MagneticButton>
+            <MagneticButton href="/waitlist" className="btn btn-primary">הצטרפו לרשימת ההמתנה</MagneticButton>
             {breed && <MagneticButton href={`/breeds/${breed.slug}`} className="btn btn-ghost">לעמוד הגזע</MagneticButton>}
           </div>
         </div>

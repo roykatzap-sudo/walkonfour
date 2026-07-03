@@ -3,6 +3,7 @@ import { buildMetadata } from '@/lib/seo'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { JsonLd, articleSchema, breadcrumbSchema, faqSchema } from '@/components/seo/JsonLd'
 import { lawsContent, officialSources } from '@/lib/lawsContent'
+import { WaitlistCTA } from '@/components/shared/WaitlistCTA'
 
 const SPOKE_PAGES = [
   { slug: 'dangerous-breeds', label: 'גזעים מסוכנים - הרשימה המלאה', icon: '⚠️' },
@@ -171,6 +172,8 @@ export default function LawsPage() {
           המידע בעמוד זה מבוסס על החקיקה הרשמית. לאימות עצמאי של הנוסח המחייב, פנו למאגר החקיקה נבו או לאתר הכנסת.
         </p>
       </section>
+
+      <WaitlistCTA variant="laws" />
 
       {/* CTA */}
       <div style={{ marginTop: 32, padding: '20px 22px', background: '#fbf7ef', borderRadius: 16, textAlign: 'center' }}>

@@ -180,7 +180,7 @@ export function CityHub({ community: c }: { community: Community }) {
 
           <Reveal3D delay={4}>
             <MagneticButton
-              href="/auth/register"
+              href="/waitlist"
               className="btn btn-primary sweep"
             >
               בואו לטייל איתנו ב{c.name} 🐾
@@ -380,7 +380,7 @@ export function CityHub({ community: c }: { community: Community }) {
           </Reveal3D>
 
           <Reveal3D delay={4}>
-            <MagneticButton href="/auth/register" className="btn btn-primary sweep">
+            <MagneticButton href="/waitlist" className="btn btn-primary sweep">
               הצטרפו ראשונים ל{c.name}
             </MagneticButton>
           </Reveal3D>
