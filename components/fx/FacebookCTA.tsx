@@ -3,31 +3,29 @@
 import { useEffect, useRef, useState } from 'react'
 
 /**
- * הזמנה להצטרף לקבוצת הפייסבוק - מופיע בכל דף באתר, אחרי 5 שניות או אחרי
- * גלילה של רבע עמוד (המוקדם מביניהם). מופיע פעם אחת בכל ביקור (session):
- * אם סוגרים אותו הוא לא חוזר באותו ביקור, אבל כן חוזר בכניסה הבאה לאתר.
- * נסגר ב-X / Escape. sessionStorage (לא זוכר לנצח).
+ * הזמנה להצטרף לקבוצת הפייסבוק - קופץ בכל דף, בכל כניסה לאתר, אחרי 5 שניות
+ * (או גלילה של רבע עמוד). אם סוגרים אותו - חוזר שוב אחרי 3 דקות, וחוזר חלילה
+ * בכל סגירה. בלי שום זיכרון: לא משנה מי המבקר וכמה פעמים נכנס - תמיד יקבל הזמנה.
  */
 const FB_GROUP = 'https://www.facebook.com/share/g/18wnLhr9tn/'
-const LS_KEY = 'kv-fb-cta-dismissed'
+const RESHOW_MS = 3 * 60_000 // 3 דקות אחרי סגירה → קופץ שוב
 
 export function FacebookCTA() {
-  // מופיע בכל דף - אין דפים מושתקים.
-  const suppressed = false
   const [show, setShow] = useState(false)
   const [closing, setClosing] = useState(false)
   const closeRef = useRef<HTMLButtonElement>(null)
+  const reshowRef = useRef<number | null>(null)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-    if (suppressed) return
-    if (sessionStorage.getItem(LS_KEY)) return
 
-    let done = false
+    let armed = true
     const reveal = () => {
-      if (done) return
-      done = true
+      if (!armed) return
+      armed = false
       window.removeEventListener('scroll', onScroll)
+      window.clearTimeout(timer)
+      setClosing(false)
       setShow(true)
     }
     const onScroll = () => {
@@ -39,8 +37,9 @@ export function FacebookCTA() {
     return () => {
       window.clearTimeout(timer)
       window.removeEventListener('scroll', onScroll)
+      if (reshowRef.current) window.clearTimeout(reshowRef.current)
     }
-  }, [suppressed])
+  }, [])
 
   // Escape סוגר; פוקוס עובר לכפתור הסגירה כשנפתח (נגישות).
   useEffect(() => {
@@ -55,8 +54,13 @@ export function FacebookCTA() {
 
   function dismiss() {
     setClosing(true)
-    try { sessionStorage.setItem(LS_KEY, '1') } catch {}
-    window.setTimeout(() => setShow(false), 280)
+    window.setTimeout(() => {
+      setShow(false)
+      setClosing(false)
+    }, 280)
+    // קופץ שוב אחרי 3 דקות (וחוזר חלילה בכל סגירה)
+    if (reshowRef.current) window.clearTimeout(reshowRef.current)
+    reshowRef.current = window.setTimeout(() => setShow(true), RESHOW_MS)
   }
 
   if (!show) return null
