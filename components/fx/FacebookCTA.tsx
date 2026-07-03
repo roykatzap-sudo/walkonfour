@@ -4,8 +4,9 @@ import { useEffect, useRef, useState } from 'react'
 
 /**
  * הזמנה להצטרף לקבוצת הפייסבוק - מופיע בכל דף באתר, אחרי 5 שניות או אחרי
- * גלילה של רבע עמוד (המוקדם מביניהם). מופיע פעם אחת בלבד לכל דפדפן -
- * נסגר ב-X / Escape ולא חוזר (localStorage). לא ספאם, לא חוזר.
+ * גלילה של רבע עמוד (המוקדם מביניהם). מופיע פעם אחת בכל ביקור (session):
+ * אם סוגרים אותו הוא לא חוזר באותו ביקור, אבל כן חוזר בכניסה הבאה לאתר.
+ * נסגר ב-X / Escape. sessionStorage (לא זוכר לנצח).
  */
 const FB_GROUP = 'https://www.facebook.com/share/g/18wnLhr9tn/'
 const LS_KEY = 'kv-fb-cta-dismissed'
@@ -20,7 +21,7 @@ export function FacebookCTA() {
   useEffect(() => {
     if (typeof window === 'undefined') return
     if (suppressed) return
-    if (localStorage.getItem(LS_KEY)) return
+    if (sessionStorage.getItem(LS_KEY)) return
 
     let done = false
     const reveal = () => {
@@ -54,7 +55,7 @@ export function FacebookCTA() {
 
   function dismiss() {
     setClosing(true)
-    try { localStorage.setItem(LS_KEY, '1') } catch {}
+    try { sessionStorage.setItem(LS_KEY, '1') } catch {}
     window.setTimeout(() => setShow(false), 280)
   }
 
