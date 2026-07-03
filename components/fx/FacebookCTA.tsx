@@ -1,25 +1,18 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { usePathname } from 'next/navigation'
 
 /**
- * הזמנה עדינה (משנית) להצטרף לקבוצת הפייסבוק - "בינתיים, בזמן שאנחנו בונים".
- * ה-CTA הראשי באתר הוא רשימת ההמתנה; הנדנוד הזה לא מתחרה בו: הוא לא מופיע
- * בדף הבית (שם נמצא ה-hero של הרשמה) ולא ב-/waitlist (שם נמצא הטופס).
- * מופיע פעם אחת בלבד - אחרי 5 שניות או אחרי גלילה של רבע עמוד (המוקדם מביניהם),
+ * הזמנה להצטרף לקבוצת הפייסבוק - מופיע בכל דף באתר, אחרי 5 שניות או אחרי
+ * גלילה של רבע עמוד (המוקדם מביניהם). מופיע פעם אחת בלבד לכל דפדפן -
  * נסגר ב-X / Escape ולא חוזר (localStorage). לא ספאם, לא חוזר.
  */
 const FB_GROUP = 'https://www.facebook.com/share/g/18wnLhr9tn/'
 const LS_KEY = 'kv-fb-cta-dismissed'
 
-// בדפים האלה לא מקפיצים פופ-אפ פייסבוק: עמודי המרה (/, /waitlist) ועמוד המפה
-// האינטראקטיבי (/map) - שם הפופ-אפ מכסה את המפה.
-const SUPPRESS_ON = ['/', '/waitlist', '/map']
-
 export function FacebookCTA() {
-  const pathname = usePathname()
-  const suppressed = SUPPRESS_ON.includes(pathname ?? '')
+  // מופיע בכל דף - אין דפים מושתקים.
+  const suppressed = false
   const [show, setShow] = useState(false)
   const [closing, setClosing] = useState(false)
   const closeRef = useRef<HTMLButtonElement>(null)
