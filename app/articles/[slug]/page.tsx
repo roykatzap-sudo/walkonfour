@@ -82,7 +82,9 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
       title: article.title,
       description: article.excerpt,
       path: `/articles/${article.slug}`,
-      image: breed ? breedImg(breed.photo, 1200) : undefined,
+      // תמונת ה-schema חייבת ≥1200px (דרישת גוגל לתמונה גדולה). התמונות הסטטיות
+      // של הגזעים הן 408px, לכן משתמשים בתמונת ה-OG הדינמית 1200x630 (זהה ל-og:image).
+      image: absoluteUrl(ogImageUrl({ title: article.title, subtitle: breed ? `מדריך הגזע ${breed.name}` : article.excerpt, tag: 'מדריך' })),
       section: 'מדריכי גזעים',
       // תאריך עריכה אמיתי של המדריכים (לא מומצא לכל מאמר בנפרד).
       dateModified: '2026-06-01',

@@ -65,6 +65,8 @@ export default function BreedPage({ params }: { params: { slug: string } }) {
       title: `${b.name} - מדריך גזע מלא`,
       description: desc,
       path: `/breeds/${b.slug}`,
+      // תמונת OG 1200x630 (דרישת גוגל ≥1200px; תמונות הגזע הסטטיות הן 408px).
+      image: absoluteUrl(ogImageUrl({ title: b.name, subtitle: `${b.en} · אופי, התאמה ומדריך הגזע`, tag: 'גזע' })),
       section: 'מדריכי גזעים',
     }),
     breedThingSchema({
