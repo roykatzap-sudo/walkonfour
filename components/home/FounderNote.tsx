@@ -10,6 +10,10 @@ export function FounderNote() {
         קונים בדיוק אותו דבר. אז בניתי את המקום שהייתי רוצה שיהיה לי. זו ההתחלה.
       </p>
       <p className="fn-sign">חגי, ולונה (לברדור)</p>
+      <p className="fn-fb">
+        בינתיים אנחנו כבר מדברים ב
+        <a href="https://www.facebook.com/share/g/18wnLhr9tn/" target="_blank" rel="noopener noreferrer">קבוצת הפייסבוק</a>.
+      </p>
     </aside>
   )
 }

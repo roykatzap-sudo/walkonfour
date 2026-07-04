@@ -23,11 +23,11 @@ const MARQUEE = [
 ]
 
 const PHOTOS = [
-  { name: 'מקס', breed: 'לברדור · תל אביב', img: 'photo-1543466835-00a7907e9de1', cls: 'tall', d: 1 as const },
-  { name: 'באדי', breed: 'גולדן · ירושלים', img: 'photo-1587300003388-59208cc962cb', cls: '', d: 2 as const },
-  { name: 'לונה', breed: 'שפיץ · חיפה', img: 'photo-1548199973-03cce0bbc87b', cls: '', d: 3 as const },
-  { name: 'רקס', breed: 'בורדר קולי · באר שבע', img: 'photo-1601758228041-f3b2795255f1', cls: 'wide', d: 2 as const },
-  { name: "צ'רלי", breed: 'בולדוג · רמת גן', img: 'photo-1518020382113-a7e8fc38eac9', cls: '', d: 4 as const },
+  { name: 'מקס', breed: 'לברדור', img: 'photo-1543466835-00a7907e9de1', cls: 'tall', d: 1 as const },
+  { name: 'באדי', breed: 'גולדן', img: 'photo-1587300003388-59208cc962cb', cls: '', d: 2 as const },
+  { name: 'נאלה', breed: 'שפיץ', img: 'photo-1548199973-03cce0bbc87b', cls: '', d: 3 as const },
+  { name: 'רקס', breed: 'בורדר קולי', img: 'photo-1601758228041-f3b2795255f1', cls: 'wide', d: 2 as const },
+  { name: "צ'רלי", breed: 'בולדוג', img: 'photo-1518020382113-a7e8fc38eac9', cls: '', d: 4 as const },
 ]
 
 const REEL = ['photo-1552053831-71594a27632d', 'photo-1587300003388-59208cc962cb', 'photo-1548199973-03cce0bbc87b', 'photo-1518020382113-a7e8fc38eac9', 'photo-1601758228041-f3b2795255f1', 'photo-1543466835-00a7907e9de1']
@@ -192,10 +192,11 @@ export default function Home() {
               <MagneticButton href="/waitlist" className="hbm kv-press-mag kv-glow">
                 הצטרפו לרשימת ההמתנה
               </MagneticButton>
-              <Link className="hbg kv-press" href="/cities" style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
-                תראו לי מה יש בעיר שלי
+              <Link className="hbg-link kv-press" href="/cities">
+                מה יש כבר בעיר שלי ←
               </Link>
             </div>
+            <p className="hero-assure">חינם, בלי כרטיס אשראי. נעדכן אתכם כשנפתחת הקהילה בעיר שלכם.</p>
             <div className="hero-paw-trail kv-paw-trail" data-kv-stagger aria-hidden="true">
               <i /><i /><i /><i /><i />
             </div>
@@ -214,12 +215,13 @@ export default function Home() {
                 width={1122}
                 height={1402}
                 sizes="(max-width: 900px) 100vw, 50vw"
-                alt="משפחות וכלבים נפגשות בפארק עירוני - קהילת קהילה על ארבע"
+                alt="בעל כלב וכלבו בפארק עירוני - קהילה על ארבע"
               />
             </div>
           </div>
         </div>
         <div className="hero-stats">
+          <div className="hero-stats-lead">כבר עכשיו באתר, בלי הרשמה:</div>
           <div className="hs"><div className="hs-val"><Counter to={29} /></div><div className="hs-lbl">גזעים</div></div>
           <div className="hs"><div className="hs-val"><Counter to={621} /></div><div className="hs-lbl">גינות על המפה</div></div>
           <div className="hs"><div className="hs-val"><Counter to={38} /></div><div className="hs-lbl">מסלולים</div></div>
@@ -290,11 +292,11 @@ export default function Home() {
       <section className="pg-section">
         <Reveal3D className="pg-header">
           <div>
-            <span className="section-tag">הקהילה שלנו</span>
-            <h2 className="section-title display">הכלבים<br />של הקהילה</h2>
+            <span className="section-tag">כל גזע, כל גודל</span>
+            <h2 className="section-title display">הכלבים<br />שאנחנו אוהבים</h2>
             <span className="kv-shimmer-line" data-kv-stagger aria-hidden="true" />
           </div>
-          <p className="pg-sub">מקס מתל אביב, לונה מחיפה. העיר שלכם בדרך.</p>
+          <p className="pg-sub">ככה זה נראה כשקהילה של בעלי כלבים באמת עובדת.</p>
         </Reveal3D>
         <div className="pg-grid">
           {PHOTOS.map((p) => (
@@ -312,7 +314,7 @@ export default function Home() {
 
       {/* REEL */}
       <div className="reel-section">
-        <div className="reel-lbl">מהקהילה שלנו</div>
+        <div className="reel-lbl">גזעים בקהילה</div>
         <div className="reel-track">
           {[...REEL, ...REEL].map((id, i) => (
             <div className="rc" key={i}>
@@ -474,6 +476,11 @@ export default function Home() {
             </MagneticButton>
           </Reveal3D>
           <p className="wl-band-note">בלי התחייבות, בלי כרטיס אשראי. רק נעדכן כשיש חדש.</p>
+          <p className="wl-band-fb">
+            עוד לא בשלים להירשם? הקהילה כבר חיה ב
+            <a href="https://www.facebook.com/share/g/18wnLhr9tn/" target="_blank" rel="noopener noreferrer">קבוצת הפייסבוק שלנו</a>
+            . בואו להגיד שלום.
+          </p>
         </div>
       </section>
 
@@ -494,7 +501,7 @@ export default function Home() {
               <div className="pc-feat"><span className="no">✗</span> שאל וטרינר</div>
               <div className="pc-feat"><span className="no">✗</span> מדריכים מעמיקים</div>
               <Link href="/waitlist" className="pc-btn pc-out kv-block-link kv-press">
-                להצטרפות חינם
+                לרשימת ההמתנה - חינם
               </Link>
             </Reveal3D>
             <Reveal3D as="div" delay={2} className="pc feat">
@@ -508,8 +515,8 @@ export default function Home() {
               <div className="pc-feat"><span className="ok">✓</span> מדריכים בלעדיים</div>
               <div className="pc-feat"><span className="ok">✓</span> עדיפות בהרשמה לאירועים</div>
               <div className="pc-feat"><span className="ok">✓</span> הנחות מהספונסרים</div>
-              <Link href="/auth/register?plan=premium" className="pc-btn pc-fill kv-block-link kv-press kv-glow">
-                הצטרפו במחיר ההשקה
+              <Link href="/waitlist?plan=premium" className="pc-btn pc-fill kv-block-link kv-press kv-glow">
+                שריינו מחיר השקה ברשימה
               </Link>
             </Reveal3D>
           </div>
@@ -520,10 +527,10 @@ export default function Home() {
       {!ctaDismissed && (
         <div className={`wl-sticky${stickyCta ? ' show' : ''}`} role="region" aria-label="הצטרפות לרשימת ההמתנה" aria-hidden={!stickyCta}>
           <span className="wl-sticky-txt">
-            <span aria-hidden="true">🐾</span> בונים קהילה לבעלי כלבים בישראל.
+            <span aria-hidden="true">🐾</span> נפתחים עיר אחרי עיר. רוצים להיות ראשונים?
           </span>
           <Link href="/waitlist" className="wl-sticky-btn kv-press kv-glow" tabIndex={stickyCta ? 0 : -1}>
-            הצטרפו לרשימת ההמתנה
+            שריינו לי מקום
           </Link>
           <button
             type="button"

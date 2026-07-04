@@ -392,6 +392,16 @@
   font-weight: 700;
   color: var(--brand-light);
 }
+.fn-fb {
+  margin-top: 10px;
+  font-size: 14.5px;
+  color: rgba(255, 255, 255, 0.7);
+}
+.fn-fb a {
+  color: var(--brand-light);
+  font-weight: 700;
+  text-decoration: underline;
+}
 @media (max-width: 480px) {
   .fn-card { transform: none; max-width: 100%; }
 }
@@ -458,6 +468,43 @@
   0% { transform: scale(1); opacity: 0.55; }
   70% { transform: scale(1.16); opacity: 0; }
   100% { opacity: 0; }
+}
+
+/* ── פעולה שלישונית בהירו: קישור-טקסט לעיון (בלי חרום כפתור) ── */
+.hbg-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 48px;
+  padding: 0 6px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--brand-light);
+  text-decoration: none;
+  background: none;
+  border: none;
+}
+.hbg-link:hover {
+  text-decoration: underline;
+}
+
+/* ── שורת הבטחה מתחת ל-CTA בהירו (חינם, בלי כרטיס) ── */
+.hero-assure {
+  margin-top: 14px;
+  max-width: 34ch;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* ── לוכד לסטטיסטיקות ההירו: ממסגר את המספרים כ"כבר קיים" ── */
+.hero-stats-lead {
+  flex-basis: 100%;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.68);
+  margin-bottom: 6px;
 }
 
 /* ── כרטיסי כלים/גזעים/ערים: הרמה חלקה + הבהקה עדינה בקצה ── */
@@ -723,6 +770,19 @@
   margin-top: 16px;
   font-size: 13.5px;
   color: rgba(255, 255, 255, 0.55);
+}
+/* ── קישור פייסבוק משני בתוך הבאנד - טקסט בלבד, מתחת לכפתור הזהב ── */
+.wl-band-fb {
+  margin-top: 18px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
+}
+.wl-band-fb a {
+  color: var(--brand-light);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 /* טביעות כף רקע דקורטיביות בפינות הבאנד */
 .wl-band::before,
