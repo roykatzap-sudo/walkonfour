@@ -13,6 +13,12 @@ export function generateStaticParams() {
   return guides.map((g) => ({ slug: g.slug }))
 }
 
+/** מרנדר הדגשות markdown (**טקסט**) כ-<strong> אמיתי. התוכן שלנו, לא קלט משתמש. */
+function renderBold(text: string) {
+  const parts = text.split('**')
+  return parts.map((part, i) => (i % 2 === 1 ? <strong key={i}>{part}</strong> : part))
+}
+
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const g = getGuide(params.slug)
   if (!g) return { title: 'מדריך · קהילה על ארבע' }
@@ -45,7 +51,7 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
       image: guideImg(guide.photo, 1200),
       steps: guide.sections.map((s) => ({
         name: s.heading,
-        text: s.paragraphs.join(' '),
+        text: s.paragraphs.join(' ').replace(/\*\*/g, ''),
       })),
     }),
   ]
@@ -114,7 +120,7 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
               <div style={{ marginBottom: 34 }}>
                 <h2 className="guide-section-h" style={{ fontSize: 25, fontWeight: 900, marginBottom: 12, color: '#2a2018' }}>{s.heading}</h2>
                 {s.paragraphs.map((p, j) => (
-                  <p key={j} style={{ fontSize: 16.5, lineHeight: 1.9, color: '#3a3128', marginBottom: 14, maxWidth: '66ch' }}>{p}</p>
+                  <p key={j} style={{ fontSize: 16.5, lineHeight: 1.9, color: '#3a3128', marginBottom: 14, maxWidth: '66ch' }}>{renderBold(p)}</p>
                 ))}
               </div>
             </Reveal3D>
