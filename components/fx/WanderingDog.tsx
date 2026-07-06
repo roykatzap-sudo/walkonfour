@@ -24,7 +24,7 @@ function motionOff(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
-const CROSS_MS = 11000 // משך חציית מסך אחת
+const CROSS_MS = 9000 // משך חציית מסך אחת
 
 export function WanderingDog() {
   const [cross, setCross] = useState<Cross | null>(null)
@@ -43,20 +43,20 @@ export function WanderingDog() {
         seq.current += 1
         const dog = DOGS[Math.floor(Math.random() * DOGS.length)]
         const dir: 1 | -1 = Math.random() < 0.5 ? 1 : -1
-        const top = 8 + Math.random() * 26 // מרחק קטן מהתחתית
+        const top = 12 + Math.random() * 46 // מרחק קטן מהתחתית
         setCross({ id: seq.current, dog, dir, top })
         // מסירים בסוף החצייה, ואז קובעים את ההופעה הבאה
         const clear = window.setTimeout(() => {
           if (!alive) return
           setCross(null)
-          schedule(35000 + Math.random() * 35000) // 35-70ש עד הבא
+          schedule(15000 + Math.random() * 18000) // 15-33ש עד הבא
         }, CROSS_MS)
         timers.current.push(clear)
       }, delay)
       timers.current.push(t)
     }
 
-    schedule(7000 + Math.random() * 5000) // ראשון אחרי ~7-12ש
+    schedule(4000 + Math.random() * 4000) // ראשון אחרי ~4-8ש
     return () => {
       alive = false
       timers.current.forEach((t) => window.clearTimeout(t))
@@ -142,13 +142,13 @@ export function WanderingDog() {
         }
         .wdog-bob {
           display: inline-block;
-          font-size: 40px;
-          filter: drop-shadow(0 6px 6px rgba(42, 32, 24, 0.25));
-          animation: wdog-bob 0.42s ease-in-out infinite alternate;
+          font-size: clamp(58px, 9vw, 84px);
+          filter: drop-shadow(0 9px 9px rgba(42, 32, 24, 0.3));
+          animation: wdog-bob 0.34s ease-in-out infinite alternate;
         }
         @keyframes wdog-bob {
           from { translate: 0 0; }
-          to   { translate: 0 -7px; }
+          to   { translate: 0 -14px; }
         }
         .wdog-hit.pet .wdog-bob {
           animation: wdog-wag 0.22s ease-in-out 3;
