@@ -13,6 +13,7 @@ import { AccessibilityMenu } from '@/components/a11y/AccessibilityMenu'
 import { ClickBurst } from '@/components/fx/ClickBurst'
 import { FacebookCTA } from '@/components/fx/FacebookCTA'
 import { WanderingDog } from '@/components/fx/WanderingDog'
+import { PawTrail } from '@/components/fx/PawTrail'
 import { GlobalSuggest } from '@/components/fx/GlobalSuggest'
 import { RouteProgress } from '@/components/fx/RouteProgress'
 import { SignatureMotion } from '@/components/fx/useSignatureMotion'
@@ -105,6 +106,7 @@ export default function RootLayout({
           <ClickBurst />
           <FacebookCTA />
           <WanderingDog />
+          <PawTrail />
           <GlobalSuggest />
         </ToastProvider>
         <Analytics />

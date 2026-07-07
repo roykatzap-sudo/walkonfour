@@ -40,10 +40,10 @@
 @media (prefers-reduced-motion: no-preference) {
   .kv-reveal {
     opacity: 0;
-    transform: translateY(26px) scale(.985);
+    transform: translateY(34px) scale(.965);
     transition:
       opacity var(--kv-dur-3) var(--kv-ease-warm),
-      transform var(--kv-dur-3) var(--kv-ease-warm);
+      transform var(--kv-dur-3) var(--kv-ease-spring);
     will-change: transform, opacity;
   }
   /* חשיפה חד-פעמית: אחרי שהאלמנט נחשף הוא לא מונפש שוב, אז משחררים את
