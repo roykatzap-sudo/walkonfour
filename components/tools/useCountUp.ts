@@ -24,9 +24,13 @@ export function useCountUp(
   const factor = Math.pow(10, decimals)
 
   useEffect(() => {
+    // מכבד גם את הגדרת ה-OS וגם את מתג הנגישות של האתר (AccessibilityMenu)
+    const el = typeof document !== 'undefined' ? document.documentElement : null
     const prefersReduced =
       typeof window !== 'undefined' &&
-      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+      (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ||
+        el?.classList.contains('kv-a11y-reduce-motion') ||
+        el?.getAttribute('data-reduce-motion') === '1')
 
     const from = fromRef.current
     const to = target

@@ -28,7 +28,7 @@ type StaticEntry = {
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date()
 
-  // רק עמודים שעובדים בפועל. הוסרו: forum/events/groups/petsitting/lost-found/adopt/market/businesses/wall/premium/start/dog-age (חסומים ב-middleware), communities/vet (לא קיים), cookies/faq (לא קיים).
+  // רק עמודים חיים ולא חסומים ב-middleware. חסומים (מופנים ל-/soon): forum/events/groups/petsitting/lost-found/adopt/market/businesses/wall/premium/start/digest/health-tracker.
   const staticPages: StaticEntry[] = [
     { path: '/', priority: 1.0, changeFrequency: 'daily' },
     // תוכן ראשי
@@ -38,6 +38,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/cities', priority: 0.9, changeFrequency: 'weekly' },
     { path: '/walks', priority: 0.85, changeFrequency: 'weekly' },
     { path: '/map', priority: 0.85, changeFrequency: 'monthly' },
+    { path: '/vet', priority: 0.8, changeFrequency: 'monthly' },
+    { path: '/faq', priority: 0.7, changeFrequency: 'monthly' },
     // הגזע הלאומי - דף עם תכולה ייחודית
     { path: '/canaan-dog', priority: 0.85, changeFrequency: 'monthly' },
     // כלים חינמיים - long-tail SEO
@@ -46,6 +48,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/names', priority: 0.85, changeFrequency: 'monthly' },
     { path: '/calculator', priority: 0.85, changeFrequency: 'monthly' },
     { path: '/food-calculator', priority: 0.85, changeFrequency: 'monthly' },
+    { path: '/dog-age', priority: 0.8, changeFrequency: 'monthly' },
     { path: '/health', priority: 0.8, changeFrequency: 'monthly' },
     { path: '/dog-food-prices', priority: 0.85, changeFrequency: 'weekly' },
     // pillar SEO חדש - תוכן שאף מתחרה לא בנה ברצינות
@@ -55,6 +58,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/waitlist', priority: 0.8, changeFrequency: 'weekly' },
     // אינפו
     { path: '/contact', priority: 0.5, changeFrequency: 'yearly' },
+    { path: '/accessibility', priority: 0.3, changeFrequency: 'yearly' },
+    { path: '/cookies', priority: 0.3, changeFrequency: 'yearly' },
     { path: '/privacy', priority: 0.3, changeFrequency: 'yearly' },
     { path: '/terms', priority: 0.3, changeFrequency: 'yearly' },
   ]

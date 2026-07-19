@@ -21,7 +21,9 @@ export function PlanForm({ dogs, parks }: { dogs: Dog[]; parks: Park[] }) {
   useEffect(() => {
     const now = new Date()
     const next = new Date(now.getTime() + 60 * 60_000) // שעה מעכשיו
-    const localDate = next.toISOString().slice(0, 10)
+    // תאריך מרכיבים מקומיים (לא UTC) - אחרת בין חצות ל-03:00 התאריך נופל יום אחורה
+    const pad = (n: number) => String(n).padStart(2, '0')
+    const localDate = `${next.getFullYear()}-${pad(next.getMonth() + 1)}-${pad(next.getDate())}`
     const localTime = next.toTimeString().slice(0, 5)
     setDate(localDate)
     setTime(localTime)

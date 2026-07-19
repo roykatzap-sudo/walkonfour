@@ -43,6 +43,14 @@ export function CommunitiesMap() {
     setActive(c.slug)
     refreshIcons(c.slug)
     map.flyTo([c.lat, c.lng], 12, { duration: 0.7 })
+    // הגנת defense-in-depth: המקור (lib/communities.ts) סטטי, אבל מסננים בכל זאת
+    const esc = (s: string) =>
+      String(s).replace(/[&<>"']/g, (ch) =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch] as string),
+      )
+    const name = esc(c.name)
+    const district = esc(c.district)
+    const slug = encodeURIComponent(c.slug)
     L.popup({ className: 'dp', closeButton: true, maxWidth: 260 })
       .setLatLng([c.lat, c.lng])
       .setContent(`
@@ -50,14 +58,14 @@ export function CommunitiesMap() {
           <div class="pp-top">
             <div class="pp-ico" style="background:${c.accent}1a;border-color:${c.accent}40;color:${c.accent}">🐾</div>
             <div>
-              <div class="pp-name">${c.name}</div>
-              <div class="pp-city">📍 ${c.district}</div>
+              <div class="pp-name">${name}</div>
+              <div class="pp-city">📍 ${district}</div>
             </div>
           </div>
           <hr class="pp-divider">
           <div class="pp-row"><span>✨</span><span>קהילה חדשה - הצטרפו ראשונים</span></div>
-          <div class="pp-row"><span>🐾</span><span>טיולים, אירועים וקבוצות רכישה ב${c.district}</span></div>
-          <a class="pp-btn" href="/community/${c.slug}" aria-label="עבור לקהילת ${c.name}" style="display:block;text-align:center;text-decoration:none;background:${c.accent};color:#fff">לקהילת ${c.name}</a>
+          <div class="pp-row"><span>🐾</span><span>טיולים, אירועים וקבוצות רכישה ב${district}</span></div>
+          <a class="pp-btn" href="/community/${slug}" aria-label="עבור לקהילת ${name}" style="display:block;text-align:center;text-decoration:none;background:${c.accent};color:#fff">לקהילת ${name}</a>
         </div>
       `)
       .openOn(map)

@@ -53,6 +53,8 @@ export default function CanaanDogPage() {
     image: `${SITE_URL}/breeds-wc/canaan.png`,
     author: { '@type': 'Organization', name: 'קהילה על ארבע' },
     publisher: { '@type': 'Organization', name: 'קהילה על ארבע' },
+    datePublished: '2026-07-01',
+    dateModified: '2026-07-01',
     description:
       'הסיפור של הכלב הכנעני - הגזע הלאומי של ישראל: מכלב מדבר פראי, דרך ההצלה מהכחדה, ועד כלבי המוקשים ויחידת עוקץ.',
     mainEntityOfPage: `${SITE_URL}/canaan-dog`,

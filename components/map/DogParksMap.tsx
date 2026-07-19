@@ -193,7 +193,7 @@ export function DogParksMap() {
         L.control.zoom({ position: 'bottomright' }).addTo(map)
 
         // קלאסטרינג: גינות מתקבצות לעיגולים זהובים עם מספרים ב-zoom רחב,
-        // נפרסות לסמלים בודדים ב-zoom קרוב. פותר את "המפה מפוצצת" עם 621 גינות.
+        // נפרסות לסמלים בודדים ב-zoom קרוב. פותר את "המפה מפוצצת" עם מאות גינות.
         await import('leaflet.markercluster')
         clusterRef.current = (L as any).markerClusterGroup({
           showCoverageOnHover: false,
@@ -226,7 +226,7 @@ export function DogParksMap() {
           setRState('idle')
         })
 
-        // טוענים מיד את הדאטה הסטטי (288 גינות, אמין תמיד),
+        // טוענים מיד את הדאטה הסטטי (מאות גינות, אמין תמיד),
         // ואז מנסים לרענן מ-Overpass ברקע. לא מחליפים אם Overpass
         // מחזיר פחות (כדי שכשל/מענה חלקי לא יקטין את המפה).
         allParks.current = withCities(allDogParks)

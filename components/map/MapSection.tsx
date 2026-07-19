@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
+import { DOG_PARK_COUNT } from '@/lib/siteStats'
 
 const DogParksMap = dynamic(
   () => import('@/components/map/DogParksMap').then((m) => m.DogParksMap),
@@ -19,7 +20,7 @@ export function MapSection() {
   const ref = useRef<HTMLDivElement>(null)
   const [inView, setInView] = useState(false)
 
-  // טוענים את המפה (Leaflet + 300 markers + Overpass) רק כשמתקרבים אליה
+  // טוענים את המפה (Leaflet + מאות markers + Overpass) רק כשמתקרבים אליה
   useEffect(() => {
     const el = ref.current
     if (!el) return
@@ -52,7 +53,7 @@ export function MapSection() {
             </h2>
           </div>
           <p className="map-sub">
-            621 גינות כלבים בכל הארץ - לחצו "גינות לידי" לראות את הקרובות.
+            {DOG_PARK_COUNT} גינות כלבים בכל הארץ - לחצו "גינות לידי" לראות את הקרובות.
           </p>
         </div>
       </div>

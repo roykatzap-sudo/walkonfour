@@ -12,6 +12,7 @@ import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { Carousel } from '@/components/fx/Carousel'
 import { FounderNote } from '@/components/home/FounderNote'
 import { communities, img } from '@/lib/communities'
+import { DOG_PARK_COUNT } from '@/lib/siteStats'
 import { breeds, getBreed, breedImg } from '@/lib/breeds'
 
 const MARQUEE = [
@@ -223,7 +224,7 @@ export default function Home() {
         <div className="hero-stats">
           <div className="hero-stats-lead">כבר עכשיו באתר, בלי הרשמה:</div>
           <div className="hs"><div className="hs-val"><Counter to={29} /></div><div className="hs-lbl">גזעים</div></div>
-          <div className="hs"><div className="hs-val"><Counter to={621} /></div><div className="hs-lbl">גינות על המפה</div></div>
+          <div className="hs"><div className="hs-val"><Counter to={DOG_PARK_COUNT} /></div><div className="hs-lbl">גינות על המפה</div></div>
           <div className="hs"><div className="hs-val"><Counter to={38} /></div><div className="hs-lbl">מסלולים</div></div>
           <div className="hs"><div className="hs-val"><Counter to={42} /></div><div className="hs-lbl">ערים</div></div>
         </div>
