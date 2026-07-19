@@ -59,12 +59,12 @@ const GROUPS: FaqGroup[] = [
         a: (
           <p>
             דקה, אולי פחות. נכנסים לעמוד{' '}
-            <Link className="link" href="/auth/register">
+            <Link className="link" href="/waitlist">
               ההרשמה
             </Link>
             , ממלאים שם ואימייל, מאשרים את המייל שמגיע - וזהו, אתם בפנים. אם בא
             לכם להבין קודם איך הכול עובד, יש מדריך קצר ב{' '}
-            <Link className="link" href="/start">
+            <Link className="link" href="/waitlist">
               איך מתחילים
             </Link>
             .
@@ -76,7 +76,7 @@ const GROUPS: FaqGroup[] = [
         a: (
           <p>
             קורה לכולם. במסך{' '}
-            <Link className="link" href="/auth/login">
+            <Link className="link" href="/waitlist">
               ההתחברות
             </Link>{' '}
             לוחצים על איפוס סיסמה, ומגיע קישור למייל הרשום. אם הוא לא צץ תוך כמה
@@ -104,7 +104,7 @@ const GROUPS: FaqGroup[] = [
           <p>
             הרעיון פשוט: ספק שמוכר שק בודד נותן מחיר אחד, וספק שמוכר 80 שקים בבת
             אחת נותן מחיר אחר לגמרי. אז ב{' '}
-            <Link className="link" href="/groups">
+            <Link className="link" href="/waitlist">
               קבוצות הרכישה
             </Link>{' '}
             מצטרפים לקבוצה פעילה לפני שהיא נסגרת, וכשמספיק אנשים נכנסו - ההזמנה
@@ -142,7 +142,7 @@ const GROUPS: FaqGroup[] = [
         a: (
           <p>
             הכול בעמוד{' '}
-            <Link className="link" href="/events">
+            <Link className="link" href="/waitlist">
               האירועים
             </Link>{' '}
             - טיולי בוקר בירקון, מפגשי גזע, סדנאות אילוף. ואם לא מצאתם משהו קרוב
@@ -168,7 +168,7 @@ const GROUPS: FaqGroup[] = [
         a: (
           <p>
             את{' '}
-            <Link className="link" href="/forum">
+            <Link className="link" href="/waitlist">
               הפורום
             </Link>
             . שם יושבים אנשים שכבר עברו את מה שאתם עוברים - הגור שלא נותן לישון,
@@ -189,7 +189,7 @@ const GROUPS: FaqGroup[] = [
             נסיעה לחו"ל ואין על מי להשאיר את הכלב? במקום פנסיון יקר עם כלוב, מוצאים
             מישהו מהקהילה שישמור עליו בבית - ובפעם הבאה אתם מחזירים טובה. הכול בין
             אנשים שמכירים כלבים ואוהבים אותם. הפרטים בעמוד{' '}
-            <Link className="link" href="/petsitting">
+            <Link className="link" href="/waitlist">
               הפינסיטינג
             </Link>
             .
@@ -270,7 +270,7 @@ export default function FaqPage() {
         title="נשארה שאלה פתוחה?"
         text="כתבו לנו ונחזור אליכם. ואם בא לכם תשובה כבר עכשיו - בפורום תמיד יש מישהו ער."
         primary={{ label: 'צרו קשר', href: '/contact' }}
-        secondary={{ label: 'אל הפורום', href: '/forum' }}
+        secondary={{ label: 'לרשימת ההמתנה', href: '/waitlist' }}
       />
     </main>
   )

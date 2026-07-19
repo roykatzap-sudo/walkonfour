@@ -44,6 +44,10 @@ const fredoka = Fredoka({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  // canonical עצמי לדף הבית (הוא client ולא מייצא metadata משלו). כל הדפים
+  // החיים האחרים דורסים canonical משלהם דרך buildMetadata / alternates; רק
+  // דפים חסומים (/soon) יורשים את זה, והם ממילא לא מאונדקסים.
+  alternates: { canonical: SITE_URL },
   icons: {
     // אייקון יחיד וברור, מספיק גדול (512²) שגוגל יזהה - בלי כפילויות וה-sizes הקטן שבלבל אותו
     icon: [

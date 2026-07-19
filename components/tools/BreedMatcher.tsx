@@ -456,8 +456,8 @@ export function BreedMatcher() {
           {/* קישור הקשרי לאזור השמורים אחרי שמירה */}
           {allSaved && (
             <p style={{ textAlign: 'center', marginTop: 16, fontSize: 15.5 }}>
-              <Link href="/saved" style={{ color: PRIMARY, fontWeight: 800, textDecoration: 'none' }}>
-                לצפייה בכל מה ששמרתם ←
+              <Link href="/waitlist" style={{ color: PRIMARY, fontWeight: 800, textDecoration: 'none' }}>
+                הצטרפו לרשימה כדי לשמור את ההתאמות ←
               </Link>
             </p>
           )}
