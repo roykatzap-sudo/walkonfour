@@ -8,7 +8,7 @@ export const metadata = buildMetadata({
 })
 
 // קבוצת הפייסבוק הרשמית - הערוץ החי לשיתוף, שאלות ותגובות.
-const FB_GROUP = 'https://www.facebook.com/share/g/18wnLhr9tn/'
+const FB_GROUP = 'https://www.facebook.com/groups/2421586375002894'
 
 export default function ContactPage() {
   return (

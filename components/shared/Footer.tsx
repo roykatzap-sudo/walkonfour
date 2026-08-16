@@ -46,7 +46,7 @@ export function Footer() {
 
       {/* פייסבוק - משני, "בינתיים" */}
       <a
-        href="https://www.facebook.com/share/g/18wnLhr9tn/"
+        href="https://www.facebook.com/groups/2421586375002894"
         target="_blank"
         rel="noopener noreferrer"
         className="kv-footer-fb kv-press kv-reveal"

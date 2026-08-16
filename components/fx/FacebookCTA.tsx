@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from 'react'
  * (או גלילה של רבע עמוד). אם סוגרים אותו - חוזר שוב אחרי 3 דקות, וחוזר חלילה
  * בכל סגירה. בלי שום זיכרון: לא משנה מי המבקר וכמה פעמים נכנס - תמיד יקבל הזמנה.
  */
-const FB_GROUP = 'https://www.facebook.com/share/g/18wnLhr9tn/'
+const FB_GROUP = 'https://www.facebook.com/groups/2421586375002894'
 const RESHOW_MS = 3 * 60_000 // 3 דקות אחרי סגירה → קופץ שוב
 
 export function FacebookCTA() {

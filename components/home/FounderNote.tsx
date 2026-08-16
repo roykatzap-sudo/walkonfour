@@ -12,7 +12,7 @@ export function FounderNote() {
       <p className="fn-sign">חגי, ולונה (לברדור)</p>
       <p className="fn-fb">
         בינתיים אנחנו כבר מדברים ב
-        <a href="https://www.facebook.com/share/g/18wnLhr9tn/" target="_blank" rel="noopener noreferrer">קבוצת הפייסבוק</a>.
+        <a href="https://www.facebook.com/groups/2421586375002894" target="_blank" rel="noopener noreferrer">קבוצת הפייסבוק</a>.
       </p>
     </aside>
   )

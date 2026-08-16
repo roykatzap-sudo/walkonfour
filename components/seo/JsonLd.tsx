@@ -52,7 +52,7 @@ export function organizationSchema(): JsonLdObject {
     // E-E-A-T: זיהוי ישות חזק יותר דרך פרופילים חברתיים ואזור שירות.
     sameAs: [
       // הפרופיל החברתי האמיתי - קבוצת הפייסבוק (לא להוסיף פרופילים שלא קיימים)
-      'https://www.facebook.com/share/g/18wnLhr9tn/',
+      'https://www.facebook.com/groups/2421586375002894',
     ],
     areaServed: { '@type': 'Country', name: 'ישראל' },
   }

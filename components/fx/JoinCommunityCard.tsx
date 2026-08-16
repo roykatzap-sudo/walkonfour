@@ -26,7 +26,7 @@ const COPY: Record<Tone, { title: string; sub: string; cta: string }> = {
   },
 }
 
-const FB_GROUP = 'https://www.facebook.com/share/g/18wnLhr9tn/'
+const FB_GROUP = 'https://www.facebook.com/groups/2421586375002894'
 
 export function JoinCommunityCard({ tone = 'general' }: { tone?: Tone }) {
   const c = COPY[tone]

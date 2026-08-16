@@ -479,7 +479,7 @@ export default function Home() {
           <p className="wl-band-note">בלי התחייבות, בלי כרטיס אשראי. רק נעדכן כשיש חדש.</p>
           <p className="wl-band-fb">
             עוד לא בשלים להירשם? הקהילה כבר חיה ב
-            <a href="https://www.facebook.com/share/g/18wnLhr9tn/" target="_blank" rel="noopener noreferrer">קבוצת הפייסבוק שלנו</a>
+            <a href="https://www.facebook.com/groups/2421586375002894" target="_blank" rel="noopener noreferrer">קבוצת הפייסבוק שלנו</a>
             . בואו להגיד שלום.
           </p>
         </div>
