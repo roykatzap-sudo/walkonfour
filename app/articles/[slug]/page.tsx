@@ -10,6 +10,7 @@ import { JsonLd, articleSchema, breadcrumbSchema, faqSchema } from '@/components
 import { absoluteUrl, clampDescription, ogImageUrl } from '@/lib/seo'
 import { ReadingProgress } from '@/components/articles/ReadingProgress'
 import { ArticleTOC } from '@/components/articles/ArticleTOC'
+import { JoinCommunityCard } from '@/components/fx/JoinCommunityCard'
 
 /** תוויות מדדי אנרגיה/תוקפנות - תואם את התבנית בעמוד הגזע. */
 const ENERGY_LABEL: Record<number, string> = {
@@ -366,6 +367,8 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
             {breed && <MagneticButton href={`/breeds/${breed.slug}`} className="btn btn-ghost">לעמוד הגזע</MagneticButton>}
           </div>
         </div>
+
+        <JoinCommunityCard tone="guides" />
 
         {/* RELATED */}
         <section style={{ marginTop: 48 }}>

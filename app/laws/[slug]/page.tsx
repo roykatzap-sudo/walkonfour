@@ -7,6 +7,7 @@ import { lawSpokes, getLawSpoke } from '@/lib/lawSpokes'
 import { officialSources } from '@/lib/lawsContent'
 import { WaitlistCTA } from '@/components/shared/WaitlistCTA'
 import { ReadingProgress } from '@/components/articles/ReadingProgress'
+import { JoinCommunityCard } from '@/components/fx/JoinCommunityCard'
 
 export function generateStaticParams() {
   return lawSpokes.map((s) => ({ slug: s.slug }))
@@ -125,6 +126,8 @@ export default function LawSpokePage({ params }: { params: { slug: string } }) {
           ))}
         </div>
       </section>
+
+      <JoinCommunityCard tone="guides" />
 
       {/* מקורות רשמיים */}
       <section style={{ marginTop: 36, padding: '20px 22px', background: '#fff', border: '1.5px solid rgba(201,154,91,.28)', borderRadius: 18 }}>
