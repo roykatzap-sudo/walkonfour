@@ -485,45 +485,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* PRICING */}
-      <section className="pr-section" aria-labelledby="pr-heading">
-        <div className="pr-inner">
-          <Reveal3D><h2 id="pr-heading" className="pr-title display">חינם זה רוב מה שיש כאן</h2></Reveal3D>
-          <span className="kv-shimmer-line kv-shimmer-center" data-kv-stagger aria-hidden="true" />
-          <Reveal3D><p className="pr-sub">מתחילים בחינם, בלי כרטיס אשראי. משדרגים רק אם בא לכם. אפשר גם לא - רוב מה שכאן פתוח ממילא.</p></Reveal3D>
-          <div className="pr-cards">
-            <Reveal3D as="div" delay={1} className="pc">
-              <div className="pc-name">בסיסי</div>
-              <div className="pc-price">חינם <span>לתמיד</span></div>
-              <hr className="pc-div" />
-              <div className="pc-feat"><span className="ok">✓</span> כל המדריכים והכלים</div>
-              <div className="pc-feat"><span className="ok">✓</span> מפת גינות ומסלולים</div>
-              <div className="pc-feat"><span className="ok">✓</span> פורום הקהילה</div>
-              <div className="pc-feat"><span className="no">✗</span> שאל וטרינר</div>
-              <div className="pc-feat"><span className="no">✗</span> מדריכים מעמיקים</div>
-              <Link href="/waitlist" className="pc-btn pc-out kv-block-link kv-press">
-                לרשימת ההמתנה - חינם
-              </Link>
-            </Reveal3D>
-            <Reveal3D as="div" delay={2} className="pc feat">
-              <div className="pc-badge">הכי פופולרי</div>
-              <div className="pc-name">פרימיום</div>
-              <div className="pc-price">₪19 <span>/ חודש</span></div>
-              <div style={{ fontSize: 12.5, fontWeight: 700, color: '#a87a3e', marginTop: -4, marginBottom: 4 }}>מחיר השקה - למצטרפים הראשונים</div>
-              <hr className="pc-div" />
-              <div className="pc-feat"><span className="ok">✓</span> כל מה שכלול בבסיסי</div>
-              <div className="pc-feat"><span className="ok">✓</span> שאל וטרינר</div>
-              <div className="pc-feat"><span className="ok">✓</span> מדריכים בלעדיים</div>
-              <div className="pc-feat"><span className="ok">✓</span> עדיפות בהרשמה לאירועים</div>
-              <div className="pc-feat"><span className="ok">✓</span> הנחות מהספונסרים</div>
-              <Link href="/waitlist?plan=premium" className="pc-btn pc-fill kv-block-link kv-press kv-glow">
-                שריינו מחיר השקה ברשימה
-              </Link>
-            </Reveal3D>
-          </div>
-        </div>
-      </section>
-
       {/* CTA דביק - מופיע אחרי גלילה, ניתן לסגירה */}
       {!ctaDismissed && (
         <div className={`wl-sticky${stickyCta ? ' show' : ''}`} role="region" aria-label="הצטרפות לרשימת ההמתנה" aria-hidden={!stickyCta}>
