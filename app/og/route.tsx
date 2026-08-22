@@ -80,14 +80,14 @@ function wrapVis(text: string, maxChars: number, maxLines: number): string[] {
 export function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const title = clamp(searchParams.get('title') || SITE_TAGLINE, 60)
-  const subtitle = clamp(searchParams.get('subtitle') || 'גזעים · מדריכים · אירועים · כלים', 90)
+  const subtitle = clamp(searchParams.get('subtitle') || 'גזעים · מדריכים · כלים · מפת גינות', 90)
   const tag = clamp(searchParams.get('tag') || '', 22)
 
-  // גופן + שבירת שורות לכותרת לפי אורך (כדי שלא תגלוש ותתבלגן ב-bidi)
-  const titleFont = title.length > 38 ? '60px' : title.length > 22 ? '70px' : '80px'
-  const titleCharsPerLine = title.length > 38 ? 30 : 24
+  // כותרת גדולה יותר מבעבר: הכרטיס נצרך בפיד קטן, וטקסט גדול הוא מה שנקרא.
+  const titleFont = title.length > 42 ? '68px' : title.length > 26 ? '80px' : '92px'
+  const titleCharsPerLine = title.length > 42 ? 26 : 20
   const titleLines = wrapVis(title, titleCharsPerLine, 3)
-  const subtitleLines = wrapVis(subtitle, 52, 2)
+  const subtitleLines = wrapVis(subtitle, 46, 2)
 
   return new ImageResponse(
     (
@@ -97,37 +97,61 @@ export function GET(req: Request) {
           height: '630px',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
           direction: 'rtl',
-          background: CREAM,
-          padding: '64px 72px',
+          // רקע כהה: בפיד לבן של פייסבוק/וואטסאפ כרטיס כהה בולט הרבה יותר מקרם.
+          background: 'linear-gradient(145deg, #2a2018 0%, #3b2d1e 55%, #221a12 100%)',
+          padding: '54px 68px',
           fontFamily: 'Heebo',
           position: 'relative',
         }}
       >
-        {/* פס זהב עליון */}
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '12px', background: BRAND }} />
-        {/* עיגול דקורטיבי */}
+        {/* זוהר זהב בפינה - נותן עומק במקום רקע שטוח */}
         <div
           style={{
             position: 'absolute',
-            top: '-120px',
-            left: '-120px',
-            width: '360px',
-            height: '360px',
-            borderRadius: '360px',
+            top: '-190px',
+            left: '-140px',
+            width: '520px',
+            height: '520px',
+            borderRadius: '520px',
+            background: BRAND,
+            opacity: 0.22,
+            display: 'flex',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '-150px',
+            right: '-110px',
+            width: '380px',
+            height: '380px',
+            borderRadius: '380px',
             background: BRAND_LIGHT,
-            opacity: 0.35,
+            opacity: 0.1,
+            display: 'flex',
+          }}
+        />
+        {/* פס זהב תחתון */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: '10px',
+            background: BRAND_LIGHT,
+            display: 'flex',
           }}
         />
 
-        {/* כותרת עליונה: לוגו + טאג */}
+        {/* שורה עליונה: לוגו + תגית */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', direction: 'rtl', fontSize: '40px', fontWeight: 800, color: INK }}>
-            <span style={{ fontSize: '46px', marginLeft: '14px' }}>🐾</span>
-            <span style={{ display: 'flex', direction: 'rtl', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', direction: 'rtl', fontSize: '36px', fontWeight: 800, color: '#fff' }}>
+            <span style={{ fontSize: '40px', marginLeft: '12px' }}>🐾</span>
+            <span style={{ display: 'flex', direction: 'rtl', gap: '9px' }}>
               <span>{vis('קהילה')}</span>
-              <span style={{ color: BRAND }}>{vis('על ארבע')}</span>
+              <span style={{ color: BRAND_LIGHT }}>{vis('על ארבע')}</span>
             </span>
           </div>
           {tag ? (
@@ -135,10 +159,10 @@ export function GET(req: Request) {
               style={{
                 display: 'flex',
                 direction: 'rtl',
-                background: INK,
-                color: CREAM,
-                fontSize: '26px',
-                fontWeight: 700,
+                background: BRAND_LIGHT,
+                color: '#2a2018',
+                fontSize: '25px',
+                fontWeight: 800,
                 padding: '10px 26px',
                 borderRadius: '100px',
               }}
@@ -150,40 +174,50 @@ export function GET(req: Request) {
           )}
         </div>
 
-        {/* גוף: כותרת ראשית + תת-כותרת */}
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {titleLines.map((line, i) => (
-              <div
-                key={i}
-                style={{
-                  display: 'flex',
-                  direction: 'rtl',
-                  fontSize: titleFont,
-                  fontWeight: 900,
-                  color: INK,
-                  lineHeight: 1.12,
-                  letterSpacing: '-1px',
-                }}
-              >
-                {line}
-              </div>
-            ))}
-          </div>
+        {/* גוף - תופס את כל המרחב שנשאר וממורכז אנכית, במקום חלל ריק באמצע */}
+        <div style={{ display: 'flex', flex: 1, flexDirection: 'column', justifyContent: 'center', paddingTop: '18px', paddingBottom: '26px' }}>
+          {titleLines.map((line, i) => (
+            <div
+              key={i}
+              style={{
+                display: 'flex',
+                direction: 'rtl',
+                fontSize: titleFont,
+                fontWeight: 900,
+                color: '#fff',
+                lineHeight: 1.1,
+                letterSpacing: '-2px',
+              }}
+            >
+              {line}
+            </div>
+          ))}
+          {/* קו זהב מתחת לכותרת */}
+          <div style={{ display: 'flex', width: '132px', height: '7px', borderRadius: '7px', background: BRAND_LIGHT, marginTop: '26px' }} />
           {subtitleLines.map((line, i) => (
-            <div key={i} style={{ display: 'flex', direction: 'rtl', fontSize: '30px', color: MUTED, marginTop: i === 0 ? '24px' : '4px', lineHeight: 1.4 }}>
+            <div
+              key={i}
+              style={{
+                display: 'flex',
+                direction: 'rtl',
+                fontSize: '31px',
+                color: 'rgba(255,255,255,0.82)',
+                marginTop: i === 0 ? '22px' : '4px',
+                lineHeight: 1.4,
+              }}
+            >
               {line}
             </div>
           ))}
         </div>
 
-        {/* תחתית: טאגליין + כתובת */}
+        {/* תחתית */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', direction: 'rtl', fontSize: '26px', color: INK, fontWeight: 700 }}>
-            <div style={{ display: 'flex', width: '16px', height: '16px', borderRadius: '16px', background: BRAND, marginLeft: '14px' }} />
+          <div style={{ display: 'flex', alignItems: 'center', direction: 'rtl', fontSize: '25px', color: 'rgba(255,255,255,0.72)', fontWeight: 700 }}>
+            <div style={{ display: 'flex', width: '13px', height: '13px', borderRadius: '13px', background: BRAND_LIGHT, marginLeft: '13px' }} />
             {vis('הכל על כלבים, במקום אחד')}
           </div>
-          <div style={{ display: 'flex', fontSize: '26px', color: BRAND, fontWeight: 700 }}>walkonfour.org</div>
+          <div style={{ display: 'flex', fontSize: '26px', color: BRAND_LIGHT, fontWeight: 800 }}>walkonfour.org</div>
         </div>
       </div>
     ),
