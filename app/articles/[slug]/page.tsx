@@ -2,7 +2,10 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { breedArticles, getArticle, hasArticle } from '@/lib/articles'
-import { getBreed, breedImg, breedFace, breeds } from '@/lib/breeds'
+import { getBreed, breedImg, breedFace, breeds, type Breed } from '@/lib/breeds'
+import { getRelatedBreeds } from '@/lib/relatedBreeds'
+import { getGuidesForBreed } from '@/lib/relatedContent'
+import { RelatedContentBlock } from '@/components/shared/RelatedContentBlock'
 import { Reveal3D } from '@/components/fx/Reveal3D'
 import { Tilt3D } from '@/components/fx/Tilt3D'
 import { MagneticButton } from '@/components/fx/MagneticButton'
@@ -43,10 +46,13 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const a = getArticle(params.slug)
   if (!a) return { title: 'מאמר · קהילה על ארבע' }
   const breed = getBreed(a.slug)
-  // תיאור מועשר במילות חיפוש סביב שם הגזע.
+  // תיאור ייחודי לכל גזע. הנוסח הקודם היה זהה ב-80 התווים הראשונים בכל 29 המדריכים
+  // ונחתך באמצע מילה; כאן כל ערך מגיע מ-lib/breeds ומופיע גם על העמוד עצמו.
   const description = breed
     ? clampDescription(
-        `מדריך מלא ל${breed.name}: אופי ומזג, התאמה למשפחה ולדירה, בריאות, טיפוח ואילוף. ${a.excerpt}`,
+        `מדריך ${breed.name} 2026: תוחלת חיים ${breed.lifespan} שנים, כלב ${breed.size}, ` +
+          `${ENERGY_LABEL[breed.energy]}. אופי ומזג, ` +
+          `${breed.goodWithKids ? 'התאמה לילדים ולדירה' : 'למי הוא מתאים'}, בריאות, טיפוח ואילוף.`,
       )
     : clampDescription(a.excerpt)
   const url = absoluteUrl(`/articles/${a.slug}`)
@@ -66,8 +72,11 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
   if (!article) notFound()
   const breed = getBreed(article.slug)
 
-  // 3 גזעים נוספים להמלצה
-  const related = breeds.filter((b) => hasArticle(b.slug) && b.slug !== article.slug).slice(0, 3)
+  // גזעים דומים לפי המיפוי הסמנטי הידני (lib/relatedBreeds), במקום שלושת הראשונים
+  // במערך - שריכזו עד היום את כל הקישורים הפנימיים בשלושה עמודים.
+  const related = getRelatedBreeds(article.slug)
+    .map((r) => breeds.find((b) => b.slug === r.slug))
+    .filter((b): b is Breed => !!b && hasArticle(b.slug))
 
   // תוכן עניינים: מזהה יציב לכל סקשן (בטוח לעברית, ייחודי).
   const tocItems = article.sections.map((s, i) => ({ id: `section-${i}`, heading: s.heading }))
@@ -341,7 +350,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
             <h2 className="display" style={{ fontSize: 26, fontWeight: 800, marginBottom: 18, color: '#2a2018' }}>שאלות נפוצות</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {article.faq.map((item, i) => (
-                <details key={i} className="card article-faq" style={{ padding: '16px 20px' }}>
+                <details key={i} id={`faq-${i}`} className="card article-faq" style={{ padding: '16px 20px', scrollMarginTop: 96 }}>
                   <summary className="kv-press" style={{ fontWeight: 800, fontSize: 16.5, cursor: 'pointer', color: '#2a2018', padding: '6px 0', lineHeight: 1.5 }}>
                     {item.q}
                   </summary>
@@ -353,6 +362,9 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
             </div>
           </section>
         )}
+
+        {/* אשכול העלויות - חיבור בין דף הגזע למחירונים שבאמת מדורגים */}
+        <RelatedContentBlock heading="כמה עולה לגדל את הגזע הזה" items={getGuidesForBreed(article.slug)} />
 
         {/* CTA */}
         <div className="card" style={{ marginTop: 44, textAlign: 'center', padding: 32 }}>

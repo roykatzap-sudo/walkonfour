@@ -4,10 +4,11 @@ import type { Metadata } from 'next'
 import { guides, getGuide, guideImg } from '@/lib/guides'
 import { Reveal3D } from '@/components/fx/Reveal3D'
 import { JoinCommunityCard } from '@/components/fx/JoinCommunityCard'
-import { Tilt3D } from '@/components/fx/Tilt3D'
-import { MagneticButton } from '@/components/fx/MagneticButton'
-import { JsonLd, articleSchema, breadcrumbSchema, howToSchema } from '@/components/seo/JsonLd'
+import { JsonLd, articleSchema, breadcrumbSchema, faqSchema, howToSchema } from '@/components/seo/JsonLd'
 import { ReadingProgress } from '@/components/articles/ReadingProgress'
+import { buildMetadata } from '@/lib/seo'
+import { getRelatedForGuide, getBreedsForGuide } from '@/lib/relatedContent'
+import { RelatedContentBlock } from '@/components/shared/RelatedContentBlock'
 
 export function generateStaticParams() {
   return guides.map((g) => ({ slug: g.slug }))
@@ -19,17 +20,44 @@ function renderBold(text: string) {
   return parts.map((part, i) => (i % 2 === 1 ? <strong key={i}>{part}</strong> : part))
 }
 
+/** תאריך ISO -> "יוני 2026". התאריך הגלוי חייב להתאים לתאריך שבסכמה. */
+function hebrewMonthYear(iso: string): string | null {
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return null
+  return new Intl.DateTimeFormat('he-IL', { year: 'numeric', month: 'long' }).format(d)
+}
+
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const g = getGuide(params.slug)
-  if (!g) return { title: 'מדריך · קהילה על ארבע' }
-  return { title: `${g.title} · קהילה על ארבע`, description: g.excerpt }
+  if (!g) return buildMetadata({ title: 'מדריך לא נמצא', path: `/guides/${params.slug}`, noindex: true })
+  return buildMetadata({
+    title: g.title,
+    description: g.metaDescription ?? g.excerpt,
+    path: `/guides/${g.slug}`,
+    image: guideImg(g.photo, 1200),
+    type: 'article',
+    // הכותרות של מדריכי המחירון ארוכות ממילא; סיומת המותג דוחפת את "מחירון 2026"
+    // אל מעבר לגבול החיתוך של גוגל, ולכן לא מוסיפים אותה כאן.
+    rawTitle: true,
+    article: { section: g.category, publishedTime: g.datePublished, modifiedTime: g.dateModified },
+  })
 }
 
 export default function GuidePage({ params }: { params: { slug: string } }) {
   const guide = getGuide(params.slug)
   if (!guide) notFound()
 
-  const related = guides.filter((g) => g.slug !== guide.slug).slice(0, 3)
+  // קישורים סמנטיים ידניים; אם המדריך עוד לא ממופה - נופלים לאשכול של אותה קטגוריה
+  // (ולא לשלושת הפריטים הראשונים במערך, כפי שהיה כאן קודם).
+  const mapped = getRelatedForGuide(guide.slug)
+  const related = mapped.length
+    ? mapped
+    : guides
+        .filter((g) => g.category === guide.category && g.slug !== guide.slug)
+        .slice(0, 4)
+        .map((g) => ({ href: `/guides/${g.slug}`, label: g.title, reason: g.excerpt.slice(0, 70) }))
+
+  const updatedLabel = guide.dateModified ? hebrewMonthYear(guide.dateModified) : null
 
   const structuredData = [
     breadcrumbSchema([
@@ -39,21 +67,29 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
     ]),
     articleSchema({
       title: guide.title,
-      description: guide.excerpt,
+      description: guide.metaDescription ?? guide.excerpt,
       path: `/guides/${guide.slug}`,
       image: guideImg(guide.photo, 1200),
-      section: 'מדריכי טיפול ואילוף',
+      section: guide.category,
+      datePublished: guide.datePublished,
+      dateModified: guide.dateModified ?? guide.datePublished,
     }),
-    howToSchema({
-      name: guide.title,
-      description: guide.excerpt,
-      path: `/guides/${guide.slug}`,
-      image: guideImg(guide.photo, 1200),
-      steps: guide.sections.map((s) => ({
-        name: s.heading,
-        text: s.paragraphs.join(' ').replace(/\*\*/g, ''),
-      })),
-    }),
+    ...(guide.faq?.length ? [faqSchema(guide.faq)] : []),
+    // HowTo רק למדריכים שהם באמת רצף פעולות. במדריכי מחירון זו הצהרה שגויה.
+    ...(guide.howTo
+      ? [
+          howToSchema({
+            name: guide.title,
+            description: guide.excerpt,
+            path: `/guides/${guide.slug}`,
+            image: guideImg(guide.photo, 1200),
+            steps: guide.sections.map((s) => ({
+              name: s.heading,
+              text: s.paragraphs.join(' ').replace(/\*\*/g, ''),
+            })),
+          }),
+        ]
+      : []),
   ]
 
   return (
@@ -69,15 +105,16 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
               width: 52px; height: 3px; border-radius: 2px;
               background: linear-gradient(90deg,#c99a5b,#e8c887);
             }
-            .guide-related-card {
-              border-radius: 16px; overflow: hidden; position: relative; height: 130px;
-              transition: transform .2s cubic-bezier(.2,.7,.3,1), box-shadow .2s ease;
+            .guide-faq {
+              background: #fff; border: 1px solid rgba(201,154,91,.22);
+              border-radius: 14px; padding: 14px 18px;
+              transition: box-shadow var(--kv-dur-2,.34s) var(--kv-ease-warm,ease);
             }
-            a:hover .guide-related-card { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(42,32,24,.14); }
-            @media (prefers-reduced-motion: reduce) {
-              .guide-related-card { transition: none; }
-              a:hover .guide-related-card { transform: none; }
-            }
+            .guide-faq[open] { box-shadow: 0 6px 20px rgba(42,32,24,.08); }
+            .guide-faq:focus-within { outline: 3px solid #c99a5b; outline-offset: 2px; }
+            .guide-faq summary { list-style: none; }
+            .guide-faq summary::-webkit-details-marker { display: none; }
+            @media (prefers-reduced-motion: reduce) { .guide-faq { transition: none; } }
           `,
         }}
       />
@@ -106,8 +143,8 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
           </h1>
           <p style={{ fontSize: 17.5, color: 'rgba(255,255,255,.9)', maxWidth: 620, lineHeight: 1.65 }}>{guide.excerpt}</p>
           <span className="kv-shimmer-line" data-kv-reveal="in" aria-hidden="true" style={{ marginTop: 14 }} />
-          <p style={{ marginTop: 12, fontSize: 14, color: 'rgba(255,255,255,.78)', fontWeight: 600 }}>
-            זמן קריאה משוער: {guide.readMinutes} דקות
+          <p style={{ marginTop: 12, fontSize: 14.5, color: 'rgba(255,255,255,.78)', fontWeight: 600 }}>
+            {updatedLabel ? `עודכן: ${updatedLabel} · ` : ''}זמן קריאה משוער: {guide.readMinutes} דקות
           </p>
         </div>
       </section>
@@ -140,8 +177,25 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
           </ul>
         </div>
 
+        {/* FAQ - גלוי בעמוד. גוגל מכבד רק נתונים מובנים שגם נראים למשתמש. */}
+        {guide.faq && guide.faq.length > 0 && (
+          <section className="kv-reveal" style={{ marginTop: 40 }}>
+            <h2 style={{ fontSize: 25, fontWeight: 900, color: '#2a2018', margin: '0 0 14px' }}>שאלות נפוצות</h2>
+            <div style={{ display: 'grid', gap: 10 }}>
+              {guide.faq.map((f, i) => (
+                <details key={i} id={`faq-${i}`} className="guide-faq">
+                  <summary className="kv-press" style={{ cursor: 'pointer', fontWeight: 800, fontSize: 16.5, color: '#2a2018', lineHeight: 1.5 }}>
+                    {f.q}
+                  </summary>
+                  <p style={{ margin: '10px 0 0', fontSize: 16.5, lineHeight: 1.9, color: '#3a3128' }}>{f.a}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* responsibility note for health/safety guides */}
-        <p className="muted" style={{ marginTop: 18, fontSize: 13, lineHeight: 1.6 }}>
+        <p className="muted" style={{ marginTop: 18, fontSize: 14, lineHeight: 1.7 }}>
           המדריך הוא מידע כללי מתוך ניסיון קהילתי, ולא תחליף לייעוץ מקצועי. בכל חשש בריאותי או התנהגותי
           ממשי - כדאי להתייעץ עם וטרינר או מאלף מוסמך.
         </p>
@@ -149,24 +203,11 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
         {/* CTA - קבוצת הפייסבוק (קהילה אמיתית) */}
         <JoinCommunityCard tone="guides" />
 
-        {/* RELATED */}
-        <section style={{ marginTop: 44 }}>
-          <h2 style={{ fontSize: 21, fontWeight: 900, marginBottom: 16 }}>עוד מדריכים שכדאי לכם</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 12 }}>
-            {related.map((g) => (
-              <Link key={g.slug} href={`/guides/${g.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <Tilt3D className="sweep" max={6} glare>
-                  <div className="guide-related-card">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img loading="lazy" decoding="async" src={guideImg(g.photo, 500)} alt={g.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(42,32,24,.9), transparent 65%)' }} />
-                    <span style={{ position: 'absolute', bottom: 10, insetInlineStart: 12, insetInlineEnd: 12, color: '#fff', fontWeight: 800, fontSize: 14.5, lineHeight: 1.3 }}>{g.title}</span>
-                  </div>
-                </Tilt3D>
-              </Link>
-            ))}
-          </div>
-        </section>
+        {/* RELATED - קישורים סמנטיים בתוך אשכול העלויות */}
+        <RelatedContentBlock heading="מדריכי עלויות שכדאי לקרוא לפני שמחליטים" items={related} />
+
+        {/* מזרים סמכות מדפי המחירון לדפי הגזע */}
+        <RelatedContentBlock heading="כמה עולה לגדל גזע מסוים?" items={getBreedsForGuide(guide.slug)} />
       </div>
     </main>
   )

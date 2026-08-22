@@ -37,18 +37,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/guides', priority: 0.9, changeFrequency: 'weekly' },
     { path: '/cities', priority: 0.9, changeFrequency: 'weekly' },
     { path: '/walks', priority: 0.85, changeFrequency: 'weekly' },
-    { path: '/map', priority: 0.85, changeFrequency: 'monthly' },
+    { path: '/map', priority: 0.6, changeFrequency: 'monthly' },
     { path: '/vet', priority: 0.8, changeFrequency: 'monthly' },
     { path: '/faq', priority: 0.7, changeFrequency: 'monthly' },
     // הגזע הלאומי - דף עם תכולה ייחודית
     { path: '/canaan-dog', priority: 0.85, changeFrequency: 'monthly' },
     // כלים חינמיים - long-tail SEO
     { path: '/tools', priority: 0.8, changeFrequency: 'monthly' },
-    { path: '/match', priority: 0.85, changeFrequency: 'monthly' },
-    { path: '/names', priority: 0.85, changeFrequency: 'monthly' },
+    { path: '/match', priority: 0.6, changeFrequency: 'monthly' },
+    { path: '/names', priority: 0.6, changeFrequency: 'monthly' },
     { path: '/calculator', priority: 0.85, changeFrequency: 'monthly' },
-    { path: '/food-calculator', priority: 0.85, changeFrequency: 'monthly' },
-    { path: '/dog-age', priority: 0.8, changeFrequency: 'monthly' },
+    { path: '/food-calculator', priority: 0.6, changeFrequency: 'monthly' },
+    { path: '/dog-age', priority: 0.6, changeFrequency: 'monthly' },
     { path: '/health', priority: 0.8, changeFrequency: 'monthly' },
     { path: '/dog-food-prices', priority: 0.85, changeFrequency: 'weekly' },
     // pillar SEO חדש - תוכן שאף מתחרה לא בנה ברצינות
@@ -57,6 +57,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // הצטרפות
     { path: '/waitlist', priority: 0.8, changeFrequency: 'weekly' },
     // אינפו
+    // כבר מתחת ל-0.6, נשאר כפי שהוא (הנחיית ה-spec היא תקרה, לא העלאה).
     { path: '/contact', priority: 0.5, changeFrequency: 'yearly' },
     { path: '/accessibility', priority: 0.3, changeFrequency: 'yearly' },
     { path: '/cookies', priority: 0.3, changeFrequency: 'yearly' },
@@ -86,15 +87,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.75,
   }))
 
-  // מדריכי טיפול ואילוף - /guides/[slug]
+  // מדריכי טיפול, אילוף ועלויות - /guides/[slug].
+  // העדיפות הועלתה ל-0.9: אשכול המחירונים הוא המשטח שבאמת מדורג באתר.
   const guideEntries: MetadataRoute.Sitemap = guides.map((g) => ({
     url: join(`/guides/${g.slug}`),
     lastModified: now,
     changeFrequency: 'monthly',
-    priority: 0.7,
+    priority: 0.9,
   }))
 
-  // מדריכי ערים - /city/[slug] (~43 דפים עם תכולה אמיתית)
+  // מדריכי ערים - /city/[slug] (41 דפים עם תכולה אמיתית)
   const cityEntries: MetadataRoute.Sitemap = cityHubSlugs().map((slug) => ({
     url: join(`/city/${slug}`),
     lastModified: now,

@@ -1,17 +1,24 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { buildMetadata, SITE_URL } from '@/lib/seo'
+import { buildMetadata, ogImageUrl, SITE_URL } from '@/lib/seo'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
-import { JsonLd, breadcrumbSchema, faqSchema } from '@/components/seo/JsonLd'
+import { JsonLd, breadcrumbSchema, faqSchema, placeListSchema } from '@/components/seo/JsonLd'
 import { getCityHub, cityHubSlugs, allCityHubs } from '@/lib/cityHubs'
 import { buildCitySeo } from '@/lib/citySeo'
 import { CityParksList } from '@/components/city/CityParksList'
 import { CitySeoBlock } from '@/components/city/CitySeoBlock'
 import { SuggestMissing } from '@/components/city/SuggestMissing'
 import { JoinCommunityCard } from '@/components/fx/JoinCommunityCard'
+import { getGuidesForCity } from '@/lib/relatedContent'
+import { RelatedContentBlock } from '@/components/shared/RelatedContentBlock'
 
 export function generateStaticParams() {
   return cityHubSlugs().map((slug) => ({ slug }))
+}
+
+/** מרחק מקורב בק״מ (קו ישר). זהה ללוגיקה ב-lib/cityHubs, שאינה מייצאת אותה. */
+function distKm(aLat: number, aLng: number, bLat: number, bLng: number): number {
+  return Math.hypot((aLat - bLat) * 111, (aLng - bLng) * 94)
 }
 
 export function generateMetadata({ params }: { params: { slug: string } }) {
@@ -19,12 +26,23 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
   if (!hub) return buildMetadata({ title: 'עיר לא נמצאה', path: `/city/${params.slug}`, noindex: true })
   const { community, parks, walks } = hub
   // ★ SEO title שמתחיל ב"גינות כלבים [עיר]" - המילה הראשונה הכי חזקה לגוגל.
-  // לפי המחקר: long-tail עם תחרות נמוכה וערך גבוה.
-  const title = `גינות כלבים ב${community.name} - ${parks.length} גינות מעודכנות + מסלולי טיול`
+  // הכותרת לא מבטיחה מסלולי טיול כשאין כאלה, והתיאור לא מבטיח חוקים ווטרינרים
+  // שלא קיימים על העמוד (מלכודת CTR שמייצרת נטישה).
+  const one = parks.length === 1
+  const title = one
+    ? `גינת כלבים ב${community.name}: כתובת, מפה וכללי רצועה 2026`
+    : `גינות כלבים ב${community.name}: ${parks.length} מיקומים מעודכנים 2026`
+  const walksClause = walks.length > 0 ? `${walks.length} מסלולי טיול באזור, ` : ''
+  const description = `${one ? 'גינת הכלבים' : `רשימת ${parks.length} גינות הכלבים`} ב${community.name} עם כתובת מדויקת וניווט במפה, ${walksClause}וכללי הרצועה והרישוי שחלים בעיר. מתעדכן מדיווחי בעלי כלבים.`
   return buildMetadata({
     title,
-    description: `${parks.length} גינות כלבים ב${community.name} על מפה אינטראקטיבית, ${walks.length} מסלולי טיול עם הכלב באזור, חוקים, וטרינרים ועוד. מעודכן ע"י הקהילה.`,
+    description,
     path: `/city/${community.slug}`,
+    image: ogImageUrl({
+      title: `גינות כלבים ב${community.name}`,
+      subtitle: `${parks.length} מיקומים · ${community.district}`,
+      tag: 'מדריך עירוני',
+    }),
   })
 }
 
@@ -71,16 +89,37 @@ export default function CityPage({ params }: { params: { slug: string } }) {
   const hub = getCityHub(params.slug)
   if (!hub) notFound()
   const { community, parks, walks } = hub
-  const others = allCityHubs().filter((h) => h.community.slug !== community.slug).slice(0, 8)
+  // ערים שכנות אמיתיות: קודם אותו מחוז, ואז לפי מרחק. המיון הקודם (לפי מספר
+  // גינות) גרם לכל 41 העמודים להצביע על אותן שמונה ערים גדולות.
+  const others = allCityHubs()
+    .filter((h) => h.community.slug !== community.slug)
+    .sort((a, b) => {
+      const w = (c: typeof community) =>
+        (c.district === community.district ? 0 : 1000) + distKm(community.lat, community.lng, c.lat, c.lng)
+      return w(a.community) - w(b.community)
+    })
+    .slice(0, 8)
   const seo = buildCitySeo(community, parks.length, walks.length)
 
-  // ── Schema graph: CollectionPage + BreadcrumbList + FAQPage ──
+  // רק גינות עם שם אמיתי, ורק החמש שמרונדרות בצד השרת (השאר נכנסות ל-DOM אחרי קליק).
+  const namedParks = parks
+    .filter((p) => !!p.name && p.name.trim() !== 'גינת כלבים' && p.name.trim() !== 'גן כלבים')
+    .slice(0, 5)
+    .map((p) => ({
+      name: p.name as string,
+      address: p.address ?? null,
+      city: p.city ?? null,
+      lat: p.lat,
+      lng: p.lng,
+    }))
+
+  // ── Schema graph: CollectionPage + BreadcrumbList + FAQPage (+ ItemList של גינות) ──
   const schemas: Record<string, unknown>[] = [
     {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
       name: `גינות כלבים ב${community.name}`,
-      description: `${parks.length} גינות כלבים ו-${walks.length} מסלולי טיול ב${community.name}.`,
+      description: `${parks.length} גינות כלבים ממופות ו-${walks.length} מסלולי טיול ב${community.name}.`,
       url: `${SITE_URL}/city/${community.slug}`,
       inLanguage: 'he-IL',
       about: {
@@ -95,6 +134,9 @@ export default function CityPage({ params }: { params: { slug: string } }) {
       { name: community.name, path: `/city/${community.slug}` },
     ]),
     faqSchema(seo.faq),
+    ...(namedParks.length > 0
+      ? [placeListSchema({ name: `גינות כלבים ב${community.name}`, places: namedParks })]
+      : []),
   ]
 
   return (
@@ -110,7 +152,7 @@ export default function CityPage({ params }: { params: { slug: string } }) {
             גינות כלבים ב{community.name}
           </h1>
           <p className="page-sub" style={{ maxWidth: 600, fontSize: 17.5, color: '#5b4d3c', lineHeight: 1.7 }}>
-            {parks.length} {parks.length === 1 ? 'גינה' : 'גינות'} פעילות{walks.length > 0 ? ` ו-${walks.length} ${walks.length === 1 ? 'מסלול טיול' : 'מסלולי טיול'} באזור` : ''} - מעודכן ע"י הקהילה.
+            {parks.length === 1 ? 'גינה אחת ממופה' : `${parks.length} גינות ממופות`}{walks.length > 0 ? ` ו-${walks.length} ${walks.length === 1 ? 'מסלול טיול' : 'מסלולי טיול'} באזור` : ''} - מעודכן ע"י הקהילה.
           </p>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 16 }}>
             {parks.length > 0 && <Stat n={parks.length} label="גינות כלבים" />}
@@ -126,7 +168,7 @@ export default function CityPage({ params }: { params: { slug: string } }) {
       {parks.length > 0 && (
         <section style={{ marginTop: 40 }}>
           <h2 style={{ fontSize: 26, fontWeight: 900, color: 'var(--ink)', margin: '0 0 6px' }}>
-            🐕 {parks.length} גינות כלבים ב{community.name}
+            🐕 {parks.length} גינות כלבים ממופות ב{community.name}
           </h2>
           <p style={{ color: '#5b4d3c', fontSize: 15.5, margin: '0 0 16px' }}>
             מקומות לשחרר רצועה ולתת לכלב לרוץ חופשי. הקרובות למרכז {community.name}:
@@ -142,7 +184,7 @@ export default function CityPage({ params }: { params: { slug: string } }) {
       {walks.length > 0 && (
         <section style={{ marginTop: 48 }}>
           <h2 style={{ fontSize: 26, fontWeight: 900, color: 'var(--ink)', margin: '0 0 6px' }}>
-            🥾 מסלולי טיול עם הכלב באזור {community.name}
+            🥾 מסלולי טיול עם הכלב ליד {community.name}
           </h2>
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 12, marginTop: 12 }}>
             {walks.slice(0, 8).map((w) => {
@@ -151,7 +193,7 @@ export default function CityPage({ params }: { params: { slug: string } }) {
                 <li key={w.id} style={{ background: '#fff', border: '1px solid rgba(201,154,91,.18)', borderRadius: 14, padding: '15px 18px' }}>
                   <div style={{ fontWeight: 800, color: 'var(--ink)', fontSize: 16 }}>{w.name}</div>
                   <div style={{ fontSize: 14, color: '#5b4d3c', marginTop: 4, marginBottom: 10 }}>
-                    📍 {w.city} · {w.lengthKm} ק״מ
+                    📍 {w.city} · {w.lengthKm} ק״מ · {Math.round(distKm(community.lat, community.lng, w.lat, w.lng))} ק״מ ממרכז {community.name}
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
                     <WalkBadge label={w.difficulty} icon={diff.icon} bg={diff.bg} fg={diff.fg} bd={diff.bd} />
@@ -168,6 +210,13 @@ export default function CityPage({ params }: { params: { slug: string } }) {
         </section>
       )}
 
+      {/* אשכול העלויות - עמודי הערים לא קישרו עד היום לאף מדריך מחירון */}
+      <RelatedContentBlock
+        heading={`כמה עולה להחזיק כלב ב${community.name}`}
+        intro="המחירים דומים ברוב הארץ, והפער האמיתי הוא בין רשות לרשות ובין קליניקה לקליניקה."
+        items={getGuidesForCity(community.slug)}
+      />
+
       {/* הצעה למשהו חסר - בכל מדריכי הערים */}
       <SuggestMissing city={community.name} />
 
@@ -178,7 +227,7 @@ export default function CityPage({ params }: { params: { slug: string } }) {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
             {others.map((h) => (
               <Link key={h.community.slug} href={`/city/${h.community.slug}`} className="chip3d" style={{ textDecoration: 'none' }}>
-                כלבים ב{h.community.name}
+                גינות כלבים ב{h.community.name}
               </Link>
             ))}
           </div>
