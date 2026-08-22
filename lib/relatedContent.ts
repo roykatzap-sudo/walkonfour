@@ -56,12 +56,12 @@ const guideToGuides: Record<string, RelatedItem[]> = {
   ],
   'dog-training-cost': [
     { href: '/guides/dog-boarding-cost', label: 'כמה עולה פנסיון לכלבים', reason: 'אילוף בפנסיון מתומחר אחרת, 80-250 ש"ח ללילה' },
-    { href: '/guides/dog-walker-cost', label: 'כמה עולה דוגווקר', reason: 'חלופה יומיומית זולה יותר, 40-80 ש"ח לחצי שעה' },
+    { href: '/guides/dog-walker-cost', label: 'כמה עולה דוגווקר', reason: 'חלופה יומיומית זולה יותר, 30-75 ש"ח לחצי שעה' },
     { href: '/guides/monthly-dog-cost', label: 'כמה עולה כלב בחודש', reason: 'איך סדרת אילוף נראית בתקציב השנתי' },
     { href: '/guides/german-shepherd-price', label: 'כמה עולה רועה גרמני', reason: 'גזע שהאילוף בו הוא חלק מהעלות האמיתית' },
   ],
   'dog-boarding-cost': [
-    { href: '/guides/dog-walker-cost', label: 'כמה עולה דוגווקר', reason: 'החלופה כשלא נוסעים, 70-130 ש"ח לשעה' },
+    { href: '/guides/dog-walker-cost', label: 'כמה עולה דוגווקר', reason: 'החלופה כשלא נוסעים, 60-125 ש"ח להליכה ארוכה' },
     { href: '/guides/vaccinations-2026', label: 'כמה עולה חיסון לכלב', reason: 'פנסיון דורש חיסונים בתוקף לפני הקבלה' },
     { href: '/guides/monthly-dog-cost', label: 'כמה עולה כלב בחודש', reason: 'כמה חופשה אחת מזיזה את התקציב השנתי' },
     { href: '/guides/dog-training-cost', label: 'כמה עולה אילוף כלבים', reason: 'אילוף בפנסיון, 4,000-9,000 ש"ח לשבועיים' },
@@ -149,7 +149,7 @@ const guideToGuides: Record<string, RelatedItem[]> = {
     { href: '/guides/monthly-dog-cost', label: 'כמה עולה כלב בחודש', reason: 'ההחזקה השוטפת של כלב גדול ואנרגטי' },
     { href: '/guides/dog-training-cost', label: 'כמה עולה אילוף כלבים', reason: 'גזע בורח שדורש עבודה מסודרת' },
     { href: '/guides/dog-grooming-cost', label: 'כמה עולה מספרה לכלב', reason: 'נשירה עונתית שדורשת טיפוח מקצועי' },
-    { href: '/guides/dog-walker-cost', label: 'כמה עולה דוגווקר', reason: 'צורך יומי בפריקת אנרגיה, 40-80 ש"ח לחצי שעה' },
+    { href: '/guides/dog-walker-cost', label: 'כמה עולה דוגווקר', reason: 'צורך יומי בפריקת אנרגיה, 30-75 ש"ח לחצי שעה' },
   ],
 
   /* ── מדריכים מקושרים היטב שמזרימים סמכות אל אשכול העלויות ── */
@@ -163,7 +163,7 @@ const guideToGuides: Record<string, RelatedItem[]> = {
   'house-training': [
     { href: '/guides/monthly-dog-cost', label: 'כמה עולה כלב בחודש', reason: 'מה עוד מחכה לכם בתקציב השנה הראשונה' },
     { href: '/guides/dog-training-cost', label: 'כמה עולה אילוף כלבים', reason: 'מתי שווה מאלף, 250-500 ש"ח לשיעור' },
-    { href: '/guides/dog-walker-cost', label: 'כמה עולה דוגווקר', reason: 'יציאות באמצע היום, 40-80 ש"ח לחצי שעה' },
+    { href: '/guides/dog-walker-cost', label: 'כמה עולה דוגווקר', reason: 'יציאות באמצע היום, 30-75 ש"ח לחצי שעה' },
     { href: '/guides/vet-visit-cost', label: 'כמה עולה ביקור אצל וטרינר', reason: 'מתי בעיית ניקיון היא בעצם רפואית' },
   ],
   'leash-pulling': [
@@ -179,7 +179,7 @@ const guideToGuides: Record<string, RelatedItem[]> = {
     { href: '/guides/vet-visit-cost', label: 'כמה עולה ביקור אצל וטרינר', reason: 'בדיקה לפני מעבר למזון רפואי' },
   ],
   'separation-anxiety': [
-    { href: '/guides/dog-walker-cost', label: 'כמה עולה דוגווקר', reason: 'שובר את היום הארוך לבד, 40-80 ש"ח' },
+    { href: '/guides/dog-walker-cost', label: 'כמה עולה דוגווקר', reason: 'שובר את היום הארוך לבד, 30-75 ש"ח' },
     { href: '/guides/dog-training-cost', label: 'כמה עולה אילוף כלבים', reason: 'ליווי מקצועי לחרדת נטישה' },
     { href: '/guides/dog-boarding-cost', label: 'כמה עולה פנסיון לכלבים', reason: 'החלופה כשנוסעים, 80-250 ש"ח ללילה' },
     { href: '/guides/vet-visit-cost', label: 'כמה עולה ביקור אצל וטרינר', reason: 'מתי חרדה מצריכה בדיקה מקצועית' },
@@ -375,7 +375,7 @@ const dentalGuide: RelatedItem = {
 const walkerGuide: RelatedItem = {
   href: '/guides/dog-walker-cost',
   label: 'כמה עולה דוגווקר',
-  reason: 'חצי שעה 40-80 ש"ח, שעה מלאה 70-130 ש"ח',
+  reason: 'הליכה קצרה 30-75 ש"ח, ארוכה 60-125 ש"ח',
 }
 
 const labradorPriceGuide: RelatedItem = {
