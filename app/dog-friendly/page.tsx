@@ -66,6 +66,37 @@ const PAGE_CSS = `
   }
   .df-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
 
+  /* ── תשובה מהירה קומפקטית ── */
+  .df-qa {
+    position: relative; margin-top: 24px;
+    padding: 18px 22px 18px 22px;
+    background: #fff;
+    border: 1px solid rgba(201,154,91,.3);
+    border-inline-start: 5px solid #c99a5b;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(42,32,24,.06);
+  }
+  .df-qa-badge {
+    display: inline-block; font-size: 12.5px; font-weight: 900; letter-spacing: .4px;
+    color: var(--brand-dark); background: #fdf2de;
+    padding: 5px 12px; border-radius: 999px; margin-bottom: 9px;
+    border: 1px solid rgba(201,154,91,.3);
+  }
+  .df-qa-p { margin: 0; font-size: 16.4px; line-height: 1.78; color: var(--ink); max-width: 68ch; }
+
+  /* ── רשת "מבט מהיר" ── */
+  .df-glance { display: grid; gap: 9px; grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); }
+  .df-glance-i {
+    display: flex; align-items: center; gap: 9px;
+    padding: 12px 14px; border-radius: 13px; text-decoration: none;
+    background: #fff; border: 1.5px solid; color: var(--ink);
+    transition: transform .22s var(--kv-ease-warm, ease), box-shadow .22s ease;
+  }
+  .df-glance-i:hover { transform: translateY(-3px); box-shadow: 0 10px 22px rgba(42,32,24,.11); }
+  .df-glance-i:focus-visible { outline: 3px solid rgba(201,154,91,.6); outline-offset: 3px; }
+  .df-glance-ico { font-size: 20px; flex: none; }
+  .df-glance-l { font-size: 14.6px; font-weight: 800; flex: 1; line-height: 1.25; }
+
   /* ── כרטיסי נכסים ── */
   .df-assets { display: grid; gap: 13px; grid-template-columns: repeat(auto-fit, minmax(258px, 1fr)); margin-top: 30px; }
   .df-asset {
@@ -171,8 +202,8 @@ const PAGE_CSS = `
     .df-title { font-size: 20px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .df-asset, .df-asset-ico, .df-card, .df-card::before, .df-ico, .df-hotel, .df-faq, .df-faq summary::after { transition: none; }
-    .df-asset:hover, .df-card:hover, .df-hotel:hover { transform: none; }
+    .df-asset, .df-asset-ico, .df-card, .df-card::before, .df-ico, .df-hotel, .df-faq, .df-faq summary::after, .df-glance-i { transition: none; }
+    .df-asset:hover, .df-card:hover, .df-hotel:hover, .df-glance-i:hover { transform: none; }
     .df-card::before { transform: scaleX(1); }
     .df-faq[open] .df-faq-b { animation: none; }
     .df-asset:hover .df-asset-ico, .df-card:hover .df-ico { transform: none; }
@@ -180,6 +211,17 @@ const PAGE_CSS = `
   html.kv-a11y-reduce-motion .df-card::before,
   html[data-reduce-motion="1"] .df-card::before { transform: scaleX(1) !important; transition: none !important; }
 `
+
+/** תוויות קצרות לרשת "מבט מהיר" - הכותרות המלאות ארוכות מדי לצ'יפ. */
+const GLANCE: Record<string, string> = {
+  parks: 'גינות כלבים',
+  walks: 'מסלולי טיול',
+  beaches: 'חופים',
+  transport: 'אוטובוס ורכבת',
+  car: 'רכב פרטי',
+  business: 'בתי עסק',
+  'service-dogs': 'כלבי נחייה',
+}
 
 const VERDICT: Record<'yes' | 'depends' | 'no', { bg: string; border: string; color: string; dot: string }> = {
   yes: { bg: '#f0f7ed', border: 'rgba(88,140,66,.38)', color: '#3d6a30', dot: '#5a9142' },
@@ -216,10 +258,10 @@ export default function DogFriendlyPage() {
         <div className="df-hero-inner kv-reveal">
           <span className="df-hero-tag">המדריך המלא 2026</span>
           <h1>
-            איפה מותר <em>עם כלב</em> בישראל?
+            איפה באמת מותר <em>להיכנס עם הכלב</em>?
           </h1>
           <p>
-            גינות, חופים, מסלולים, אוטובוס ורכבת, בתי קפה ומלונות. מה החוק אומר, איפה זה תלוי בעסק, ואיפה פשוט אסור.
+            בתי קפה, מלונות, חופים, אוטובוס ורכבת. מה החוק באמת אומר, איפה זה תלוי בבעל העסק, ואיפה פשוט אסור.
           </p>
           <span className="df-hero-rule" aria-hidden="true" />
           <div className="df-legend" aria-hidden="true">
@@ -236,11 +278,29 @@ export default function DogFriendlyPage() {
         </div>
       </header>
 
-      {/* ═══ תשובה מהירה ═══ */}
-      <section className="kv-reveal" style={{ position: 'relative', marginTop: 26, padding: '22px 26px', background: 'linear-gradient(135deg,#fff8ea,#fdf0d8)', border: '2px solid rgba(201,154,91,.4)', borderRadius: 20, overflow: 'hidden', boxShadow: '0 8px 26px rgba(201,154,91,.13)' }}>
-        <span aria-hidden="true" style={{ position: 'absolute', top: 0, insetInlineStart: 0, width: 5, height: '100%', background: 'linear-gradient(180deg,#c99a5b,#e8c887)' }} />
-        <div style={{ fontWeight: 900, color: 'var(--brand-dark)', fontSize: 14, letterSpacing: .5, marginBottom: 9 }}>⚡ תשובה מהירה</div>
-        <p style={{ margin: 0, fontSize: 16.6, color: 'var(--ink)', lineHeight: 1.8, maxWidth: '68ch' }}>{c.quickAnswer}</p>
+      {/* ═══ תשובה מהירה - קומפקטית ═══ */}
+      <section className="df-qa kv-reveal">
+        <span className="df-qa-badge">⚡ בקצרה</span>
+        <p className="df-qa-p">{c.quickAnswer}</p>
+      </section>
+
+      {/* ═══ מבט מהיר - רשת רמזור סרוקה ═══ */}
+      <section style={{ marginTop: 22 }} aria-label="מבט מהיר לפי סוג מקום">
+        <div className="df-glance" data-kv-stagger>
+          {[...c.sections.map((s) => ({ id: s.id, icon: s.icon, label: GLANCE[s.id] ?? s.heading, tone: s.verdict?.tone ?? 'depends' })),
+            { id: 'hotels', icon: '🏨', label: 'מלונות', tone: 'yes' as const },
+            { id: 'eateries', icon: '☕', label: 'בתי קפה', tone: 'depends' as const },
+          ].map((g) => {
+            const v = VERDICT[g.tone as 'yes' | 'depends' | 'no']
+            return (
+              <a key={g.id} href={`#${g.id}`} className="df-glance-i kv-reveal" style={{ borderColor: v.border }}>
+                <span className="df-glance-ico" aria-hidden="true">{g.icon}</span>
+                <span className="df-glance-l">{g.label}</span>
+                <span className="df-dot" style={{ background: v.dot }} aria-hidden="true" />
+              </a>
+            )
+          })}
+        </div>
       </section>
 
       {/* ═══ נכסים אמיתיים ═══ */}
