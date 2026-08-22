@@ -176,7 +176,7 @@ export default function MatchPage() {
       <BreedMatcher />
 
       {/* ── תוכן, כולו מתחת לחידון ── */}
-      <article style={{ marginTop: 44 }}>
+      <article style={{ marginTop: 44, maxWidth: 760, marginInline: 'auto' }}>
         {MATCH_SECTIONS.map((s) => (
           <section key={s.id} id={s.id} className="kv-reveal" style={{ marginBottom: 30 }}>
             <h2
@@ -193,7 +193,6 @@ export default function MatchPage() {
                   lineHeight: 1.9,
                   color: '#3a3128',
                   marginBottom: 14,
-                  maxWidth: '66ch',
                 }}
               >
                 {renderParagraph(p)}
@@ -216,7 +215,7 @@ export default function MatchPage() {
       </article>
 
       {/* ── שאלות נפוצות. אותו מערך מזין את הסכמה. ── */}
-      <section className="kv-reveal" style={{ marginTop: 8 }} aria-labelledby="match-faq-h">
+      <section className="kv-reveal" style={{ marginTop: 8, maxWidth: 760, marginInline: 'auto' }} aria-labelledby="match-faq-h">
         <h2
           id="match-faq-h"
           className="match-section-h"
