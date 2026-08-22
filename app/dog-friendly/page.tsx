@@ -17,7 +17,7 @@ export function generateMetadata() {
     path: '/dog-friendly',
     type: 'article',
     rawTitle: true,
-    article: { section: 'איפה מותר עם כלב', publishedTime: '2026-07-05', modifiedTime: '2026-07-05' },
+    article: { section: 'לאן מותר להיכנס עם כלב', publishedTime: '2026-07-05', modifiedTime: '2026-07-05' },
   })
 }
 
@@ -235,13 +235,13 @@ export default function DogFriendlyPage() {
       title: c.title,
       description: c.description,
       path: '/dog-friendly',
-      section: 'איפה מותר עם כלב',
+      section: 'לאן מותר להיכנס עם כלב',
       datePublished: '2026-07-05',
       dateModified: '2026-07-05',
     }),
     breadcrumbSchema([
       { name: 'בית', path: '/' },
-      { name: 'איפה מותר עם כלב', path: '/dog-friendly' },
+      { name: 'לאן מותר להיכנס עם כלב', path: '/dog-friendly' },
     ]),
     faqSchema(c.faq),
   ]
@@ -258,7 +258,7 @@ export default function DogFriendlyPage() {
         <div className="df-hero-inner kv-reveal">
           <span className="df-hero-tag">המדריך המלא 2026</span>
           <h1>
-            איפה באמת מותר <em>להיכנס עם הכלב</em>?
+            לאן מותר להיכנס <em>עם כלב</em> בישראל?
           </h1>
           <p>
             בתי קפה, מלונות, חופים, אוטובוס ורכבת. מה החוק באמת אומר, איפה זה תלוי בבעל העסק, ואיפה פשוט אסור.
