@@ -188,8 +188,17 @@ export default function LawsPage() {
         <WaitlistCTA variant="laws" />
       </div>
 
+      {/* קישור לעמוד האחות - איפה מותר להיכנס עם כלב בפועל */}
+      <div style={{ marginTop: 28, padding: '18px 22px', background: '#fff', border: '1px solid rgba(201,154,91,.28)', borderRadius: 16 }}>
+        <p style={{ margin: 0, fontSize: 15.5, color: '#3a2e22', lineHeight: 1.7 }}>
+          יודעים מה החוק אומר, ורוצים לדעת לאן אפשר בפועל? יש לנו מדריך נפרד ל
+          <Link href="/dog-friendly" style={{ color: 'var(--brand-dark)', fontWeight: 800 }}>איפה מותר להיכנס עם כלב</Link>
+          {' '}- חופים, אוטובוס ורכבת, בתי קפה ומלונות.
+        </p>
+      </div>
+
       {/* CTA */}
-      <div style={{ marginTop: 32, padding: '20px 22px', background: '#fbf7ef', borderRadius: 16, textAlign: 'center' }}>
+      <div style={{ marginTop: 20, padding: '20px 22px', background: '#fbf7ef', borderRadius: 16, textAlign: 'center' }}>
         <p style={{ margin: '0 0 12px', fontSize: 15, color: '#5b4d3c' }}>
           מחפשים את הגזע הנכון? יש לנו מדריכים מקיפים ל-29 גזעים, או כלי התאמה אישי:
         </p>

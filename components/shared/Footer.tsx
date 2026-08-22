@@ -79,6 +79,7 @@ export function Footer() {
           <Link href="/walks" className="kv-underline">מסלולי טיול</Link>
           <Link href="/cities" className="kv-underline">מדריכי ערים</Link>
           <Link href="/laws" className="kv-underline">חוקים על כלבים</Link>
+          <Link href="/dog-friendly" className="kv-underline">איפה מותר עם כלב</Link>
           <Link href="/compare" className="kv-underline">השוואות גזעים</Link>
           <Link href="/canaan-dog" className="kv-underline">סיפור הכלב הכנעני</Link>
         </nav>

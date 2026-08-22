@@ -53,6 +53,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/dog-food-prices', priority: 0.85, changeFrequency: 'weekly' },
     // pillar SEO חדש - תוכן שאף מתחרה לא בנה ברצינות
     { path: '/laws', priority: 0.9, changeFrequency: 'monthly' },
+    { path: '/dog-friendly', priority: 0.9, changeFrequency: 'monthly' },
     { path: '/compare', priority: 0.8, changeFrequency: 'monthly' },
     // הצטרפות
     { path: '/waitlist', priority: 0.8, changeFrequency: 'weekly' },
