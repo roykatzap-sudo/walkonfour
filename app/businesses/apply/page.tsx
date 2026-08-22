@@ -92,7 +92,7 @@ export default function BusinessApplyPage() {
             הצטרפו לספריית העסקים
           </h1>
           <p className="page-sub" style={{ margin: '0 auto', maxWidth: 560 }}>
-            השאירו פרטים ונחזור אליכם עם כל מה שצריך כדי להופיע בפני אלפי בעלי כלבים בישראל.
+            השאירו פרטים ונחזור אליכם עם כל מה שצריך כדי להופיע בפני בעלי כלבים בישראל.
           </p>
         </div>
       </section>

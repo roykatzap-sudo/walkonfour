@@ -74,7 +74,7 @@ export function FacebookCTA() {
         </div>
         <div className="fbcta-text">
           <div className="fbcta-title">חבר'ה - תצטרפו אלינו 🐾</div>
-          <div className="fbcta-sub">קבוצת הפייסבוק של "קהילה על ארבע" - שאלות, טיפים והמלצות אמיתיות מבעלי כלבים מכל הארץ. שואלים ומקבלים תשובה תוך דקות.</div>
+          <div className="fbcta-sub">קבוצת הפייסבוק של "קהילה על ארבע" - שאלות, טיפים והמלצות מבעלי כלבים מכל הארץ. הקבוצה בתחילת הדרך, אז מי שנכנס עכשיו הוא מהראשונים.</div>
         </div>
       </div>
       <a href={FB_GROUP} target="_blank" rel="noopener noreferrer" className="fbcta-btn" onClick={dismiss}>
