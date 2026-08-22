@@ -263,7 +263,9 @@ export function DogParksMap() {
     // אם במצב "לידי" - חישוב מרחק וקיצוץ ל-25 הקרובות ביותר
     let filtered = allParks.current.filter((p) => {
       const s = !search || p.name?.includes(search) || p.city?.includes(search)
-      const c = city === 'all' || p.city === city
+      // התאמת תת-מחרוזת ולא שוויון מדויק: בדאטה יש "תל אביב-יפו" מול ערך
+      // הסינון "תל אביב", ושוויון מדויק הפיל 85 מתוך 86 הגינות בעיר.
+      const c = city === 'all' || (p.city?.includes(city) ?? false)
       return s && c
     })
     if (nearMe && userPosRef.current) {
