@@ -36,7 +36,7 @@ export type Question = {
   options: Option[]
 }
 
-/** ששת שאלות אורח-החיים של החידון. */
+/** שאלות אורח-החיים של החידון. הכמות נגזרת מהמערך, לא נכתבת בטקסט. */
 export const QUESTIONS: Question[] = [
   {
     id: 'home',
@@ -139,6 +139,25 @@ export type MatchResult = {
   reasons: string[]
 }
 
+/**
+ * גזעים תובעניים - מקבלים ניקוד שלילי לבעלים ראשון ובונוס למנוסה.
+ * מיוצא כדי שקופי העמוד יגזור ממנו ולא ישכפל את הרשימה ביד.
+ */
+export const DEMANDING_FOR_BEGINNERS: readonly string[] = [
+  'malinois', 'border-collie', 'cane-corso', 'doberman',
+  'rottweiler', 'amstaff', 'german-shepherd', 'australian-shepherd',
+] as const
+
+/**
+ * גזעים ידידותיים לבעלים מתחילים.
+ * שימו לב: 'cavalier' ו-'pug' אינם קיימים במאגר הגזעים, ולכן אין להם
+ * השפעה על החישוב. מי שסופר גזעים לצורך טקסט חייב לסנן מול breeds.
+ */
+export const EASY_FOR_BEGINNERS: readonly string[] = [
+  'labrador', 'golden', 'cavalier', 'poodle', 'beagle', 'cocker',
+  'shih-tzu', 'maltese', 'mixed', 'pug', 'corgi',
+] as const
+
 /** גזעים שכמעט אינם נושרים - מתאימים לרגישים לשיער. */
 const LOW_SHEDDING = new Set([
   'poodle',
@@ -149,7 +168,7 @@ const LOW_SHEDDING = new Set([
 ])
 
 /** גזעים שסובלים בחום הישראלי - פרווה כבדה/כפולה או אף שטוח (ברכיצפלי). */
-const HEAT_SENSITIVE = new Set([
+export const HEAT_SENSITIVE_LIST: readonly string[] = [
   'husky',
   'saint-bernard',
   'cane-corso',
@@ -159,10 +178,11 @@ const HEAT_SENSITIVE = new Set([
   'shih-tzu',
   'pomeranian',
   'australian-shepherd',
-])
+] as const
+const HEAT_SENSITIVE: ReadonlySet<string> = new Set(HEAT_SENSITIVE_LIST)
 
 /** גזעים עמידים יחסית לחום - פרווה קצרה/דלילה או הסתגלות מקומית. */
-const HEAT_TOLERANT = new Set([
+export const HEAT_TOLERANT_LIST: readonly string[] = [
   'canaan',
   'beagle',
   'dachshund',
@@ -170,7 +190,8 @@ const HEAT_TOLERANT = new Set([
   'doberman',
   'amstaff',
   'malinois',
-])
+] as const
+const HEAT_TOLERANT: ReadonlySet<string> = new Set(HEAT_TOLERANT_LIST)
 
 /** גזעים עם נטיית שמירה/הגנה טבעית - ערניים ומגוננים. */
 const WATCHDOG = new Set([
@@ -243,8 +264,8 @@ function scoreQuestion(
     }
 
     case 'experience': {
-      const demanding = ['malinois', 'border-collie', 'cane-corso', 'doberman', 'rottweiler', 'amstaff', 'german-shepherd', 'australian-shepherd']
-      const easy = ['labrador', 'golden', 'cavalier', 'poodle', 'beagle', 'cocker', 'shih-tzu', 'maltese', 'mixed', 'pug', 'corgi']
+      const demanding = DEMANDING_FOR_BEGINNERS
+      const easy = EASY_FOR_BEGINNERS
       if (value === 'first') {
         if (easy.includes(b.slug)) return { score: 4, reason: 'ידידותי לבעלים מתחילים' }
         if (demanding.includes(b.slug)) return { score: -1 }

@@ -19,7 +19,20 @@
       אם אין ודאות לגבי מספר, כותבים reason בלי מספר.
    4. אין תלות בקבצי תוכן אחרים בקובץ הזה, כדי שלא ייווצרו
       מעגלי import ושאפשר יהיה לערוך אותו במקביל למדריכים.
+      החריג היחיד: מאגר הגזעים ומנוע ההתאמה, שהם נתונים ולא
+      תוכן, ואינם מייבאים חזרה את הקובץ הזה. הם מיובאים כדי
+      שהמספרים בערכי המתאם ייגזרו ולא ייכתבו כספרה קבועה
+      שתתיישן ברגע שיתווסף גזע.
    ════════════════════════════════════════════════════════════ */
+
+import { breeds } from '@/lib/breeds'
+import {
+  DEMANDING_FOR_BEGINNERS,
+  EASY_FOR_BEGINNERS,
+  HEAT_SENSITIVE_LIST,
+  HEAT_TOLERANT_LIST,
+  QUESTIONS,
+} from '@/lib/matcher'
 
 export type RelatedItem = { href: string; label: string; reason: string }
 
@@ -404,6 +417,72 @@ const huskyPriceGuide: RelatedItem = {
   reason: 'גור 4,000-10,000 ש"ח, והחזקה שנתית של כ-5,500 ש"ח',
 }
 
+/* ─────────────────────────────────────────────
+   כל אשכול ← מתאם הגזע (/match).
+   עד היום שום עמוד תוכן לא קישר ל-/match מגוף העמוד,
+   רק ניווט וכפתורי CTA. העוגן חייב להיראות כמו שאילתה,
+   וה-reason חייב לגשר על כותרת הבלוק שמדברת על עלויות.
+   כל מספר כאן נגזר מהנתונים ומופיע גם כטקסט גלוי ב-/match.
+   ───────────────────────────────────────────── */
+const BREEDS_N = breeds.length
+const QUESTIONS_N = QUESTIONS.length
+const SMALL_N = breeds.filter((b) => b.size === 'קטן').length
+const NO_KIDS_N = breeds.filter((b) => !b.goodWithKids).length
+const KIDS_N = BREEDS_N - NO_KIDS_N
+/* נגזר מאותן קבוצות שהמנוע מנקד לפיהן, ומסונן מול המאגר כדי לא
+   לספור slug שאין לו גזע באתר. אותם מספרים בדיוק מוצגים ב-/match. */
+const inCatalog = (slug: string): boolean => breeds.some((b) => b.slug === slug)
+const HEAT_SENSITIVE_N = HEAT_SENSITIVE_LIST.filter(inCatalog).length
+const HEAT_TOLERANT_N = HEAT_TOLERANT_LIST.filter(inCatalog).length
+const EASY_N = EASY_FOR_BEGINNERS.filter(inCatalog).length
+const DEMANDING_N = DEMANDING_FOR_BEGINNERS.filter(inCatalog).length
+
+const matchGeneric: RelatedItem = {
+  href: '/match',
+  label: 'איזה כלב מתאים לי',
+  reason: `לפני שמסתכלים על מחירים: ${QUESTIONS_N} שאלות, ו-3 גזעים מתוך ${BREEDS_N} עם הסבר למה דווקא הם`,
+}
+const matchFirstDog: RelatedItem = {
+  href: '/match',
+  label: 'כלב ראשון: איזה גזע מתאים לי',
+  reason: `${EASY_N} גזעים מסומנים כידידותיים למתחילים, ו-${DEMANDING_N} כתובעניים`,
+}
+const matchApartment: RelatedItem = {
+  href: '/match',
+  label: 'איזה כלב מתאים לדירה',
+  reason: `${SMALL_N} מתוך ${BREEDS_N} הגזעים מסומנים כקטנים, והחידון משקלל גם אנרגיה וחום`,
+}
+/* גרסת עמודי הערים: הבלוק שם כותרתו על עלויות, ולכן ה-reason
+   חייב לגשר לעלות ולא לפתוח בנתון על גודל גזע. */
+const matchApartmentCity: RelatedItem = {
+  href: '/match',
+  label: 'איזה כלב מתאים לדירה',
+  reason: `גודל הכלב מזיז את ההוצאה החודשית יותר מכל סעיף אחר, ו-${SMALL_N} מתוך ${BREEDS_N} הגזעים מסומנים כקטנים`,
+}
+const matchFamily: RelatedItem = {
+  href: '/match',
+  label: 'איזה כלב מתאים למשפחה עם ילדים',
+  reason: `${KIDS_N} מתוך ${BREEDS_N} הגזעים מסומנים כמתאימים לילדים, ו-${NO_KIDS_N} לא`,
+}
+const matchHeat: RelatedItem = {
+  href: '/match',
+  label: 'איזה כלב מתאים לקיץ הישראלי',
+  reason: `${HEAT_SENSITIVE_N} גזעים מסומנים כרגישים לחום ו-${HEAT_TOLERANT_N} כעמידים בו`,
+}
+
+/* מיפוי כוונה: איזה ניסוח של המתאם מתאים לכל מדריך עלויות. */
+const guideToMatch: Record<string, RelatedItem> = {
+  'labrador-price': matchFamily,
+  'golden-price': matchFamily,
+  'pomeranian-price': matchApartment,
+  'husky-price': matchHeat,
+  'german-shepherd-price': matchGeneric,
+  'dog-training-cost': matchFirstDog,
+  'dog-walker-cost': matchFirstDog,
+  'dog-boarding-cost': matchFirstDog,
+  /* כל השאר נופלים ל-matchGeneric */
+}
+
 const breedToGuides: Record<string, RelatedItem[]> = {
   labrador: [labradorPriceGuide, ...breedDefaultGuides.slice(0, 3), trainingGuide],
   golden: [goldenPriceGuide, ...breedDefaultGuides.slice(0, 3), groomingGuide],
@@ -457,6 +536,21 @@ const cityDefaultGuides: RelatedItem[] = [
    API ציבורי
    ───────────────────────────────────────────── */
 export const getRelatedForGuide = (slug: string): RelatedItem[] => guideToGuides[slug] ?? []
-export const getBreedsForGuide = (slug: string): RelatedItem[] => guideToBreeds[slug] ?? []
-export const getGuidesForBreed = (slug: string): RelatedItem[] => breedToGuides[slug] ?? breedDefaultGuides
-export const getGuidesForCity = (_citySlug: string): RelatedItem[] => cityDefaultGuides
+
+export const getBreedsForGuide = (slug: string): RelatedItem[] => {
+  const mapped = guideToBreeds[slug]
+  /* מוסיפים את המתאם רק כשכבר יש בלוק גזעים. אחרת ייווצר בלוק
+     שכותרתו מדברת על גזעים ובתוכו פריט יחיד שאינו גזע. */
+  if (!mapped || mapped.length === 0) return []
+  return [...mapped, guideToMatch[slug] ?? matchGeneric]
+}
+
+export const getGuidesForBreed = (slug: string): RelatedItem[] => [
+  ...(breedToGuides[slug] ?? breedDefaultGuides),
+  matchGeneric,
+]
+
+export const getGuidesForCity = (_citySlug: string): RelatedItem[] => [
+  ...cityDefaultGuides,
+  matchApartmentCity,
+]

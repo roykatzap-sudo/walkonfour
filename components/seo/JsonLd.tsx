@@ -252,6 +252,16 @@ export function softwareAppSchema(input: {
   category?: string
   /** רשימת יכולות הכלי, למשל ['חישוב גיל כלב', 'המרה לשנות אדם']. */
   featureList?: string[]
+  /**
+   * קוד המדינה שהכלי מיועד לה, למשל 'IL'.
+   * שדה רשות. כשאינו מועבר, הפלט זהה לחלוטין לקודם.
+   */
+  countriesSupported?: string
+  /**
+   * תיאור קהל היעד בעברית, למשל 'מי ששוקל לאמץ או לקנות כלב'.
+   * שדה רשות. מתורגם ל-audience עם geographicArea של ישראל.
+   */
+  audienceType?: string
 }): JsonLdObject {
   return {
     '@context': 'https://schema.org',
@@ -270,6 +280,18 @@ export function softwareAppSchema(input: {
     publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
     ...(input.featureList && input.featureList.length > 0
       ? { featureList: input.featureList }
+      : {}),
+    ...(input.countriesSupported
+      ? { countriesSupported: input.countriesSupported }
+      : {}),
+    ...(input.audienceType
+      ? {
+          audience: {
+            '@type': 'Audience',
+            audienceType: input.audienceType,
+            geographicArea: { '@type': 'Country', name: 'ישראל' },
+          },
+        }
       : {}),
   }
 }
@@ -372,6 +394,75 @@ export function itemListSchema(input: {
       },
     })),
   }
+}
+
+export type BreedListEntry = {
+  slug: string
+  name: string
+  en?: string
+  wikidataId?: string
+  description?: string
+}
+
+/**
+ * סכמת רשימת גזעים (ItemList של Thing) - לעמודי מרכז שמונים גזעים,
+ * כמו מתאם הגזע ב-/match.
+ *
+ * למה בילדר נפרד ולא itemListSchema: הבילדר הגנרי פולט פריטי WebPage
+ * בלי זהות ישות. כאן כל פריט מקבל בדיוק את אותו @id שמנפיק
+ * breedThingSchema לעמוד הגזע, כלומר /breeds/<slug>#breed, ולכן רשימת
+ * המרכז ופרופיל הגזע הם צומת אחד בגרף ולא שתי ישויות נפרדות. בנוסף
+ * נישא כאן sameAs ל-Wikidata כשהמזהה קיים ומאומת - אותו חיבור ל-
+ * Knowledge Graph שכבר מתועד בקובץ הזה, מורחב לעמוד מרכז.
+ *
+ * הערה מפוכחת: אין כאן תוצאה עשירה. קרוסלת ItemList אינה זמינה בישראל,
+ * והערך הוא בהירות ישויות ואחזור על ידי מנועי תשובות בלבד.
+ *
+ * תנאי שימוש: רשימת הגזעים חייבת להופיע גם כטקסט גלוי בעמוד עצמו.
+ * סימון תוכן שאינו נראה למשתמש הוא הפרה של ההנחיות של גוגל.
+ *
+ * itemListOrder מוגדר במפורש כרשימה לא מסודרת: סדר המערך במקור הנתונים
+ * אינו דירוג, וטענה על סדר תהיה אמירה לא נכונה על הנתונים.
+ *
+ * מערך ריק מחזיר סכמה תקינה עם numberOfItems אפס.
+ */
+export function breedListSchema(input: {
+  name: string
+  description?: string
+  breeds: BreedListEntry[]
+}): JsonLdObject {
+  const schema: JsonLdObject = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: input.name,
+    inLanguage: 'he-IL',
+    itemListOrder: 'https://schema.org/ItemListUnordered',
+    numberOfItems: input.breeds.length,
+    itemListElement: input.breeds.map((breed, i) => {
+      const url = absoluteUrl(`/breeds/${breed.slug}`)
+      const item: JsonLdObject = {
+        '@type': 'Thing',
+        // אותו מזהה שמנפיק breedThingSchema, כדי לאחד את הצמתים בגרף.
+        '@id': `${url}#breed`,
+        name: breed.name,
+        url,
+      }
+      if (breed.en) item.alternateName = [breed.en]
+      if (breed.description) item.description = breed.description
+      if (breed.wikidataId) {
+        item.sameAs = [`https://www.wikidata.org/wiki/${breed.wikidataId}`]
+      }
+      return {
+        '@type': 'ListItem',
+        position: i + 1,
+        item,
+      }
+    }),
+  }
+
+  if (input.description) schema.description = input.description
+
+  return schema
 }
 
 /**
