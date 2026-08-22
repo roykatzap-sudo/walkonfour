@@ -24,7 +24,7 @@ export default function MapPage() {
         </Link>
       </div>
 
-      <MapSection />
+      <MapSection showHeader={false} />
     </main>
   )
 }

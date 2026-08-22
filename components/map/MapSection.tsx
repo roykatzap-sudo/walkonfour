@@ -16,7 +16,7 @@ const DogParksMap = dynamic(
   }
 )
 
-export function MapSection() {
+export function MapSection({ showHeader = true }: { showHeader?: boolean } = {}) {
   const ref = useRef<HTMLDivElement>(null)
   const [inView, setInView] = useState(false)
 
@@ -44,19 +44,22 @@ export function MapSection() {
         .map-canvas-wrap { padding: 0 52px; max-width: 1200px; margin: 0 auto; }
         @media (max-width: 720px) { .map-canvas-wrap { padding: 0 10px; } }
       ` }} />
-      <div className="map-section-inner">
-        <div className="map-header r on">
-          <div>
-            <span className="section-tag">גינות כלבים</span>
-            <h2 className="map-title">
-              מצא גינה <em>קרובה אליך</em>
-            </h2>
+      {/* בדף /map הכותרת כבר מופיעה בעמוד עצמו, ולכן מדלגים כאן כדי לא לשכפל. */}
+      {showHeader && (
+        <div className="map-section-inner">
+          <div className="map-header r on">
+            <div>
+              <span className="section-tag">גינות כלבים</span>
+              <h2 className="map-title">
+                מצא גינה <em>קרובה אליך</em>
+              </h2>
+            </div>
+            <p className="map-sub">
+              {DOG_PARK_COUNT} גינות כלבים בכל הארץ - לחצו "גינות לידי" לראות את הקרובות.
+            </p>
           </div>
-          <p className="map-sub">
-            {DOG_PARK_COUNT} גינות כלבים בכל הארץ - לחצו "גינות לידי" לראות את הקרובות.
-          </p>
         </div>
-      </div>
+      )}
       <div ref={ref} className="map-canvas-wrap">
         {inView ? (
           <DogParksMap />
