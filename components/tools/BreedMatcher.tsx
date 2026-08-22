@@ -10,6 +10,7 @@ import { MagneticButton } from '@/components/fx/MagneticButton'
 import { useCountUp } from './useCountUp'
 import { useToast } from '@/components/shared/Toast'
 import { FavButton } from '@/components/shared/FavButton'
+import { ShareResult } from '@/components/shared/ShareResult'
 import { useFavorites } from '@/lib/useFavorites'
 
 // מקור אמת יחיד: משתני ה-CSS מ-globals.css (--brand / --brand-light / --ink / --text).
@@ -81,34 +82,6 @@ export function BreedMatcher() {
     setJustPicked(null)
     setAnswers({})
     setStep(0)
-  }
-
-  async function share() {
-    const top = results[0]
-    if (!top) return
-    const names = results.map((r) => r.breed.name).join(', ')
-    const url =
-      typeof window !== 'undefined'
-        ? `${window.location.origin}/breeds/${top.breed.slug}`
-        : `/breeds/${top.breed.slug}`
-    const title = `ההתאמה שלי בקהילה על ארבע: ${top.breed.name}`
-    const text = `עשיתי את מתאם הגזע של קהילה על ארבע וקיבלתי ${top.breed.name} (${top.score}% התאמה). 3 ההתאמות שלי: ${names}.`
-
-    // שיתוף נייטיב (פותח וואטסאפ/הודעות עם תצוגה מקדימה של כרטיס ה-OG) - עם נפילה להעתקה
-    if (typeof navigator !== 'undefined' && (navigator as any).share) {
-      try {
-        await (navigator as any).share({ title, text, url })
-        return
-      } catch {
-        // המשתמש ביטל או שנכשל - נופלים להעתקה
-      }
-    }
-    if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(`${text} ${url}`).catch(() => {})
-      toast('הקישור הועתק - אפשר להדביק בוואטסאפ')
-    } else {
-      toast('התוצאה מוכנה לשיתוף')
-    }
   }
 
   // האם כל שלוש ההתאמות כבר שמורות (קובע את מצב כפתור "שמרו את שלושתן").
@@ -442,9 +415,6 @@ export function BreedMatcher() {
             <MagneticButton onClick={saveAll} className="btn btn-primary kv-press-mag kv-glow">
               {allSaved ? '★ שלוש ההתאמות שמורות' : '☆ שמרו את שלוש ההתאמות'}
             </MagneticButton>
-            <button type="button" className="btn btn-dark kv-press" onClick={share}>
-              שתפו את התוצאה
-            </button>
             <button type="button" className="btn btn-ghost kv-press" onClick={restart}>
               למילוי החידון מחדש
             </button>
@@ -452,6 +422,13 @@ export function BreedMatcher() {
               לכל גזעי הכלבים
             </Link>
           </div>
+
+          {results[0] && (
+            <ShareResult
+              label="קיבלתם התאמה? שתפו את מי שמתלבט על כלב"
+              text={`עשיתי את מתאם הגזע של "קהילה על ארבע" והתאים לי ${results[0].breed.name} (${results[0].score}% התאמה). שלוש ההתאמות שלי: ${results.map((r) => r.breed.name).join(', ')}. תעשו גם, זה חינם:`}
+            />
+          )}
 
           {/* קישור הקשרי לאזור השמורים אחרי שמירה */}
           {allSaved && (

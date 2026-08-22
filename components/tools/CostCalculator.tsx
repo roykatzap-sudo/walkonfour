@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Reveal3D } from '@/components/fx/Reveal3D'
 import { useCountUp } from './useCountUp'
+import { ShareResult } from '@/components/shared/ShareResult'
 import { breeds, type BreedSize } from '@/lib/breeds'
 import { getBreedDetail } from '@/lib/breedDetails'
 import {
@@ -411,6 +412,13 @@ export function CostCalculator({ presetBreed }: { presetBreed?: string } = {}) {
               </Link>
             </div>
           </Reveal3D>
+
+          {snap && (
+            <ShareResult
+              label="שווה שחברים ידעו את המספר האמיתי"
+              text={`בדקתי בקהילה על ארבע כמה הכלב שלי עולה בחודש: כ-${snap.result.monthly.toLocaleString('he-IL')} ש"ח. תבדקו גם, המחשבון חינם:`}
+            />
+          )}
         </div>
       </div>
 

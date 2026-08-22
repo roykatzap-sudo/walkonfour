@@ -9,6 +9,7 @@ import { ReadingProgress } from '@/components/articles/ReadingProgress'
 import { buildMetadata } from '@/lib/seo'
 import { getRelatedForGuide, getBreedsForGuide } from '@/lib/relatedContent'
 import { RelatedContentBlock } from '@/components/shared/RelatedContentBlock'
+import { CostCalculator } from '@/components/tools/CostCalculator'
 
 export function generateStaticParams() {
   return guides.map((g) => ({ slug: g.slug }))
@@ -163,6 +164,23 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
             </Reveal3D>
           ))}
         </article>
+
+        {/* מחשבון מוטמע - רק במדריכי עלויות. מי שמחפש "כמה עולה" רוצה לחשב,
+            לא רק לקרוא. מעלה זמן שהייה ונותן רגע שיתוף בתוך הדף המדורג. */}
+        {guide.category === 'עלויות' && (
+          <section className="kv-reveal" style={{ marginTop: 28, marginBottom: 8 }} aria-labelledby="guide-calc-h">
+            <div style={{ textAlign: 'center', marginBottom: 12 }}>
+              <span className="section-tag">אל תנחשו</span>
+              <h2 id="guide-calc-h" style={{ fontSize: 26, fontWeight: 900, color: 'var(--ink)', margin: '8px 0 6px' }}>
+                חשבו כמה זה יוצא אצלכם
+              </h2>
+              <p style={{ fontSize: 15.5, color: '#5f574c', lineHeight: 1.7, maxWidth: 560, margin: '0 auto' }}>
+                בחרו גזע וגודל וקבלו הערכת עלות חודשית ושנתית, כולל ההוצאות הגדולות של השנה הראשונה.
+              </p>
+            </div>
+            <CostCalculator />
+          </section>
+        )}
 
         {/* TIPS - כרטיס כהה עם חשיפה מדורגת חתומה */}
         <div className="kv-reveal" style={{ background: 'var(--ink)', borderRadius: 20, padding: '26px 28px', color: '#fff', marginTop: 12 }}>

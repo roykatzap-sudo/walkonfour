@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import { FEED_MODES, calcFood } from '@/lib/foodCalc'
 import { useCountUp } from './useCountUp'
+import { ShareResult } from '@/components/shared/ShareResult'
 
 export function FoodCalculator() {
   const [weight, setWeight] = useState(12)
@@ -128,6 +129,11 @@ export function FoodCalculator() {
         </div>
         <p className="fc-prize-note">{mode.note}</p>
       </div>
+
+      <ShareResult
+        label="שתפו עם מי שמנחש כמה לתת לכלב"
+        text={`חישבתי בקהילה על ארבע כמה אוכל הכלב שלי צריך: ${result.gramsPerDay} גרם ביום (${result.gramsPerMeal} גרם לארוחה). יש שם מחשבון חינם:`}
+      />
 
       <p className="muted" style={{ marginTop: 16, fontSize: 14, lineHeight: 1.6, textAlign: 'center' }}>
         הערכה כללית המבוססת על נוסחת RER/MER. הכמות בפועל תלויה בגזע, בחילוף החומרים ובמזון הספציפי -
