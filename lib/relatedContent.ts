@@ -36,7 +36,7 @@ const guideToGuides: Record<string, RelatedItem[]> = {
     { href: '/guides/dog-license-fee', label: 'כמה עולה רישיון לכלב', reason: 'אגרה שנתית חובה, כ-44 ש"ח לכלב מעוקר' },
   ],
   'dog-food-prices': [
-    { href: '/guides/monthly-dog-cost', label: 'כמה עולה כלב בחודש', reason: 'התמונה המלאה, 600-1,800 ש"ח לחודש' },
+    { href: '/guides/monthly-dog-cost', label: 'כמה עולה כלב בחודש', reason: 'התמונה המלאה, 600-1,200 ש"ח לחודש' },
     { href: '/guides/vet-visit-cost', label: 'כמה עולה ביקור אצל וטרינר', reason: 'מזון לא מתאים מגיע בסוף לקליניקה, 160-430 ש"ח' },
     { href: '/guides/dog-dental-cost', label: 'כמה עולה ניקוי אבנית לכלב', reason: 'קשור ישירות למה שהכלב אוכל, 500-1,100 ש"ח' },
     { href: '/guides/dog-insurance', label: 'כמה עולה ביטוח לכלב', reason: 'הסעיף השני בגודלו בתקציב, 70-280 ש"ח לחודש' },
@@ -69,7 +69,7 @@ const guideToGuides: Record<string, RelatedItem[]> = {
   'dog-walker-cost': [
     { href: '/guides/dog-boarding-cost', label: 'כמה עולה פנסיון לכלבים', reason: 'מה עושים כשנוסעים, 80-250 ש"ח ללילה' },
     { href: '/guides/dog-training-cost', label: 'כמה עולה אילוף כלבים', reason: 'משיכה ברצועה מייקרת כל הליכה מלווה' },
-    { href: '/guides/monthly-dog-cost', label: 'כמה עולה כלב בחודש', reason: 'מנוי הליכות בתוך 600-1,800 ש"ח לחודש' },
+    { href: '/guides/monthly-dog-cost', label: 'כמה עולה כלב בחודש', reason: 'מנוי הליכות בתוך 600-1,200 ש"ח לחודש' },
     { href: '/guides/dog-insurance', label: 'כמה עולה ביטוח לכלב', reason: 'מה קורה אם הכלב נפגע בהליכה מלווה' },
   ],
   'dog-license-fee': [
@@ -87,7 +87,7 @@ const guideToGuides: Record<string, RelatedItem[]> = {
   ],
   'labrador-price': [
     { href: '/guides/golden-price', label: 'כמה עולה גולדן רטריבר', reason: 'ההשוואה הכי נפוצה, 3,500-9,000 ש"ח לגור' },
-    { href: '/guides/monthly-dog-cost', label: 'כמה עולה כלב בחודש', reason: 'מה קורה אחרי הקנייה, 600-1,800 ש"ח לחודש' },
+    { href: '/guides/monthly-dog-cost', label: 'כמה עולה כלב בחודש', reason: 'מה קורה אחרי הקנייה, 600-1,200 ש"ח לחודש' },
     { href: '/guides/dog-food-prices', label: 'כמה עולה אוכל לכלבים', reason: 'כלב גדול אוכל ב-300-700 ש"ח לחודש' },
     { href: '/guides/dog-training-cost', label: 'כמה עולה אילוף כלבים', reason: 'סדרה פרטית בגיל גור, 1,200-2,500 ש"ח' },
     { href: '/guides/dog-insurance', label: 'כמה עולה ביטוח לכלב', reason: 'רלוונטי לגזע עם נטייה לבעיות מפרקים' },
@@ -336,7 +336,7 @@ const guideToBreeds: Record<string, RelatedItem[]> = {
    ברירת מחדל לכל גזע שאין לו מיפוי ייעודי.
    ───────────────────────────────────────────── */
 const breedDefaultGuides: RelatedItem[] = [
-  { href: '/guides/monthly-dog-cost', label: 'כמה עולה כלב בחודש', reason: 'ההוצאה החודשית האמיתית, 600-1,800 ש"ח' },
+  { href: '/guides/monthly-dog-cost', label: 'כמה עולה כלב בחודש', reason: 'ההוצאה החודשית האמיתית, 600-1,200 ש"ח' },
   { href: '/guides/dog-food-prices', label: 'כמה עולה אוכל לכלבים', reason: 'מחירון מעודכן, 80-450 ש"ח לשק' },
   { href: '/guides/spay-neuter-cost', label: 'כמה עולה עיקור וסירוס', reason: 'עיקור כלבה 800-2,500, סירוס זכר 500-1,500 ש"ח' },
   { href: '/guides/dog-license-fee', label: 'כמה עולה רישיון לכלב', reason: 'אגרה שנתית, כ-44 ש"ח לכלב מעוקר' },
@@ -447,7 +447,7 @@ const breedToGuides: Record<string, RelatedItem[]> = {
    מיפוי שונה לכל עיר היה יוצר בידול שאין לו כיסוי בנתונים.
    ───────────────────────────────────────────── */
 const cityDefaultGuides: RelatedItem[] = [
-  { href: '/guides/monthly-dog-cost', label: 'כמה עולה כלב בחודש', reason: 'התקציב החודשי המלא, 600-1,800 ש"ח' },
+  { href: '/guides/monthly-dog-cost', label: 'כמה עולה כלב בחודש', reason: 'התקציב החודשי המלא, 600-1,200 ש"ח' },
   { href: '/guides/dog-license-fee', label: 'כמה עולה רישיון לכלב', reason: 'אגרה שנתית, כ-44 ש"ח לכלב מעוקר' },
   { href: '/guides/spay-neuter-cost', label: 'כמה עולה עיקור וסירוס', reason: 'ובאילו רשויות יש סבסוד עירוני' },
   { href: '/guides/vet-visit-cost', label: 'כמה עולה ביקור אצל וטרינר', reason: 'ביקור שגרתי 160-430 ש"ח, ומה מייקר אותו' },
