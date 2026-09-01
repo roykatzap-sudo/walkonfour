@@ -9,6 +9,7 @@ export const metadata = buildMetadata({
 })
 
 const OPEN = [
+  { href: '/businesses', label: '⭐ מדריך בעלי מקצוע' },
   { href: '/breeds', label: '🐕 גזעי הכלבים' },
   { href: '/articles', label: '📚 מדריכי הגזעים' },
   { href: '/vet', label: '🩺 שאלות לווטרינר' },
@@ -19,7 +20,7 @@ const OPEN = [
 
 export default function SoonPage() {
   return (
-    <main className="page" style={{ maxWidth: 680, textAlign: 'center', paddingTop: 40 }}>
+    <main className="page" style={{ maxWidth: 680, textAlign: 'center' }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/breeds-wc/goldendoodle.png"
