@@ -28,6 +28,7 @@ const CREATE_SQLS = [
     phone TEXT,
     whatsapp TEXT,
     website TEXT,
+    pricing TEXT,
     description TEXT NOT NULL,
     status TEXT NOT NULL DEFAULT 'live',
     reports_count INT NOT NULL DEFAULT 0,
@@ -45,6 +46,8 @@ const CREATE_SQLS = [
     ip_hash TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
   )`,
+  // מיגרציה לטבלאות שכבר קיימות בפרודקשן (idempotent)
+  `ALTER TABLE directory_businesses ADD COLUMN IF NOT EXISTS pricing TEXT`,
   `CREATE INDEX IF NOT EXISTS idx_dir_reviews_biz ON directory_reviews(business_id)`,
   `CREATE INDEX IF NOT EXISTS idx_dir_biz_status ON directory_businesses(status)`,
 ]

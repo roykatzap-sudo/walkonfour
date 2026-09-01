@@ -16,6 +16,7 @@ type FormState = {
   phone: string
   whatsapp: string
   website: string
+  pricing: string
   description: string
 }
 
@@ -27,6 +28,7 @@ const EMPTY: FormState = {
   phone: '',
   whatsapp: '',
   website: '',
+  pricing: '',
   description: '',
 }
 
@@ -55,6 +57,7 @@ export default function BusinessApplyPage() {
     const next: Record<string, string> = {}
     if (!form.name.trim()) next.name = 'נא להוסיף שם עסק'
     if (!form.city.trim()) next.city = 'נא לציין עיר'
+    if (!form.pricing.trim()) next.pricing = 'נא לציין מחירים - זה מה שהכי חשוב לגולשים'
     if (!form.description.trim()) next.description = 'נא לתאר את העסק בקצרה'
     if (form.name.length > LIMITS.name) next.name = `עד ${LIMITS.name} תווים`
     if (form.description.length > LIMITS.description) next.description = `עד ${LIMITS.description} תווים`
@@ -77,6 +80,7 @@ export default function BusinessApplyPage() {
         phone: form.phone.trim() || undefined,
         whatsapp: form.whatsapp.trim() || undefined,
         website: form.website.trim() || undefined,
+        pricing: form.pricing.trim(),
         description: form.description.trim(),
       }
 
@@ -319,6 +323,34 @@ export default function BusinessApplyPage() {
             placeholder="https://example.co.il"
             style={{ width: '100%', direction: 'ltr', textAlign: 'right' }}
           />
+        </div>
+
+        {/* מחירים */}
+        <div>
+          <label htmlFor="biz-pricing" style={labelStyle}>
+            מחירים *
+          </label>
+          <input
+            id="biz-pricing"
+            className="input"
+            type="text"
+            maxLength={LIMITS.pricing}
+            value={form.pricing}
+            onChange={(e) => update('pricing', e.target.value)}
+            placeholder='לדוגמה: תספורת מלאה 180 ש"ח, ציפורניים 40 ש"ח'
+            style={{ width: '100%' }}
+            aria-invalid={!!errors.pricing}
+            aria-describedby={errors.pricing ? 'err-pricing' : 'hint-pricing'}
+          />
+          {errors.pricing ? (
+            <p id="err-pricing" style={errStyle}>
+              {errors.pricing}
+            </p>
+          ) : (
+            <p id="hint-pricing" style={{ fontSize: 12, color: 'var(--text-soft)', margin: '6px 0 0' }}>
+              עסקים שמפרסמים מחירים מקבלים הרבה יותר פניות. אפשר גם טווח, למשל: 150-250 ש"ח לטיפול.
+            </p>
+          )}
         </div>
 
         {/* תיאור */}

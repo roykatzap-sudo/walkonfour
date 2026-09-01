@@ -52,7 +52,7 @@ export async function listLiveBusinesses(
     const sql = `
       SELECT
         b.id, b.slug, b.name, b.category, b.city, b.area,
-        b.phone, b.whatsapp, b.website, b.description,
+        b.phone, b.whatsapp, b.website, b.pricing, b.description,
         b.status, b.reports_count, b.created_at,
         ROUND(AVG(r.rating)::numeric, 1) AS avg_rating,
         COUNT(r.id)::int AS reviews_count
@@ -76,7 +76,7 @@ export async function getBusinessBySlug(
     const bizSql = `
       SELECT
         b.id, b.slug, b.name, b.category, b.city, b.area,
-        b.phone, b.whatsapp, b.website, b.description,
+        b.phone, b.whatsapp, b.website, b.pricing, b.description,
         b.status, b.reports_count, b.created_at,
         ROUND(AVG(r.rating)::numeric, 1) AS avg_rating,
         COUNT(r.id)::int AS reviews_count
@@ -112,10 +112,11 @@ export async function addBusiness(
   const name = (input.name ?? '').trim().slice(0, LIMITS.name)
   const category = (input.category ?? '').trim()
   const city = (input.city ?? '').trim().slice(0, LIMITS.city)
+  const pricing = (input.pricing ?? '').trim().slice(0, LIMITS.pricing)
   const description = (input.description ?? '').trim().slice(0, LIMITS.description)
 
   // ולידציות חובה
-  if (!name || !city || !description) return 'err'
+  if (!name || !city || !pricing || !description) return 'err'
   if (!(BIZ_CATEGORIES as readonly string[]).includes(category)) return 'err'
 
   const area = trimOpt(input.area, LIMITS.area)
@@ -143,9 +144,9 @@ export async function addBusiness(
     }
 
     await c.query(
-      `INSERT INTO directory_businesses (slug, name, category, city, area, phone, whatsapp, website, description, ip_hash)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-      [slug, name, category, city, area, phone, whatsapp, website, description, ipHash],
+      `INSERT INTO directory_businesses (slug, name, category, city, area, phone, whatsapp, website, pricing, description, ip_hash)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+      [slug, name, category, city, area, phone, whatsapp, website, pricing, description, ipHash],
     )
     return { slug }
   })
@@ -225,7 +226,7 @@ export async function adminListAll(): Promise<{
     const bizSql = `
       SELECT
         b.id, b.slug, b.name, b.category, b.city, b.area,
-        b.phone, b.whatsapp, b.website, b.description,
+        b.phone, b.whatsapp, b.website, b.pricing, b.description,
         b.status, b.reports_count, b.created_at,
         ROUND(AVG(r.rating)::numeric, 1) AS avg_rating,
         COUNT(r.id)::int AS reviews_count
@@ -294,6 +295,7 @@ function rowToBusiness(r: any): DirectoryBusiness {
     phone: r.phone ?? null,
     whatsapp: r.whatsapp ?? null,
     website: r.website ?? null,
+    pricing: r.pricing ?? null,
     description: r.description,
     status: r.status,
     reports_count: Number(r.reports_count),

@@ -212,6 +212,27 @@ export default async function BusinessDetailPage({ params }: Props) {
         </div>
       </section>
 
+      {/* ── מחירים ── */}
+      {business.pricing && (
+        <section
+          style={{
+            background: 'linear-gradient(135deg, #fffaf0, #fdf6e9)',
+            borderRadius: 20,
+            padding: 'var(--card-padding)',
+            border: '1px solid rgba(201,154,91,.3)',
+            boxShadow: 'var(--shadow-xs)',
+            marginBottom: 24,
+          }}
+        >
+          <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 10, color: '#2a2018' }}>
+            מחירים
+          </h2>
+          <p style={{ color: '#5a4a35', fontWeight: 600, lineHeight: 1.75, margin: 0 }}>
+            {business.pricing}
+          </p>
+        </section>
+      )}
+
       {/* ── תיאור ── */}
       <section
         style={{

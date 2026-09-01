@@ -15,6 +15,8 @@ export type DirectoryBusiness = {
   phone: string | null
   whatsapp: string | null
   website: string | null
+  /** מחירון חופשי בטקסט, למשל "ביקור שגרתי 250 ש"ח, חיסון 120 ש"ח" */
+  pricing: string | null
   description: string
   status: DirectoryStatus
   reports_count: number
@@ -43,6 +45,8 @@ export type NewBusinessInput = {
   phone?: string
   whatsapp?: string
   website?: string
+  /** חובה בהוספה חדשה - קריטי למשתמשים */
+  pricing: string
   description: string
 }
 
@@ -60,6 +64,7 @@ export const LIMITS = {
   area: 60,
   phone: 20,
   website: 200,
+  pricing: 200,
   description: 600,
   reviewText: 500,
   authorName: 40,

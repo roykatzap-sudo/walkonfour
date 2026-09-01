@@ -40,9 +40,10 @@ export async function POST(req: Request) {
   const name = typeof body?.name === 'string' ? body.name : ''
   const category = typeof body?.category === 'string' ? body.category : ''
   const city = typeof body?.city === 'string' ? body.city : ''
+  const pricing = typeof body?.pricing === 'string' ? body.pricing : ''
   const description = typeof body?.description === 'string' ? body.description : ''
 
-  if (!name.trim() || !category.trim() || !city.trim() || !description.trim()) {
+  if (!name.trim() || !category.trim() || !city.trim() || !pricing.trim() || !description.trim()) {
     return NextResponse.json({ ok: false, error: 'invalid' }, { status: 400 })
   }
 
@@ -51,6 +52,7 @@ export async function POST(req: Request) {
       name,
       category,
       city,
+      pricing,
       description,
       area: typeof body?.area === 'string' ? body.area : undefined,
       phone: typeof body?.phone === 'string' ? body.phone : undefined,

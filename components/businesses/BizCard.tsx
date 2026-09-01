@@ -70,6 +70,27 @@ export function BizCard({ business }: { business: DirectoryBusiness }) {
           )}
         </div>
 
+        {/* מחירים */}
+        {business.pricing && (
+          <div
+            style={{
+              fontSize: 13,
+              fontWeight: 700,
+              color: '#8a6a3e',
+              background: '#fdf6e9',
+              border: '1px solid rgba(201,154,91,.25)',
+              borderRadius: 10,
+              padding: '6px 10px',
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            }}
+          >
+            {business.pricing}
+          </div>
+        )}
+
         {/* תיאור */}
         <p
           style={{
