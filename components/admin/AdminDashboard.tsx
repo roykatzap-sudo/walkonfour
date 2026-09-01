@@ -16,6 +16,7 @@ const TABS = [
 
 export function AdminDashboard() {
   const [tab, setTab] = useState('waitlist')
+  const [dirPending, setDirPending] = useState(0)
 
   return (
     <AdminGate>
@@ -45,6 +46,20 @@ export function AdminDashboard() {
             }}
           >
             {t.icon} {t.label}
+            {t.key === 'directory' && dirPending > 0 && (
+              <span style={{
+                marginInlineStart: 6,
+                fontSize: 12,
+                fontWeight: 900,
+                color: '#fff',
+                background: '#c2762b',
+                borderRadius: 999,
+                padding: '1px 8px',
+                verticalAlign: 'middle',
+              }}>
+                {dirPending}
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -52,7 +67,7 @@ export function AdminDashboard() {
       <div style={{ display: tab === 'waitlist' ? 'block' : 'none' }}><AdminWaitlist /></div>
       <div style={{ display: tab === 'suggestions' ? 'block' : 'none' }}><AdminSuggestions /></div>
       <div style={{ display: tab === 'park-reports' ? 'block' : 'none' }}><AdminParkReports /></div>
-      <div style={{ display: tab === 'directory' ? 'block' : 'none' }}><AdminDirectory /></div>
+      <div style={{ display: tab === 'directory' ? 'block' : 'none' }}><AdminDirectory onPendingCount={setDirPending} /></div>
     </AdminGate>
   )
 }
