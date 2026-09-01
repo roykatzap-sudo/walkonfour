@@ -86,8 +86,9 @@ export function CommunitiesMap() {
         LRef.current = L
         const map = L.map(mapEl.current, { center: [31.5, 34.9], zoom: 8, zoomControl: false })
         mapRef.current = map
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-          attribution: '&copy; OpenStreetMap contributors &copy; CartoDB',
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+          attribution: '&copy; Esri, HERE, Garmin, &copy; OpenStreetMap contributors',
+          maxNativeZoom: 16,
           maxZoom: 19,
         }).addTo(map)
         L.control.zoom({ position: 'bottomright' }).addTo(map)
