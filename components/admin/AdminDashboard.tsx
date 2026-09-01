@@ -5,11 +5,13 @@ import { AdminGate } from './AdminGate'
 import { AdminWaitlist } from './AdminWaitlist'
 import { AdminSuggestions } from './AdminSuggestions'
 import { AdminParkReports } from './AdminParkReports'
+import { AdminDirectory } from './AdminDirectory'
 
 const TABS = [
   { key: 'waitlist', label: 'רשימת המתנה', icon: '📋' },
   { key: 'suggestions', label: 'הצעות', icon: '💡' },
   { key: 'park-reports', label: 'דיווחי גינות', icon: '🌳' },
+  { key: 'directory', label: 'מדריך עסקים', icon: '🏪' },
 ]
 
 export function AdminDashboard() {
@@ -50,6 +52,7 @@ export function AdminDashboard() {
       <div style={{ display: tab === 'waitlist' ? 'block' : 'none' }}><AdminWaitlist /></div>
       <div style={{ display: tab === 'suggestions' ? 'block' : 'none' }}><AdminSuggestions /></div>
       <div style={{ display: tab === 'park-reports' ? 'block' : 'none' }}><AdminParkReports /></div>
+      <div style={{ display: tab === 'directory' ? 'block' : 'none' }}><AdminDirectory /></div>
     </AdminGate>
   )
 }

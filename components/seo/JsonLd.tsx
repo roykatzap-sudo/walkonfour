@@ -296,6 +296,45 @@ export function softwareAppSchema(input: {
   }
 }
 
+/**
+ * סכמת עסק מקומי (LocalBusiness) - לעמודי עסקים במדריך.
+ * AggregateRating מתווסף רק כשיש ביקורות אמיתיות (reviews_count > 0).
+ * אין להוסיף דירוגים מומצאים.
+ */
+export function localBusinessSchema(input: {
+  name: string
+  city: string
+  phone?: string | null
+  website?: string | null
+  path: string
+  avgRating?: number | null
+  reviewsCount?: number
+}): JsonLdObject {
+  const schema: JsonLdObject = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    name: input.name,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: input.city,
+      addressCountry: 'IL',
+    },
+    url: absoluteUrl(input.path),
+  }
+  if (input.phone) schema.telephone = input.phone
+  if (input.website) schema.sameAs = [input.website]
+  if (input.avgRating != null && input.reviewsCount && input.reviewsCount > 0) {
+    schema.aggregateRating = {
+      '@type': 'AggregateRating',
+      ratingValue: input.avgRating,
+      reviewCount: input.reviewsCount,
+      bestRating: 5,
+      worstRating: 1,
+    }
+  }
+  return schema
+}
+
 /* ─────────────────── רשימות: מקומות, עמודים, מאגר נתונים ─────────────────── */
 
 export type PlaceListEntry = {

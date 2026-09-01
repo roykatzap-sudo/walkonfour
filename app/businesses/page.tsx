@@ -1,31 +1,56 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { BizCard } from '@/components/businesses/BizCard'
-import { Reveal3D } from '@/components/fx/Reveal3D'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
-import { DemoBanner } from '@/components/shared/DemoBanner'
 import {
-  demoBusinesses,
   BIZ_CATEGORIES,
-  BIZ_CITIES,
   BIZ_CATEGORY_ICON,
 } from '@/lib/businesses'
+import type { DirectoryBusiness } from '@/lib/directory/types'
 
 const CAT_FILTERS = ['הכל', ...BIZ_CATEGORIES] as const
 
 export default function BusinessesPage() {
   const [category, setCategory] = useState<string>('הכל')
   const [city, setCity] = useState<string>('הכל')
+  const [businesses, setBusinesses] = useState<DirectoryBusiness[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    async function load() {
+      try {
+        const res = await fetch('/api/directory/businesses')
+        const data = await res.json()
+        if (!cancelled && data.ok) {
+          setBusinesses(data.businesses ?? [])
+        }
+      } catch {
+        if (!cancelled) setError(true)
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    }
+    load()
+    return () => { cancelled = true }
+  }, [])
+
+  const cities = useMemo(() => {
+    return Array.from(new Set(businesses.map((b) => b.city))).sort((a, b) =>
+      a.localeCompare(b, 'he'),
+    )
+  }, [businesses])
 
   const filtered = useMemo(() => {
-    return demoBusinesses.filter((b) => {
+    return businesses.filter((b) => {
       const matchesCat = category === 'הכל' || b.category === category
       const matchesCity = city === 'הכל' || b.city === city
       return matchesCat && matchesCity
     })
-  }, [category, city])
+  }, [businesses, category, city])
 
   return (
     <main className="page">
@@ -45,20 +70,24 @@ export default function BusinessesPage() {
       >
         <FloatingShapes />
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <span className="section-tag">ספריית העסקים</span>
+          <span className="section-tag">מדריך בעלי מקצוע</span>
           <h1 id="biz-title" className="page-title grad-text" style={{ marginTop: 10 }}>
             וטרינר טוב, לפני שצריך אותו דחוף
           </h1>
           <p className="page-sub" style={{ maxWidth: 620, margin: '12px auto 0' }}>
-            וטרינרים, מספרות, מאלפים, פנסיונים וחנויות - כל אחד פה כי מישהו מהקהילה
-            שלח אליו את הכלב שלו וחזר מרוצה. הדירוגים מבעלי כלבים אמיתיים, לא מכוכבים שקנו.
+            וטרינרים, מספרות, מאלפים, פנסיונים וחנויות - הדירוגים מבעלי כלבים אמיתיים, לא מכוכבים שקנו.
           </p>
+          <Link
+            href="/businesses/apply"
+            className="btn btn-primary"
+            style={{ marginTop: 20 }}
+          >
+            הוסיפו את העסק שלכם - בחינם
+          </Link>
         </div>
       </section>
 
-      <DemoBanner />
-
-      {/* ── באנר הצטרפות לספרייה (מנוע ההכנסה) ── */}
+      {/* ── באנר הצטרפות ── */}
       <div
         style={{
           display: 'flex',
@@ -77,8 +106,7 @@ export default function BusinessesPage() {
             נותנים שירות טוב לכלבים? תנו לנו לספר עליכם
           </div>
           <div style={{ color: '#d8c7b0', fontSize: 14, marginTop: 4, maxWidth: 460 }}>
-            4,800 בעלי כלבים מחפשים פה מספרה, מאלף או פנסיון. פרופיל, תג מאומת, וקידום לראש
-            הקטגוריה אם בא לכם לבלוט.
+            פרסום חינם, עולה לאתר מיד, נחשף לקהילת בעלי הכלבים של walkonfour.
           </div>
         </div>
         <Link
@@ -86,7 +114,7 @@ export default function BusinessesPage() {
           className="btn btn-primary"
           style={{ whiteSpace: 'nowrap' }}
         >
-          רוצים להופיע כאן ←
+          הוסיפו את העסק שלכם
         </Link>
       </div>
 
@@ -142,7 +170,7 @@ export default function BusinessesPage() {
           </div>
         </div>
 
-        {/* סינון עיר - תפריט נבחר */}
+        {/* סינון עיר */}
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12 }}>
           <label htmlFor="city-select" style={{ fontSize: 13, fontWeight: 700, color: '#7a6a58' }}>
             עיר
@@ -155,7 +183,7 @@ export default function BusinessesPage() {
             style={{ minWidth: 200, cursor: 'pointer' }}
           >
             <option value="הכל">כל הערים</option>
-            {BIZ_CITIES.map((c) => (
+            {cities.map((c) => (
               <option key={c} value={c}>
                 {c}
               </option>
@@ -178,30 +206,50 @@ export default function BusinessesPage() {
         </div>
       </div>
 
-      {/* ── מונה תוצאות ── */}
-      <p className="muted" style={{ marginBottom: 18, fontWeight: 600 }} aria-live="polite">
-        {filtered.length} עסקים
-      </p>
-
-      {/* ── גריד העסקים ── */}
-      {filtered.length === 0 ? (
-        <div className="alert alert-info" style={{ textAlign: 'center' }}>
-          לא נמצאו עסקים שמתאימים לסינון. נסו קטגוריה או עיר אחרת, או אפסו את הסינון.
-        </div>
-      ) : (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-            gap: 24,
-          }}
-        >
-          {filtered.map((b, i) => (
-            <Reveal3D key={b.id} delay={((i % 4) + 1) as 1 | 2 | 3 | 4}>
-              <BizCard business={b} />
-            </Reveal3D>
+      {/* ── תוכן ── */}
+      {loading ? (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 24 }}>
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="kv-skel-card" style={{ height: 220 }}>
+              <div className="kv-skel" style={{ height: '100%' }} />
+            </div>
           ))}
         </div>
+      ) : error ? (
+        <div className="alert alert-error" style={{ textAlign: 'center' }}>
+          לא הצלחנו לטעון את המדריך. נסו לרענן את העמוד.
+        </div>
+      ) : (
+        <>
+          {/* ── מונה תוצאות ── */}
+          <p className="muted" style={{ marginBottom: 18, fontWeight: 600 }} aria-live="polite">
+            {filtered.length} עסקים
+          </p>
+
+          {/* ── גריד העסקים ── */}
+          {filtered.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+              <p style={{ fontSize: 16, color: 'var(--text-muted)', fontWeight: 600, marginBottom: 16 }}>
+                עדיין אין עסקים כאלה במדריך
+              </p>
+              <Link href="/businesses/apply" className="btn btn-primary">
+                הוסיפו את העסק שלכם - בחינם
+              </Link>
+            </div>
+          ) : (
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                gap: 24,
+              }}
+            >
+              {filtered.map((b) => (
+                <BizCard key={b.id} business={b} />
+              ))}
+            </div>
+          )}
+        </>
       )}
     </main>
   )

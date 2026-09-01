@@ -11,7 +11,7 @@ const GATED_PREFIXES = [
   '/auth', '/profile', '/saved', '/start',
   '/communities',
   '/forum', '/events', '/groups', '/wall', '/lost-found', '/leaderboard',
-  '/market', '/petsitting', '/adopt', '/businesses', '/digest',
+  '/market', '/petsitting', '/adopt', '/digest',
   '/health-tracker', '/premium',
 ]
 

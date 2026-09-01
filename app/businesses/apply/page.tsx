@@ -3,26 +3,30 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
-import { useToast } from '@/components/shared/Toast'
 import { BIZ_CATEGORIES } from '@/lib/businesses'
+import { LIMITS } from '@/lib/directory/types'
+
+type FormStatus = 'idle' | 'sending' | 'done' | 'rate' | 'error' | 'invalid' | 'too_large'
 
 type FormState = {
-  businessName: string
-  ownerName: string
-  phone: string
-  email: string
+  name: string
   category: string
   city: string
+  area: string
+  phone: string
+  whatsapp: string
+  website: string
   description: string
 }
 
 const EMPTY: FormState = {
-  businessName: '',
-  ownerName: '',
-  phone: '',
-  email: '',
+  name: '',
   category: BIZ_CATEGORIES[0],
   city: '',
+  area: '',
+  phone: '',
+  whatsapp: '',
+  website: '',
   description: '',
 }
 
@@ -37,9 +41,10 @@ const labelStyle: React.CSSProperties = {
 const errStyle: React.CSSProperties = { color: '#a85a3a', fontSize: 13, margin: '6px 0 0' }
 
 export default function BusinessApplyPage() {
-  const toast = useToast()
   const [form, setForm] = useState<FormState>(EMPTY)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [status, setStatus] = useState<FormStatus>('idle')
+  const [resultSlug, setResultSlug] = useState<string | null>(null)
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((f) => ({ ...f, [key]: value }))
@@ -48,26 +53,94 @@ export default function BusinessApplyPage() {
 
   function validate(): boolean {
     const next: Record<string, string> = {}
-    if (!form.businessName.trim()) next.businessName = 'נא להוסיף שם עסק'
-    if (!form.ownerName.trim()) next.ownerName = 'נא להוסיף שם בעל/ת העסק'
-    if (!form.phone.trim()) next.phone = 'נא להוסיף טלפון ליצירת קשר'
-    if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim()))
-      next.email = 'כתובת אימייל לא תקינה'
+    if (!form.name.trim()) next.name = 'נא להוסיף שם עסק'
     if (!form.city.trim()) next.city = 'נא לציין עיר'
     if (!form.description.trim()) next.description = 'נא לתאר את העסק בקצרה'
+    if (form.name.length > LIMITS.name) next.name = `עד ${LIMITS.name} תווים`
+    if (form.description.length > LIMITS.description) next.description = `עד ${LIMITS.description} תווים`
     setErrors(next)
     return Object.keys(next).length === 0
   }
 
-  function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!validate()) {
-      toast('יש למלא את כל שדות החובה לפני השליחה')
-      return
+    if (status === 'sending') return
+    if (!validate()) return
+
+    setStatus('sending')
+    try {
+      const body = {
+        name: form.name.trim(),
+        category: form.category,
+        city: form.city.trim(),
+        area: form.area.trim() || undefined,
+        phone: form.phone.trim() || undefined,
+        whatsapp: form.whatsapp.trim() || undefined,
+        website: form.website.trim() || undefined,
+        description: form.description.trim(),
+      }
+
+      const res = await fetch('/api/directory/businesses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      const data = await res.json()
+
+      if (data.ok && data.slug) {
+        setResultSlug(data.slug)
+        setStatus('done')
+      } else if (data.error === 'rate') {
+        setStatus('rate')
+      } else if (data.error === 'too_large') {
+        setStatus('too_large')
+      } else if (data.error === 'invalid') {
+        setStatus('invalid')
+      } else {
+        setStatus('error')
+      }
+    } catch {
+      setStatus('error')
     }
-    // אין backend - במצב הדגמה הבקשה לא נשלחת ולא נשמרת.
-    toast(`תודה, ${form.ownerName}! קיבלנו את בקשת ההצטרפות של ${form.businessName} 🐾`)
-    setForm(EMPTY)
+  }
+
+  if (status === 'done' && resultSlug) {
+    return (
+      <main className="page">
+        <div
+          style={{
+            textAlign: 'center',
+            padding: '48px 24px',
+            background: 'linear-gradient(135deg, #fffaf0, #fdf6e9)',
+            borderRadius: 24,
+            border: '2px solid var(--brand)',
+            maxWidth: 560,
+            margin: '0 auto',
+          }}
+        >
+          <div style={{ fontSize: 22, fontWeight: 900, color: '#2a2018', marginBottom: 10 }}>
+            העסק עלה למדריך!
+          </div>
+          <p style={{ color: 'var(--text-muted)', fontSize: 15, lineHeight: 1.65, marginBottom: 22 }}>
+            העמוד שלכם חי באתר. שתפו אותו עם לקוחות כדי שיכתבו ביקורות.
+          </p>
+          <Link
+            href={`/businesses/${resultSlug}`}
+            className="btn btn-primary"
+          >
+            לצפייה בעמוד העסק שלכם
+          </Link>
+          <div style={{ marginTop: 16 }}>
+            <Link
+              href="/businesses"
+              style={{ fontSize: 14, color: 'var(--brand-dark)', fontWeight: 600 }}
+            >
+              חזרה למדריך
+            </Link>
+          </div>
+        </div>
+      </main>
+    )
   }
 
   return (
@@ -87,25 +160,15 @@ export default function BusinessApplyPage() {
       >
         <FloatingShapes />
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <span className="section-tag">ספריית העסקים</span>
+          <span className="section-tag">מדריך בעלי מקצוע</span>
           <h1 className="page-title grad-text" style={{ marginTop: 8 }}>
-            הצטרפו לספריית העסקים
+            הוסיפו את העסק שלכם
           </h1>
           <p className="page-sub" style={{ margin: '0 auto', maxWidth: 560 }}>
-            השאירו פרטים ונחזור אליכם עם כל מה שצריך כדי להופיע בפני בעלי כלבים בישראל.
+            פרסום חינם, עולה לאתר מיד, נחשף לקהילת בעלי הכלבים של walkonfour.
           </p>
         </div>
       </section>
-
-      {/* ── דיסקליימר מצב הדגמה ── */}
-      <div
-        className="alert alert-info"
-        role="note"
-        style={{ marginBottom: 24, fontWeight: 600 }}
-      >
-        🔧 במצב הדגמה - הפרטים שתזינו כאן לא יישמרו ולא יישלחו. הטופס מדגים את תהליך
-        ההצטרפות בלבד.
-      </div>
 
       {/* ── הטופס ── */}
       <form
@@ -120,98 +183,28 @@ export default function BusinessApplyPage() {
           gap: 18,
         }}
       >
-        {/* שם עסק + שם בעלים */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 18 }}>
-          <div style={{ flex: '1 1 220px', minWidth: 200 }}>
-            <label htmlFor="biz-name" style={labelStyle}>
-              שם העסק *
-            </label>
-            <input
-              id="biz-name"
-              className="input"
-              type="text"
-              value={form.businessName}
-              onChange={(e) => update('businessName', e.target.value)}
-              placeholder="לדוגמה: מרפאת וטרינר ליבת העיר"
-              style={{ width: '100%' }}
-              aria-invalid={!!errors.businessName}
-              aria-describedby={errors.businessName ? 'err-biz-name' : undefined}
-            />
-            {errors.businessName && (
-              <p id="err-biz-name" style={errStyle}>
-                {errors.businessName}
-              </p>
-            )}
-          </div>
-          <div style={{ flex: '1 1 220px', minWidth: 200 }}>
-            <label htmlFor="owner-name" style={labelStyle}>
-              שם בעל/ת העסק *
-            </label>
-            <input
-              id="owner-name"
-              className="input"
-              type="text"
-              value={form.ownerName}
-              onChange={(e) => update('ownerName', e.target.value)}
-              placeholder="איש הקשר מטעם העסק"
-              style={{ width: '100%' }}
-              aria-invalid={!!errors.ownerName}
-              aria-describedby={errors.ownerName ? 'err-owner-name' : undefined}
-            />
-            {errors.ownerName && (
-              <p id="err-owner-name" style={errStyle}>
-                {errors.ownerName}
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* טלפון + אימייל */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 18 }}>
-          <div style={{ flex: '1 1 220px', minWidth: 200 }}>
-            <label htmlFor="biz-phone" style={labelStyle}>
-              טלפון *
-            </label>
-            <input
-              id="biz-phone"
-              className="input"
-              type="tel"
-              inputMode="tel"
-              value={form.phone}
-              onChange={(e) => update('phone', e.target.value)}
-              placeholder="050-000-0000"
-              style={{ width: '100%' }}
-              aria-invalid={!!errors.phone}
-              aria-describedby={errors.phone ? 'err-phone' : undefined}
-            />
-            {errors.phone && (
-              <p id="err-phone" style={errStyle}>
-                {errors.phone}
-              </p>
-            )}
-          </div>
-          <div style={{ flex: '1 1 220px', minWidth: 200 }}>
-            <label htmlFor="biz-email" style={labelStyle}>
-              אימייל
-            </label>
-            <input
-              id="biz-email"
-              className="input"
-              type="email"
-              inputMode="email"
-              value={form.email}
-              onChange={(e) => update('email', e.target.value)}
-              placeholder="name@business.co.il"
-              style={{ width: '100%', direction: 'ltr', textAlign: 'right' }}
-              aria-invalid={!!errors.email}
-              aria-describedby={errors.email ? 'err-email' : undefined}
-            />
-            {errors.email && (
-              <p id="err-email" style={errStyle}>
-                {errors.email}
-              </p>
-            )}
-          </div>
+        {/* שם עסק */}
+        <div>
+          <label htmlFor="biz-name" style={labelStyle}>
+            שם העסק *
+          </label>
+          <input
+            id="biz-name"
+            className="input"
+            type="text"
+            maxLength={LIMITS.name}
+            value={form.name}
+            onChange={(e) => update('name', e.target.value)}
+            placeholder="לדוגמה: מרפאת וטרינר ליבת העיר"
+            style={{ width: '100%' }}
+            aria-invalid={!!errors.name}
+            aria-describedby={errors.name ? 'err-biz-name' : undefined}
+          />
+          {errors.name && (
+            <p id="err-biz-name" style={errStyle}>
+              {errors.name}
+            </p>
+          )}
         </div>
 
         {/* קטגוריה + עיר */}
@@ -242,6 +235,7 @@ export default function BusinessApplyPage() {
               id="biz-city"
               className="input"
               type="text"
+              maxLength={LIMITS.city}
               value={form.city}
               onChange={(e) => update('city', e.target.value)}
               placeholder="לדוגמה: חיפה"
@@ -257,6 +251,76 @@ export default function BusinessApplyPage() {
           </div>
         </div>
 
+        {/* אזור */}
+        <div>
+          <label htmlFor="biz-area" style={labelStyle}>
+            אזור / שכונה
+          </label>
+          <input
+            id="biz-area"
+            className="input"
+            type="text"
+            maxLength={LIMITS.area}
+            value={form.area}
+            onChange={(e) => update('area', e.target.value)}
+            placeholder="לדוגמה: מרכז הכרמל"
+            style={{ width: '100%' }}
+          />
+        </div>
+
+        {/* טלפון + וואטסאפ */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 18 }}>
+          <div style={{ flex: '1 1 220px', minWidth: 200 }}>
+            <label htmlFor="biz-phone" style={labelStyle}>
+              טלפון
+            </label>
+            <input
+              id="biz-phone"
+              className="input"
+              type="tel"
+              inputMode="tel"
+              maxLength={LIMITS.phone}
+              value={form.phone}
+              onChange={(e) => update('phone', e.target.value)}
+              placeholder="050-000-0000"
+              style={{ width: '100%' }}
+            />
+          </div>
+          <div style={{ flex: '1 1 220px', minWidth: 200 }}>
+            <label htmlFor="biz-whatsapp" style={labelStyle}>
+              WhatsApp
+            </label>
+            <input
+              id="biz-whatsapp"
+              className="input"
+              type="tel"
+              inputMode="tel"
+              maxLength={LIMITS.phone}
+              value={form.whatsapp}
+              onChange={(e) => update('whatsapp', e.target.value)}
+              placeholder="972501234567"
+              style={{ width: '100%' }}
+            />
+          </div>
+        </div>
+
+        {/* אתר */}
+        <div>
+          <label htmlFor="biz-website" style={labelStyle}>
+            אתר
+          </label>
+          <input
+            id="biz-website"
+            className="input"
+            type="url"
+            maxLength={LIMITS.website}
+            value={form.website}
+            onChange={(e) => update('website', e.target.value)}
+            placeholder="https://example.co.il"
+            style={{ width: '100%', direction: 'ltr', textAlign: 'right' }}
+          />
+        </div>
+
         {/* תיאור */}
         <div>
           <label htmlFor="biz-description" style={labelStyle}>
@@ -265,6 +329,7 @@ export default function BusinessApplyPage() {
           <textarea
             id="biz-description"
             className="input"
+            maxLength={LIMITS.description}
             value={form.description}
             onChange={(e) => update('description', e.target.value)}
             placeholder="ספרו על העסק - אילו שירותים אתם מציעים, מה מייחד אתכם ולמי אתם מתאימים."
@@ -273,11 +338,18 @@ export default function BusinessApplyPage() {
             aria-invalid={!!errors.description}
             aria-describedby={errors.description ? 'err-description' : undefined}
           />
-          {errors.description && (
-            <p id="err-description" style={errStyle}>
-              {errors.description}
-            </p>
-          )}
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
+            {errors.description ? (
+              <p id="err-description" style={errStyle}>
+                {errors.description}
+              </p>
+            ) : (
+              <span />
+            )}
+            <span style={{ fontSize: 12, color: 'var(--text-soft)' }}>
+              {form.description.length}/{LIMITS.description}
+            </span>
+          </div>
         </div>
 
         {/* פעולות */}
@@ -292,13 +364,34 @@ export default function BusinessApplyPage() {
             marginTop: 4,
           }}
         >
-          <button type="submit" className="btn btn-primary">
-            שליחת בקשת הצטרפות
+          <button type="submit" className="btn btn-primary" disabled={status === 'sending'}>
+            {status === 'sending' ? 'שולח...' : 'הוסיפו את העסק'}
           </button>
           <Link href="/businesses" className="btn btn-ghost" style={{ minHeight: 44 }}>
-            חזרה לספרייה
+            חזרה למדריך
           </Link>
         </div>
+
+        {status === 'rate' && (
+          <div role="alert" style={{ fontSize: 14, fontWeight: 700, color: '#a23c2e', textAlign: 'center', lineHeight: 1.5 }}>
+            הגעתם למגבלת ההוספות לשעה
+          </div>
+        )}
+        {status === 'invalid' && (
+          <div role="alert" style={{ fontSize: 14, fontWeight: 700, color: '#a23c2e', textAlign: 'center', lineHeight: 1.5 }}>
+            חלק מהשדות לא תקינים. בדקו ונסו שוב.
+          </div>
+        )}
+        {status === 'too_large' && (
+          <div role="alert" style={{ fontSize: 14, fontWeight: 700, color: '#a23c2e', textAlign: 'center', lineHeight: 1.5 }}>
+            אחד השדות ארוך מדי. קצרו ונסו שוב.
+          </div>
+        )}
+        {status === 'error' && (
+          <div role="alert" style={{ fontSize: 14, fontWeight: 700, color: '#a23c2e', textAlign: 'center', lineHeight: 1.5 }}>
+            משהו השתבש. נסו שוב בעוד רגע.
+          </div>
+        )}
       </form>
     </main>
   )
