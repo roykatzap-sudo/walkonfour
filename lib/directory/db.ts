@@ -54,6 +54,11 @@ const CREATE_SQLS = [
   `ALTER TABLE directory_reviews ADD COLUMN IF NOT EXISTS flag_reason TEXT`,
   `CREATE INDEX IF NOT EXISTS idx_dir_reviews_biz ON directory_reviews(business_id)`,
   `CREATE INDEX IF NOT EXISTS idx_dir_biz_status ON directory_businesses(status)`,
+  // ניקוי חד-פעמי 2026-09-02: מחיקת עסקי הבדיקה מההשקה (התאמה מדויקת לשמות/סלאגים
+  // הידועים בלבד; הביקורות שלהם נמחקות בקסקדה). להסיר אחרי שרץ בפרודקשן.
+  `DELETE FROM directory_businesses
+   WHERE name IN ('בדיקת מערכת - זמני', 'בדיקה סופית - יימחק', 'בדיקת סינון - יימחק')
+      OR slug LIKE 'בדיקת-סינון-יימחק%'`,
 ]
 
 async function ensureSchema(client: Client): Promise<void> {
