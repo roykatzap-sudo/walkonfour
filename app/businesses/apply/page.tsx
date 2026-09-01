@@ -6,7 +6,7 @@ import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { BIZ_CATEGORIES } from '@/lib/businesses'
 import { LIMITS } from '@/lib/directory/types'
 
-type FormStatus = 'idle' | 'sending' | 'done' | 'rate' | 'error' | 'invalid' | 'too_large'
+type FormStatus = 'idle' | 'sending' | 'done' | 'pending' | 'rate' | 'error' | 'invalid' | 'too_large'
 
 type FormState = {
   name: string
@@ -93,7 +93,7 @@ export default function BusinessApplyPage() {
 
       if (data.ok && data.slug) {
         setResultSlug(data.slug)
-        setStatus('done')
+        setStatus(data.pending ? 'pending' : 'done')
       } else if (data.error === 'rate') {
         setStatus('rate')
       } else if (data.error === 'too_large') {
@@ -106,6 +106,35 @@ export default function BusinessApplyPage() {
     } catch {
       setStatus('error')
     }
+  }
+
+  if (status === 'pending') {
+    return (
+      <main className="page">
+        <div
+          style={{
+            textAlign: 'center',
+            padding: '48px 24px',
+            background: 'linear-gradient(135deg, #fffaf0, #fdf6e9)',
+            borderRadius: 24,
+            border: '2px solid rgba(201,154,91,.5)',
+            maxWidth: 560,
+            margin: '0 auto',
+          }}
+        >
+          <div style={{ fontSize: 22, fontWeight: 900, color: '#2a2018', marginBottom: 10 }}>
+            העסק נשלח לבדיקה קצרה
+          </div>
+          <p style={{ color: 'var(--text-muted)', fontSize: 15, lineHeight: 1.65, marginBottom: 22 }}>
+            הפרטים התקבלו. חלק מההגשות עוברות בדיקה ידנית קצרה לפני פרסום,
+            והעמוד שלכם יעלה לאתר מיד לאחר האישור (בדרך כלל תוך יום עסקים).
+          </p>
+          <Link href="/businesses" className="btn btn-primary">
+            חזרה למדריך
+          </Link>
+        </div>
+      </main>
+    )
   }
 
   if (status === 'done' && resultSlug) {

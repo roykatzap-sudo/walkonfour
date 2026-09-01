@@ -66,5 +66,5 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: 'invalid' }, { status: 400 })
   }
 
-  return NextResponse.json({ ok: true, slug: result.slug })
+  return NextResponse.json({ ok: true, slug: result.slug, pending: result.pending })
 }

@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { LIMITS } from '@/lib/directory/types'
 
-type FormStatus = 'idle' | 'sending' | 'done' | 'dup' | 'rate' | 'error'
+type FormStatus = 'idle' | 'sending' | 'done' | 'pending' | 'dup' | 'rate' | 'error'
 
 export function ReviewForm({ businessSlug }: { businessSlug: string }) {
   const router = useRouter()
@@ -32,11 +32,11 @@ export function ReviewForm({ businessSlug }: { businessSlug: string }) {
       })
       const data = await res.json()
       if (data.ok) {
-        setStatus('done')
+        setStatus(data.pending ? 'pending' : 'done')
         setAuthorName('')
         setRating(0)
         setText('')
-        router.refresh()
+        if (!data.pending) router.refresh()
       } else if (data.error === 'dup') {
         setStatus('dup')
       } else if (data.error === 'rate') {
@@ -47,6 +47,28 @@ export function ReviewForm({ businessSlug }: { businessSlug: string }) {
     } catch {
       setStatus('error')
     }
+  }
+
+  if (status === 'pending') {
+    return (
+      <div
+        role="status"
+        style={{
+          textAlign: 'center',
+          padding: '24px 16px',
+          background: '#fffaf0',
+          borderRadius: 14,
+          border: '1px solid rgba(201,154,91,.4)',
+        }}
+      >
+        <div style={{ fontSize: 18, fontWeight: 800, color: '#8a6a3e', marginBottom: 6 }}>
+          הביקורת נשלחה לבדיקה קצרה
+        </div>
+        <p style={{ fontSize: 14, color: 'var(--text-muted)', margin: 0, lineHeight: 1.6 }}>
+          חלק מהביקורות עוברות בדיקה ידנית לפני פרסום. הביקורת תעלה לעמוד לאחר האישור.
+        </p>
+      </div>
+    )
   }
 
   if (status === 'done') {

@@ -93,12 +93,15 @@ export function AdminDirectory() {
                     <div style={{ fontSize: 13, color: '#8a7c66', marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {b.description.slice(0, 100)}{b.description.length > 100 ? '...' : ''}
                     </div>
+                    <FlagReason reason={b.flag_reason} />
                   </div>
                   <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
                     {b.status === 'live' ? (
                       <button type="button" onClick={() => act('business', b.id, 'hide')} className="btn btn-ghost" style={{ fontSize: 13, padding: '6px 12px' }}>הסתר</button>
                     ) : (
-                      <button type="button" onClick={() => act('business', b.id, 'show')} className="btn btn-primary" style={{ fontSize: 13, padding: '6px 12px' }}>הצג</button>
+                      <button type="button" onClick={() => act('business', b.id, 'show')} className="btn btn-primary" style={{ fontSize: 13, padding: '6px 12px' }}>
+                        {b.status === 'pending' ? 'אשר ופרסם' : 'הצג'}
+                      </button>
                     )}
                     <button type="button" onClick={() => act('business', b.id, 'delete')} className="btn btn-ghost" style={{ fontSize: 13, padding: '6px 12px', color: '#b04a3a' }}>מחק</button>
                   </div>
@@ -138,12 +141,15 @@ export function AdminDirectory() {
                     <div style={{ fontSize: 12.5, color: '#8a7c66', marginTop: 3 }}>
                       {new Date(r.created_at).toLocaleDateString('he-IL')}
                     </div>
+                    <FlagReason reason={r.flag_reason} />
                   </div>
                   <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
                     {r.status === 'live' ? (
                       <button type="button" onClick={() => act('review', r.id, 'hide')} className="btn btn-ghost" style={{ fontSize: 13, padding: '6px 12px' }}>הסתר</button>
                     ) : (
-                      <button type="button" onClick={() => act('review', r.id, 'show')} className="btn btn-primary" style={{ fontSize: 13, padding: '6px 12px' }}>הצג</button>
+                      <button type="button" onClick={() => act('review', r.id, 'show')} className="btn btn-primary" style={{ fontSize: 13, padding: '6px 12px' }}>
+                        {r.status === 'pending' ? 'אשר ופרסם' : 'הצג'}
+                      </button>
                     )}
                     <button type="button" onClick={() => act('review', r.id, 'delete')} className="btn btn-ghost" style={{ fontSize: 13, padding: '6px 12px', color: '#b04a3a' }}>מחק</button>
                   </div>
@@ -160,18 +166,33 @@ export function AdminDirectory() {
 /* ─── תגיות עזר ─── */
 
 function StatusChip({ status }: { status: string }) {
-  const isLive = status === 'live'
+  const cfg =
+    status === 'live'
+      ? { label: 'פעיל', color: '#fff', bg: 'var(--brand)' }
+      : status === 'pending'
+        ? { label: 'ממתין לאישור', color: '#fff', bg: '#c2762b' }
+        : { label: 'מוסתר', color: '#8a7c66', bg: '#e8e0d5' }
   return (
     <span style={{
       fontSize: 11.5,
       fontWeight: 800,
-      color: isLive ? '#fff' : '#8a7c66',
-      background: isLive ? 'var(--brand)' : '#e8e0d5',
+      color: cfg.color,
+      background: cfg.bg,
       borderRadius: 999,
       padding: '2px 9px',
     }}>
-      {isLive ? 'פעיל' : 'מוסתר'}
+      {cfg.label}
     </span>
+  )
+}
+
+/** סיבת הסינון האוטומטי - מוצגת רק לפריטים שנתפסו */
+function FlagReason({ reason }: { reason: string | null }) {
+  if (!reason) return null
+  return (
+    <div style={{ fontSize: 12.5, fontWeight: 700, color: '#c2762b', marginTop: 4 }}>
+      סינון אוטומטי: {reason}
+    </div>
   )
 }
 

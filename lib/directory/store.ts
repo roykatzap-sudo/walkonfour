@@ -7,6 +7,8 @@ import { withDirectoryDb, directoryConfigured as _dirCfg } from './db'
 import { LIMITS } from './types'
 import type { DirectoryBusiness, DirectoryReview, NewBusinessInput, NewReviewInput } from './types'
 import { BIZ_CATEGORIES } from '../businesses'
+import { screenBusiness, screenReview } from './moderation'
+import { notifyPendingItem } from './notifyAdmin'
 
 export { _dirCfg as directoryConfigured }
 
@@ -108,7 +110,7 @@ export async function getBusinessBySlug(
 export async function addBusiness(
   input: NewBusinessInput,
   ipHash: string | null,
-): Promise<{ slug: string } | 'err'> {
+): Promise<{ slug: string; pending: boolean } | 'err'> {
   const name = (input.name ?? '').trim().slice(0, LIMITS.name)
   const category = (input.category ?? '').trim()
   const city = (input.city ?? '').trim().slice(0, LIMITS.city)
@@ -127,6 +129,11 @@ export async function addBusiness(
   // website חייב להתחיל ב-http:// או https:// אם ניתן
   if (website && !/^https?:\/\//.test(website)) return 'err'
 
+  // סינון אוטומטי: תפיסה -> pending (ממתין לאישור אדמין), לא חוסמים
+  const screen = screenBusiness({ name, description, pricing, area })
+  const status = screen.flagged ? 'pending' : 'live'
+  const flagReason = screen.flagged ? screen.reasons.join(', ') : null
+
   const baseSlug = toBaseSlug(name)
 
   const result = await withDirectoryDb(async (c) => {
@@ -144,12 +151,22 @@ export async function addBusiness(
     }
 
     await c.query(
-      `INSERT INTO directory_businesses (slug, name, category, city, area, phone, whatsapp, website, pricing, description, ip_hash)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
-      [slug, name, category, city, area, phone, whatsapp, website, pricing, description, ipHash],
+      `INSERT INTO directory_businesses (slug, name, category, city, area, phone, whatsapp, website, pricing, description, status, flag_reason, ip_hash)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
+      [slug, name, category, city, area, phone, whatsapp, website, pricing, description, status, flagReason, ipHash],
     )
-    return { slug }
+    return { slug, pending: screen.flagged }
   })
+
+  if (result && screen.flagged) {
+    // fire-and-forget - לא חוסם את התגובה למשתמש
+    void notifyPendingItem({
+      type: 'business',
+      title: `${name} (${category}, ${city})`,
+      reasons: screen.reasons,
+      excerpt: description,
+    })
+  }
 
   return result ?? 'err'
 }
@@ -157,7 +174,7 @@ export async function addBusiness(
 export async function addReview(
   input: NewReviewInput,
   ipHash: string | null,
-): Promise<'ok' | 'dup' | 'notfound' | 'err'> {
+): Promise<'ok' | 'pending' | 'dup' | 'notfound' | 'err'> {
   const slug = (input.business_slug ?? '').trim()
   const rating = Number(input.rating)
   const authorName = (input.author_name ?? '').trim().slice(0, LIMITS.authorName)
@@ -165,6 +182,11 @@ export async function addReview(
 
   if (!slug || !authorName) return 'err'
   if (!Number.isInteger(rating) || rating < 1 || rating > 5) return 'err'
+
+  // סינון אוטומטי: תפיסה -> pending (ממתין לאישור אדמין)
+  const screen = screenReview({ author_name: authorName, text })
+  const status = screen.flagged ? 'pending' : 'live'
+  const flagReason = screen.flagged ? screen.reasons.join(', ') : null
 
   const result = await withDirectoryDb(async (c) => {
     // מציאת העסק (חי בלבד)
@@ -188,12 +210,21 @@ export async function addReview(
     }
 
     await c.query(
-      `INSERT INTO directory_reviews (business_id, rating, author_name, text, ip_hash)
-       VALUES ($1, $2, $3, $4, $5)`,
-      [businessId, rating, authorName, text, ipHash],
+      `INSERT INTO directory_reviews (business_id, rating, author_name, text, status, flag_reason, ip_hash)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [businessId, rating, authorName, text, status, flagReason, ipHash],
     )
-    return 'ok' as const
+    return screen.flagged ? ('pending' as const) : ('ok' as const)
   })
+
+  if (result === 'pending') {
+    void notifyPendingItem({
+      type: 'review',
+      title: `ביקורת מאת ${authorName} (${rating} כוכבים) על עסק ${slug}`,
+      reasons: screen.reasons,
+      excerpt: text ?? '(ללא טקסט)',
+    })
+  }
 
   return result ?? 'err'
 }
@@ -227,14 +258,14 @@ export async function adminListAll(): Promise<{
       SELECT
         b.id, b.slug, b.name, b.category, b.city, b.area,
         b.phone, b.whatsapp, b.website, b.pricing, b.description,
-        b.status, b.reports_count, b.created_at,
+        b.status, b.flag_reason, b.reports_count, b.created_at,
         ROUND(AVG(r.rating)::numeric, 1) AS avg_rating,
         COUNT(r.id)::int AS reviews_count
       FROM directory_businesses b
       LEFT JOIN directory_reviews r
         ON r.business_id = b.id AND r.status = 'live'
       GROUP BY b.id
-      ORDER BY b.reports_count DESC, b.created_at DESC
+      ORDER BY (b.status = 'pending') DESC, b.reports_count DESC, b.created_at DESC
     `
     const { rows: bizRows } = await c.query(bizSql)
 
@@ -242,11 +273,11 @@ export async function adminListAll(): Promise<{
     const revSql = `
       SELECT
         r.id, r.business_id, r.rating, r.author_name, r.text,
-        r.status, r.reports_count, r.created_at,
+        r.status, r.flag_reason, r.reports_count, r.created_at,
         b.name AS business_name
       FROM directory_reviews r
       JOIN directory_businesses b ON b.id = r.business_id
-      ORDER BY r.reports_count DESC, r.created_at DESC
+      ORDER BY (r.status = 'pending') DESC, r.reports_count DESC, r.created_at DESC
     `
     const { rows: revRows } = await c.query(revSql)
 
@@ -298,6 +329,7 @@ function rowToBusiness(r: any): DirectoryBusiness {
     pricing: r.pricing ?? null,
     description: r.description,
     status: r.status,
+    flag_reason: r.flag_reason ?? null,
     reports_count: Number(r.reports_count),
     created_at: r.created_at instanceof Date ? r.created_at.toISOString() : String(r.created_at),
     avg_rating: r.avg_rating != null ? Number(r.avg_rating) : null,
@@ -314,6 +346,7 @@ function rowToReview(r: any): DirectoryReview {
     author_name: r.author_name,
     text: r.text ?? null,
     status: r.status,
+    flag_reason: r.flag_reason ?? null,
     reports_count: Number(r.reports_count),
     created_at: r.created_at instanceof Date ? r.created_at.toISOString() : String(r.created_at),
   }

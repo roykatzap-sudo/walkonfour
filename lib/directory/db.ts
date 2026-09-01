@@ -31,6 +31,7 @@ const CREATE_SQLS = [
     pricing TEXT,
     description TEXT NOT NULL,
     status TEXT NOT NULL DEFAULT 'live',
+    flag_reason TEXT,
     reports_count INT NOT NULL DEFAULT 0,
     ip_hash TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -42,12 +43,15 @@ const CREATE_SQLS = [
     author_name TEXT NOT NULL,
     text TEXT,
     status TEXT NOT NULL DEFAULT 'live',
+    flag_reason TEXT,
     reports_count INT NOT NULL DEFAULT 0,
     ip_hash TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
   )`,
   // מיגרציה לטבלאות שכבר קיימות בפרודקשן (idempotent)
   `ALTER TABLE directory_businesses ADD COLUMN IF NOT EXISTS pricing TEXT`,
+  `ALTER TABLE directory_businesses ADD COLUMN IF NOT EXISTS flag_reason TEXT`,
+  `ALTER TABLE directory_reviews ADD COLUMN IF NOT EXISTS flag_reason TEXT`,
   `CREATE INDEX IF NOT EXISTS idx_dir_reviews_biz ON directory_reviews(business_id)`,
   `CREATE INDEX IF NOT EXISTS idx_dir_biz_status ON directory_businesses(status)`,
 ]

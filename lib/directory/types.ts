@@ -2,7 +2,8 @@
 // קובץ זה הוא ה-source of truth לצורות הנתונים בין ה-API, ה-DB וה-UI.
 // אין לשנות שמות שדות בלי לעדכן את כל הצרכנים.
 
-export type DirectoryStatus = 'live' | 'hidden'
+/** 'pending' = נתפס בסינון האוטומטי, ממתין לאישור אדמין (לא מוצג בציבורי) */
+export type DirectoryStatus = 'live' | 'hidden' | 'pending'
 
 export type DirectoryBusiness = {
   id: number
@@ -19,6 +20,8 @@ export type DirectoryBusiness = {
   pricing: string | null
   description: string
   status: DirectoryStatus
+  /** סיבות הסינון האוטומטי (כשנתפס), למשל "שפה פוגענית, לא זוהה קשר לכלבים" */
+  flag_reason: string | null
   reports_count: number
   created_at: string
   /** ממוצע דירוגים חיים, null אם אין ביקורות */
@@ -33,6 +36,7 @@ export type DirectoryReview = {
   author_name: string
   text: string | null
   status: DirectoryStatus
+  flag_reason: string | null
   reports_count: number
   created_at: string
 }
@@ -78,15 +82,17 @@ GET  /api/directory/businesses?category=&city=
      (רק status='live', ממוין: avg_rating יורד nulls-last, ואז created_at יורד)
 
 POST /api/directory/businesses   body: NewBusinessInput
-  -> { ok: true, slug: string } | { ok: false, error: 'rate'|'invalid'|'server'|'too_large' }
+  -> { ok: true, slug: string, pending: boolean } | { ok: false, error: 'rate'|'invalid'|'server'|'too_large' }
      rate limit: 3 לשעה לפי IP. slug נגזר מהשם (עברית מותרת), ייחודיות עם סיומת -2, -3...
+     pending=true כשהסינון האוטומטי (lib/directory/moderation.ts) תפס - העסק לא חי עד אישור אדמין.
 
 GET  /api/directory/businesses/[slug]
   -> { ok: true, business: DirectoryBusiness, reviews: DirectoryReview[] } | 404
 
 POST /api/directory/reviews      body: NewReviewInput
-  -> { ok: true } | { ok: false, error: 'rate'|'invalid'|'dup'|'server' }
+  -> { ok: true, pending: boolean } | { ok: false, error: 'rate'|'invalid'|'dup'|'server' }
      חסימה: ביקורת אחת לעסק לאותו ip_hash ב-24 שעות ('dup') + rateLimited כללי 5/דקה
+     pending=true כשהסינון האוטומטי תפס - הביקורת לא מוצגת עד אישור אדמין.
 
 POST /api/directory/report       body: { type: 'business'|'review', id: number }
   -> { ok: true } | { ok: false, error: 'rate'|'invalid'|'server' }
@@ -99,12 +105,13 @@ GET  /api/admin/directory        (מוגן isAdminRequest)
 POST /api/admin/directory/moderate  (מוגן isAdminRequest)
   body: { type: 'business'|'review', id: number, action: 'hide'|'show'|'delete' }
   -> { ok: true } | { ok: false, error: string }
+     'show' משמש גם לאישור פריט pending (pending -> live).
 
 Server-side store (lib/directory/store.ts) חייב לייצא:
   listLiveBusinesses(filters?: { category?: string; city?: string }): Promise<DirectoryBusiness[] | null>
   getBusinessBySlug(slug: string): Promise<{ business: DirectoryBusiness; reviews: DirectoryReview[] } | null>
-  addBusiness(input: NewBusinessInput, ipHash: string | null): Promise<{ slug: string } | 'err'>
-  addReview(input: NewReviewInput, ipHash: string | null): Promise<'ok' | 'dup' | 'notfound' | 'err'>
+  addBusiness(input: NewBusinessInput, ipHash: string | null): Promise<{ slug: string; pending: boolean } | 'err'>
+  addReview(input: NewReviewInput, ipHash: string | null): Promise<'ok' | 'pending' | 'dup' | 'notfound' | 'err'>
   reportItem(type: 'business' | 'review', id: number): Promise<'ok' | 'err'>
   directoryConfigured(): boolean
 (null מוחזר כשה-DB לא מוגדר, כמו withCommunityDb)
