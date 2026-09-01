@@ -13,8 +13,17 @@ export const dynamic = 'force-dynamic'
 
 type Props = { params: Promise<{ slug: string }> }
 
+/** slug בעברית מגיע לעמוד percent-encoded (התנהגות Next בעמודים, בשונה מ-route handlers) - מפענחים בבטחה */
+function safeDecode(s: string): string {
+  try {
+    return decodeURIComponent(s)
+  } catch {
+    return s
+  }
+}
+
 export async function generateMetadata({ params }: Props) {
-  const { slug } = await params
+  const slug = safeDecode((await params).slug)
   const result = await getBusinessBySlug(slug)
   if (!result) return buildMetadata({ title: 'העסק לא נמצא', path: `/businesses/${slug}`, noindex: true })
   const { business } = result
@@ -78,7 +87,7 @@ function ReviewItem({ review }: { review: DirectoryReview }) {
 }
 
 export default async function BusinessDetailPage({ params }: Props) {
-  const { slug } = await params
+  const slug = safeDecode((await params).slug)
   const result = await getBusinessBySlug(slug)
   if (!result) notFound()
 

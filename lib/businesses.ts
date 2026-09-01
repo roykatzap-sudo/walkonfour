@@ -10,8 +10,10 @@ export const BIZ_CATEGORIES = [
   'וטרינר',
   'מספרת כלבים',
   'מאלף כלבים',
+  'דוגווקר',
   'פנסיון',
   'חנות וציוד',
+  'מקום ידידותי לכלבים',
 ] as const
 
 export type BizCategory = (typeof BIZ_CATEGORIES)[number]
@@ -21,8 +23,10 @@ export const BIZ_CATEGORY_ICON: Record<BizCategory, string> = {
   'וטרינר': '🩺',
   'מספרת כלבים': '✂️',
   'מאלף כלבים': '🎓',
+  'דוגווקר': '🦮',
   'פנסיון': '🏠',
   'חנות וציוד': '🛍️',
+  'מקום ידידותי לכלבים': '☕',
 }
 
 export type Business = {

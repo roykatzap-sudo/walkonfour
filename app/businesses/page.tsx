@@ -106,7 +106,7 @@ export default function BusinessesPage() {
             נותנים שירות טוב לכלבים? תנו לנו לספר עליכם
           </div>
           <div style={{ color: '#d8c7b0', fontSize: 14, marginTop: 4, maxWidth: 460 }}>
-            פרסום חינם, עולה לאתר מיד, נחשף לקהילת בעלי הכלבים של walkonfour.
+            פרסום חינם, עולה לאתר מיד, ונחשף לכל קהילת בעלי הכלבים שלנו.
           </div>
         </div>
         <Link

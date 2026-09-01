@@ -165,7 +165,7 @@ export default function BusinessApplyPage() {
             הוסיפו את העסק שלכם
           </h1>
           <p className="page-sub" style={{ margin: '0 auto', maxWidth: 560 }}>
-            פרסום חינם, עולה לאתר מיד, נחשף לקהילת בעלי הכלבים של walkonfour.
+            פרסום חינם, עולה לאתר מיד, ונחשף לכל קהילת בעלי הכלבים שלנו.
           </p>
         </div>
       </section>
@@ -288,7 +288,7 @@ export default function BusinessApplyPage() {
           </div>
           <div style={{ flex: '1 1 220px', minWidth: 200 }}>
             <label htmlFor="biz-whatsapp" style={labelStyle}>
-              WhatsApp
+              וואטסאפ
             </label>
             <input
               id="biz-whatsapp"
