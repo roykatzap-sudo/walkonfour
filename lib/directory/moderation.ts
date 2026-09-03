@@ -35,7 +35,7 @@ const SPAM_MARKERS = [
 /** מילות הקשר כלבי - התאמת תחילת מילה (prefix) בטקסט המנורמל */
 const DOG_CONTEXT = [
   'כלב', 'גור', 'וטרינר', 'מרפא', 'חיסונ', 'טיפוח', 'מספרה', 'מספרת',
-  'תספורת', 'ציפורני', 'פרוו', 'אילוף', 'מאלפ', 'פנסיון', 'דוגווקר',
+  'תספור', 'ציפורני', 'פרוו', 'אילוף', 'מאלפ', 'פנסיון', 'דוגווקר',
   'הליכ', 'טיול', 'חיות מחמד', 'חיית מחמד', 'בעלי חיים', 'מזון', 'חטיפ',
   'רצוע', 'קולר', 'גזע', 'סירוס', 'עיקור', 'המלטה', 'שמרטפ', 'צעצוע',
   'dog', 'pet', 'vet', 'pupp', 'groom', 'k9',
@@ -43,9 +43,28 @@ const DOG_CONTEXT = [
 
 export type ScreenResult = { flagged: boolean; reasons: string[] }
 
+/* תחיליות עברית נפוצות - "וטיפוח" צריך להיתפס כ"טיפוח", "החרא" כ"חרא".
+   בלי הקילוף הזה המנגנון עיוור לכל מילה עם ו/ה/ל/ב/מ/ש/כ בהתחלה. */
+const HEBREW_PREFIXES = ['וה', 'של', 'שה', 'כש', 'מה', 'וב', 'ול', 'ומ', 'ו', 'ה', 'ל', 'ב', 'מ', 'ש', 'כ']
+
+/** מחזיר את המילה + גרסאות עם תחילית מקולפת (קילוף אחד, לא רקורסיבי) */
+function stripVariants(word: string): string[] {
+  const out = [word]
+  for (const p of HEBREW_PREFIXES) {
+    if (word.startsWith(p) && word.length > p.length + 1) out.push(word.slice(p.length))
+  }
+  return out
+}
+
+const PROFANITY_SET = new Set(PROFANITY_WORDS)
+/** מילים לגיטימיות שקילוף תחילית שלהן מייצר קללה בטעות ("אוכל מזין", "הזין פרטים") */
+const PROFANITY_STRIP_EXCLUDE = new Set(['מזין', 'הזין'])
+
 function hasProfanity(normalized: string): boolean {
-  const words = new Set(normalized.split(' '))
-  if (PROFANITY_WORDS.some((w) => words.has(w))) return true
+  for (const w of normalized.split(' ')) {
+    if (PROFANITY_STRIP_EXCLUDE.has(w)) continue
+    if (stripVariants(w).some((v) => PROFANITY_SET.has(v))) return true
+  }
   return PROFANITY_PHRASES.some((p) => normalized.includes(p))
 }
 
@@ -58,10 +77,13 @@ function hasUrl(raw: string): boolean {
 }
 
 function hasDogContext(normalized: string): boolean {
-  // התאמת prefix: "כלב" תופס גם כלבים/כלבה/כלבלב
+  // התאמת prefix: "כלב" תופס גם כלבים/כלבה/כלבלב.
+  // קילוף תחיליות: "וטיפוח" / "לכלבים" / "הגזעים" נתפסים גם הם.
   const words = normalized.split(' ')
   return DOG_CONTEXT.some((prefix) =>
-    prefix.includes(' ') ? normalized.includes(prefix) : words.some((w) => w.startsWith(prefix)),
+    prefix.includes(' ')
+      ? normalized.includes(prefix)
+      : words.some((w) => stripVariants(w).some((v) => v.startsWith(prefix))),
   )
 }
 
