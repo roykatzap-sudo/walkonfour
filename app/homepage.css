@@ -16,12 +16,16 @@
 
 /* ── סקשן רוחב מלא עם ריווח אחיד (ערים / גזעים) ── */
 .kv-section {
-  padding: 72px 24px;
+  padding: 112px 24px;
   max-width: 1240px;
   margin: 0 auto;
 }
 .kv-section--breeds {
-  padding: 72px 24px;
+  padding: 112px 24px;
+}
+/* סקשן בתוך רצועה כהה: הרצועה full-bleed, התוכן נשאר 1240 */
+.kv-band-dark .kv-section {
+  max-width: 1240px;
 }
 
 /* ── גריד כרטיסים רספונסיבי (auto-fit, ממלא רוחב) ── */
@@ -177,22 +181,6 @@
   margin: 0;
 }
 
-/* ── עוטף ה-HERO (היה inline position:relative) ── */
-.hero-layer {
-  position: relative;
-}
-.hero-content {
-  position: relative;
-  z-index: 2;
-}
-
-/* ── תמונת ה-HERO עם הטיית-עכבר (טרנספורם נשלט ב-ref) ── */
-.hero-tilt {
-  transform: perspective(900px) rotateY(0deg) rotateX(0deg);
-  transition: transform 0.2s ease-out;
-  height: 100%;
-}
-
 /* ── פרלקס-גלילה חתום ──
    שני עוטפים נעים בקצב שונה. ה-JS כותב את ה-transform ישירות על שני
    האלמנטים (דרך refs, כמו הטיית-העכבר), כך שאין תלות בפענוח calc ואין
@@ -218,23 +206,6 @@
   }
 }
 
-/* ── עקבות כף עדינות מתחת לכפתורי ההירו (מבטא חתום, חד-פעמי בכניסה) ── */
-.hero-paw-trail {
-  justify-content: flex-start;
-  margin-top: 30px;
-  margin-bottom: 4px;
-  opacity: 0.9;
-}
-.hero-paw-trail i {
-  width: 15px;
-  height: 15px;
-  background: rgba(var(--kv-gold-light), 0.5);
-}
-@media (max-width: 900px) {
-  /* במובייל ההירו נערם - העקבות מיותרות ומצטופפות, מסתירים */
-  .hero-paw-trail { display: none; }
-}
-
 /* ── מילוי גובה מלא (היה inline height:100% בכרטיסים) ── */
 .kv-fill-h {
   height: 100%;
@@ -250,13 +221,6 @@
   display: inline-flex;
   align-items: center;
   text-decoration: none;
-}
-
-/* ── reduced-motion: ביטול הטיית ה-HERO ── */
-@media (prefers-reduced-motion: reduce) {
-  .hero-tilt {
-    transition: none;
-  }
 }
 
 /* ── מסכים זעירים (iPhone SE ‏375px ומטה): עמודה אחת, ריווח צד מצומצם ── */
@@ -418,39 +382,20 @@
    כל אנימציה מכובדת תחת prefers-reduced-motion בתחתית הקובץ.
    ============================================================ */
 
-/* ── היררכיה חזותית בהירו: כתם זוהר רך מאחורי הכותרת + הבלטת ה-em ── */
-.hero-left::after {
+/* ── כתם זוהר רך מאחורי הכותרת הממורכזת ── */
+.hero-content::before {
   content: '';
   position: absolute;
-  inset-block-start: 18%;
-  inset-inline-start: 8%;
-  width: 340px;
-  height: 340px;
+  inset-block-start: -10%;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  width: 560px;
+  height: 420px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(232, 200, 135, 0.16), transparent 68%);
-  filter: blur(8px);
+  background: radial-gradient(circle, rgba(232, 200, 135, 0.14), transparent 68%);
+  filter: blur(10px);
   pointer-events: none;
-  z-index: 0;
-}
-.hero-h1 em {
-  position: relative;
-}
-/* קו הדגשה זהוב מתחת ל"יותר מגוגל" - נמשח בכניסה */
-.hero-h1 em::after {
-  content: '';
-  position: absolute;
-  inset-inline-start: 0;
-  inset-block-end: 0.06em;
-  height: 0.14em;
-  width: 100%;
-  border-radius: 100px;
-  background: linear-gradient(90deg, var(--brand-light), rgba(232, 200, 135, 0.15));
-  transform: scaleX(0);
-  transform-origin: inline-start;
-  animation: hero-underline 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
-}
-@keyframes hero-underline {
-  to { transform: scaleX(1); }
+  z-index: -1;
 }
 
 /* כפתור ההמתנה הראשי - ריצוד עדין של הילה כדי למשוך את העין (לא agressive) */
@@ -493,8 +438,9 @@
 
 /* ── שורת הבטחה מתחת ל-CTA בהירו (חינם, בלי כרטיס) ── */
 .hero-assure {
-  margin-top: 14px;
-  max-width: 34ch;
+  margin-top: 16px;
+  margin-inline: auto;
+  max-width: 44ch;
   font-size: 15px;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.72);
@@ -826,7 +772,6 @@
    כיבוד prefers-reduced-motion לכל האנימציות החדשות
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
-  .hero-h1 em::after { animation: none; transform: scaleX(1); }
   .hbm::before { animation: none; display: none; }
   .kv-card-link,
   .kv-card,

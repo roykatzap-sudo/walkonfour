@@ -48,11 +48,11 @@
 .pop-in { animation: popIn .6s cubic-bezier(.34,1.56,.64,1) both; }
 .spin3d { animation: spin3d 18s linear infinite; transform-style: preserve-3d; }
 
-/* ── reveal-3d (JS toggles .in) ── */
-.rv3d { opacity: 0; transform: perspective(1000px) rotateX(14deg) translateY(48px); transition: opacity .8s cubic-bezier(.22,1,.36,1), transform .8s cubic-bezier(.22,1,.36,1); }
-.rv3d.in { opacity: 1; transform: perspective(1000px) rotateX(0) translateY(0); }
-.rv3d.d1 { transition-delay: .08s } .rv3d.d2 { transition-delay: .16s }
-.rv3d.d3 { transition-delay: .24s } .rv3d.d4 { transition-delay: .32s }
+/* ── reveal-3d (JS toggles .in) - כניסה מודגשת: מרחק גדול יותר + blur-in ── */
+.rv3d { opacity: 0; filter: blur(7px); transform: perspective(1000px) rotateX(16deg) translateY(64px); transition: opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1), filter .9s cubic-bezier(.22,1,.36,1); }
+.rv3d.in { opacity: 1; filter: blur(0); transform: perspective(1000px) rotateX(0) translateY(0); }
+.rv3d.d1 { transition-delay: .08s } .rv3d.d2 { transition-delay: .18s }
+.rv3d.d3 { transition-delay: .28s } .rv3d.d4 { transition-delay: .38s }
 
 /* ── magnetic button ── */
 .magnetic { display: inline-flex; align-items: center; justify-content: center; will-change: transform; transition: transform .25s cubic-bezier(.34,1.56,.64,1); }
@@ -115,6 +115,7 @@
   .rv3d {
     opacity: 1 !important;
     transform: none !important;
+    filter: none !important;
     transition: opacity .3s ease;
   }
 }

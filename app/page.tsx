@@ -76,7 +76,6 @@ const srcSetFor = (id: string, widths: number[]) =>
   widths.map((w) => `${u(id, w)} ${w}w`).join(', ')
 
 export default function Home() {
-  const heroImgRef = useRef<HTMLDivElement>(null)
   const heroParallaxRef = useRef<HTMLDivElement>(null)
   const heroDepthRef = useRef<HTMLDivElement>(null)
 
@@ -94,19 +93,6 @@ export default function Home() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [ctaDismissed])
-
-  // פרלקס ישירות על ה-DOM דרך ref - בלי setState, בלי re-render לכל תזוזת עכבר.
-  // throttle עם requestAnimationFrame + כיבוד prefers-reduced-motion.
-  const heroPos = useRef({ px: 0, py: 0 })
-  const heroRaf = useRef<number | null>(null)
-  const reduceMotion = useRef(false)
-
-  useEffect(() => {
-    reduceMotion.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    return () => {
-      if (heroRaf.current !== null) cancelAnimationFrame(heroRaf.current)
-    }
-  }, [])
 
   // ── פרלקס-גלילה חתום להירו: התמונה והשכבה הדקורטיבית נעות בקצב שונה
   //    כשגוללים מעבר להירו, כדי לתת עומק "חי". transform בלבד (GPU),
@@ -146,79 +132,48 @@ export default function Home() {
     }
   }, [])
 
-  function onHeroMove(e: React.MouseEvent<HTMLElement>) {
-    if (reduceMotion.current) return
-    const r = e.currentTarget.getBoundingClientRect()
-    heroPos.current.px = (e.clientX - r.left) / r.width - 0.5
-    heroPos.current.py = (e.clientY - r.top) / r.height - 0.5
-    if (heroRaf.current !== null) return
-    heroRaf.current = requestAnimationFrame(() => {
-      heroRaf.current = null
-      const el = heroImgRef.current
-      if (!el) return
-      const { px, py } = heroPos.current
-      el.style.transform = `perspective(900px) rotateY(${px * 8}deg) rotateX(${-py * 8}deg) translate(${px * 14}px, ${py * 14}px)`
-    })
-  }
-  function onHeroLeave() {
-    if (heroRaf.current !== null) {
-      cancelAnimationFrame(heroRaf.current)
-      heroRaf.current = null
-    }
-    const el = heroImgRef.current
-    if (el) el.style.transform = 'perspective(900px) rotateY(0deg) rotateX(0deg)'
-  }
-
   return (
     <>
-      {/* HERO */}
-      <section className="hero" onMouseMove={onHeroMove} onMouseLeave={onHeroLeave}>
-        <div className="hero-left hero-layer">
-          <div ref={heroDepthRef} className="hero-depth">
-            <FloatingShapes dark />
-          </div>
-          <FloatingPaws />
-          <div className="hero-content">
-            <div className="hero-eyebrow">
-              <span className="ey-dot" />
-              בהקמה · קהילה לבעלי כלבים בישראל
-            </div>
-            <h1 className="hero-h1 display">
-              לכלב שלך מגיע<em>יותר מגוגל</em>
-            </h1>
-            <p className="hero-sub">
-              גינות, מסלולים ומה שאף ווטרינר לא יספיק לכם להגיד. מאנשים שכבר עברו את זה.
-            </p>
-            <div className="hero-btns">
-              <MagneticButton href="/waitlist" className="hbm kv-press-mag kv-glow">
-                הצטרפו לרשימת ההמתנה
-              </MagneticButton>
-              <Link className="hbg-link kv-press" href="/cities">
-                מה יש כבר בעיר שלי ←
-              </Link>
-            </div>
-            <p className="hero-assure">חינם, בלי כרטיס אשראי. נעדכן אתכם כשנפתחת הקהילה בעיר שלכם.</p>
-            <div className="hero-paw-trail kv-paw-trail" data-kv-stagger aria-hidden="true">
-              <i /><i /><i /><i /><i />
-            </div>
-            <FounderNote />
-          </div>
+      {/* HERO v2 - טקסט ענק ממורכז → באנר קולנועי → כרטיסי זכוכית */}
+      <section className="hero">
+        <div ref={heroDepthRef} className="hero-depth">
+          <FloatingShapes dark />
         </div>
-        <div className="hero-right">
+        <FloatingPaws />
+        <div className="hero-content">
+          <div className="hero-eyebrow">
+            <span className="ey-dot" />
+            בהקמה · קהילה לבעלי כלבים בישראל
+          </div>
+          <h1 className="hero-h1 display">
+            לכלב שלך<em>מגיעה קהילה</em>
+          </h1>
+          <p className="hero-sub">
+            גינות, מסלולים ומה שאף ווטרינר לא יספיק לכם להגיד. מאנשים שכבר עברו את זה.
+          </p>
+          <div className="hero-btns">
+            <MagneticButton href="/waitlist" className="hbm kv-press-mag kv-glow">
+              הצטרפו לרשימת ההמתנה
+            </MagneticButton>
+            <Link className="hbg-link kv-press" href="/cities">
+              מה יש כבר בעיר שלי ←
+            </Link>
+          </div>
+          <p className="hero-assure">חינם, בלי כרטיס אשראי. נעדכן אתכם כשנפתחת הקהילה בעיר שלכם.</p>
+        </div>
+        <div className="hero-banner">
           <div ref={heroParallaxRef} className="hero-parallax">
-            <div ref={heroImgRef} className="hero-tilt">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                loading="eager"
-                fetchPriority="high"
-                decoding="async"
-                src="/hero-opener.png"
-                width={1122}
-                height={1402}
-                sizes="(max-width: 900px) 100vw, 50vw"
-                alt="בעל כלב וכלבו בפארק עירוני - קהילה על ארבע"
-              />
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+              src="/hero-opener.png"
+              width={1122}
+              height={1402}
+              sizes="(max-width: 1240px) 100vw, 1240px"
+              alt="בעל כלב וכלבו בפארק עירוני - קהילה על ארבע"
+            />
           </div>
         </div>
         <div className="hero-stats">
@@ -227,6 +182,9 @@ export default function Home() {
           <div className="hs"><div className="hs-val"><Counter to={DOG_PARK_COUNT} /></div><div className="hs-lbl">גינות על המפה</div></div>
           <div className="hs"><div className="hs-val"><Counter to={38} /></div><div className="hs-lbl">מסלולים</div></div>
           <div className="hs"><div className="hs-val"><Counter to={42} /></div><div className="hs-lbl">ערים</div></div>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 0 46px', position: 'relative', zIndex: 2 }}>
+          <FounderNote />
         </div>
       </section>
 
@@ -246,7 +204,7 @@ export default function Home() {
         <Reveal3D className="ev-head">
           <div>
             <span className="section-tag">קרוב לבית</span>
-            <h2 id="cities-heading" className="section-title display">מה יש בעיר שלכם</h2>
+            <h2 id="cities-heading" className="section-title display">מה יש <em>בעיר שלכם</em></h2>
             <span className="kv-shimmer-line" data-kv-stagger aria-hidden="true" />
           </div>
           <Link href="/cities" className="btn btn-ghost kv-press">לכל מדריכי הערים →</Link>
@@ -294,7 +252,7 @@ export default function Home() {
         <Reveal3D className="pg-header">
           <div>
             <span className="section-tag">כל גזע, כל גודל</span>
-            <h2 className="section-title display">הכלבים<br />שאנחנו אוהבים</h2>
+            <h2 className="section-title display">הכלבים<br /><em>שאנחנו אוהבים</em></h2>
             <span className="kv-shimmer-line" data-kv-stagger aria-hidden="true" />
           </div>
           <p className="pg-sub">ככה זה נראה כשקהילה של בעלי כלבים באמת עובדת.</p>
@@ -335,7 +293,7 @@ export default function Home() {
         </div>
         <div className="split-content">
           <Reveal3D as="span" className="section-tag">מה מחכה בקהילה</Reveal3D>
-          <Reveal3D><h2 id="split-heading" className="split-title display">מה אפשר<br />לעשות כאן</h2></Reveal3D>
+          <Reveal3D><h2 id="split-heading" className="split-title display">מה אפשר<br /><em>לעשות כאן</em></h2></Reveal3D>
           <span className="kv-shimmer-line" data-kv-stagger aria-hidden="true" />
           <Reveal3D><p className="split-sub">להוריד את המחיר של שק המזון, למצוא חבר לטיול בוקר, ולשאול בלילה את מי שכבר עבר את זה. זה מה שאנחנו בונים.</p></Reveal3D>
           <div className="features-list">
@@ -360,7 +318,7 @@ export default function Home() {
         <Reveal3D className="ev-head">
           <div>
             <span className="section-tag">מדריך הגזעים</span>
-            <h2 id="breeds-heading" className="section-title display">הגזעים הנפוצים</h2>
+            <h2 id="breeds-heading" className="section-title display">הגזעים <em>הנפוצים</em></h2>
             <span className="kv-shimmer-line" data-kv-stagger aria-hidden="true" />
           </div>
           <Link href="/breeds" className="btn btn-ghost kv-press">לכל הגזעים →</Link>
@@ -408,15 +366,13 @@ export default function Home() {
         </Carousel>
       </section>
 
-      {/* מפריד ממותג - כף זהב בין הגזעים לכלים */}
-      <div className="kv-paw-divider kv-seam" data-kv-stagger aria-hidden="true" />
-
-      {/* כלים חינמיים */}
+      {/* כלים חינמיים - רצועה כהה לקצב ויזואלי */}
+      <div className="kv-band-dark">
       <section className="tools-home-section kv-section" aria-labelledby="tools-home-heading">
         <Reveal3D className="ev-head">
           <div>
             <span className="section-tag">חינם, בלי הרשמה</span>
-            <h2 id="tools-home-heading" className="section-title display">כלים חינמיים</h2>
+            <h2 id="tools-home-heading" className="section-title display">כלים <em>חינמיים</em></h2>
             <span className="kv-shimmer-line" data-kv-stagger aria-hidden="true" />
           </div>
           <Link href="/tools" className="btn btn-ghost kv-press">לכל הכלים →</Link>
@@ -460,6 +416,7 @@ export default function Home() {
           ))}
         </div>
       </section>
+      </div>
 
       {/* CTA חוזר - רשימת המתנה */}
       <section className="wl-band" aria-labelledby="wl-band-heading">
