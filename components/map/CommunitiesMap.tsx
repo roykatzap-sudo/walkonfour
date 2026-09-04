@@ -169,7 +169,8 @@ export function CommunitiesMap() {
         </div>
       </div>
 
-      <style>{`
+      {/* dangerouslySetInnerHTML ולא children: מונע hydration mismatch על גרשיים ב-CSS */}
+      <style dangerouslySetInnerHTML={{ __html: `
         .cm-chips {
           display: flex;
           flex-wrap: wrap;
@@ -195,7 +196,7 @@ export function CommunitiesMap() {
           background: rgba(42,32,24,.8);
         }
         .cm-chip:disabled { opacity: .5; cursor: default; }
-      `}</style>
+      ` }} />
     </div>
   )
 }

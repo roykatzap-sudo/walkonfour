@@ -38,7 +38,8 @@ export function FaqAccordion({ groups }: { groups: FaqGroup[] }) {
         </section>
       ))}
 
-      <style>{`
+      {/* dangerouslySetInnerHTML ולא children: מונע hydration mismatch על גרשיים ב-CSS */}
+      <style dangerouslySetInnerHTML={{ __html: `
         .mkt-faq { display: flex; flex-direction: column; gap: 40px; }
         .mkt-faq-grp-title {
           font-size: 22px;
@@ -53,9 +54,9 @@ export function FaqAccordion({ groups }: { groups: FaqGroup[] }) {
         .mkt-faq-list { display: flex; flex-direction: column; gap: 12px; }
         .mkt-faq-item {
           background: #fff;
-          border: 1px solid rgba(0,0,0,.08);
+          border: 1px solid rgba(201,154,91,.18);
           border-radius: 16px;
-          box-shadow: 0 2px 10px rgba(0,0,0,.04);
+          box-shadow: var(--shadow-xs);
           overflow: hidden;
           transition: border-color .2s, box-shadow .2s;
         }
@@ -108,7 +109,7 @@ export function FaqAccordion({ groups }: { groups: FaqGroup[] }) {
         @media (prefers-reduced-motion: reduce) {
           .mkt-faq-chevron { transition: none; }
         }
-      `}</style>
+      ` }} />
     </div>
   )
 }

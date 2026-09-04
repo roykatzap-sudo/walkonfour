@@ -59,7 +59,8 @@ export function MapTabs() {
         </section>
       )}
 
-      <style>{`
+      {/* dangerouslySetInnerHTML ולא children: מונע hydration mismatch על גרשיים ב-CSS */}
+      <style dangerouslySetInnerHTML={{ __html: `
         .tab-bar {
           display: inline-flex;
           gap: 6px;
@@ -92,7 +93,7 @@ export function MapTabs() {
           .tab-bar { width: 100%; }
           .tab-btn { flex: 1; padding: 11px 12px; font-size: 14px; }
         }
-      `}</style>
+      ` }} />
     </>
   )
 }

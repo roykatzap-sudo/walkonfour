@@ -31,7 +31,8 @@ export function CtaBanner({ title, text, primary, secondary }: CtaBannerProps) {
         </div>
       </div>
 
-      <style>{`
+      {/* dangerouslySetInnerHTML ולא children: מונע hydration mismatch על גרשיים ב-CSS */}
+      <style dangerouslySetInnerHTML={{ __html: `
         .mkt-cta {
           margin-top: 56px;
           border-radius: 28px;
@@ -40,7 +41,7 @@ export function CtaBanner({ title, text, primary, secondary }: CtaBannerProps) {
             var(--ink);
           padding: 48px 32px;
           text-align: center;
-          box-shadow: 0 18px 44px rgba(42,32,24,.22);
+          box-shadow: var(--shadow-lg, 0 18px 44px rgba(42,32,24,.22));
         }
         .mkt-cta-inner { max-width: 620px; margin: 0 auto; }
         .mkt-cta-title {
@@ -82,7 +83,7 @@ export function CtaBanner({ title, text, primary, secondary }: CtaBannerProps) {
           .mkt-cta-actions { flex-direction: column; }
           .mkt-cta-btn, .mkt-cta-ghost { width: 100%; }
         }
-      `}</style>
+      ` }} />
     </section>
   )
 }

@@ -22,8 +22,10 @@ export default function BreedsPage() {
           padding: '56px 28px',
           marginBottom: 40,
           textAlign: 'center',
-          background: 'linear-gradient(160deg, #fdf6e9, #fbf7ef)',
-          border: '1px solid rgba(201,154,91,.12)',
+          background:
+            'radial-gradient(560px 280px at 50% 0%, rgba(232,200,135,.22), transparent 70%), linear-gradient(160deg, #fdf6e9, #fbf7ef)',
+          border: '1px solid rgba(201,154,91,.14)',
+          boxShadow: 'var(--shadow-sm)',
         }}
       >
         <FloatingShapes />

@@ -70,7 +70,7 @@ export function WalkCard({ walk }: { walk: Walk }) {
           background: '#fff',
           borderRadius: 24,
           overflow: 'hidden',
-          boxShadow: '0 12px 40px rgba(42,32,24,.08)',
+          boxShadow: 'var(--shadow-md)',
           border: '1px solid rgba(42,32,24,.06)',
           display: 'flex',
           flexDirection: 'column',

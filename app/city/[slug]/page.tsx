@@ -144,7 +144,19 @@ export default function CityPage({ params }: { params: { slug: string } }) {
       <JsonLd data={schemas} />
 
       {/* HERO */}
-      <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 28, padding: '6px 4px 18px', marginBottom: 14 }}>
+      <div
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          borderRadius: 28,
+          padding: '34px 28px',
+          marginBottom: 22,
+          background:
+            'radial-gradient(560px 280px at 50% 0%, rgba(232,200,135,.22), transparent 70%), linear-gradient(160deg, #fdf6e9, #fbf7ef)',
+          border: '1px solid rgba(201,154,91,.14)',
+          boxShadow: 'var(--shadow-sm)',
+        }}
+      >
         <FloatingShapes />
         <div style={{ position: 'relative', zIndex: 2 }}>
           <span className="section-tag">מדריך עירוני</span>
@@ -190,7 +202,7 @@ export default function CityPage({ params }: { params: { slug: string } }) {
             {walks.slice(0, 8).map((w) => {
               const diff = DIFFICULTY_STYLE[w.difficulty] ?? DIFFICULTY_STYLE['בינוני']
               return (
-                <li key={w.id} style={{ background: '#fff', border: '1px solid rgba(201,154,91,.18)', borderRadius: 14, padding: '15px 18px' }}>
+                <li key={w.id} style={{ background: '#fff', border: '1px solid rgba(201,154,91,.18)', borderRadius: 14, padding: '15px 18px', boxShadow: 'var(--shadow-xs)' }}>
                   <div style={{ fontWeight: 800, color: 'var(--ink)', fontSize: 16 }}>{w.name}</div>
                   <div style={{ fontSize: 14, color: '#5b4d3c', marginTop: 4, marginBottom: 10 }}>
                     📍 {w.city} · {w.lengthKm} ק״מ · {Math.round(distKm(community.lat, community.lng, w.lat, w.lng))} ק״מ ממרכז {community.name}

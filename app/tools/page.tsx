@@ -110,7 +110,7 @@ const cardStyle: React.CSSProperties = {
   borderRadius: 24,
   background: 'linear-gradient(160deg, #fff, #fdf8ef)',
   border: '1px solid rgba(201,154,91,.14)',
-  boxShadow: '0 10px 30px rgba(42,32,24,.06)',
+  boxShadow: 'var(--shadow-sm)',
   textDecoration: 'none',
   color: 'var(--text)',
 }
@@ -127,8 +127,10 @@ export default function ToolsPage() {
           padding: '56px 28px 48px',
           marginBottom: 40,
           textAlign: 'center',
-          background: 'linear-gradient(160deg, #fdf6e9, #fbf7ef)',
-          border: '1px solid rgba(201,154,91,.12)',
+          background:
+            'radial-gradient(560px 280px at 50% 0%, rgba(232,200,135,.22), transparent 70%), linear-gradient(160deg, #fdf6e9, #fbf7ef)',
+          border: '1px solid rgba(201,154,91,.14)',
+          boxShadow: 'var(--shadow-sm)',
         }}
       >
         <FloatingShapes />

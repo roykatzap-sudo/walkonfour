@@ -9,7 +9,8 @@ export function SkipLink() {
       <a href="#main" className="kv-skip-link">
         דלג לתוכן ראשי
       </a>
-      <style>{`
+      {/* dangerouslySetInnerHTML ולא children: מונע hydration mismatch על גרשיים ב-CSS */}
+      <style dangerouslySetInnerHTML={{ __html: `
         .kv-skip-link {
           position: fixed;
           top: 0;
@@ -37,7 +38,7 @@ export function SkipLink() {
           outline: 3px solid #c99a5b;
           outline-offset: 2px;
         }
-      `}</style>
+      ` }} />
     </>
   )
 }

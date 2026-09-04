@@ -47,7 +47,19 @@ export default function VetPage() {
     <main className="page" style={{ maxWidth: 1180 }}>
       <JsonLd data={faqSchema(schemaItems)} />
 
-      <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 28, padding: '8px 4px 24px', marginBottom: 8 }}>
+      <div
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          borderRadius: 28,
+          padding: '34px 28px',
+          marginBottom: 22,
+          background:
+            'radial-gradient(560px 280px at 50% 0%, rgba(232,200,135,.22), transparent 70%), linear-gradient(160deg, #fdf6e9, #fbf7ef)',
+          border: '1px solid rgba(201,154,91,.14)',
+          boxShadow: 'var(--shadow-sm)',
+        }}
+      >
         <FloatingShapes />
         <div style={{ position: 'relative', zIndex: 2 }}>
           <span className="section-tag">שאלות נפוצות לווטרינר</span>
@@ -80,7 +92,8 @@ export default function VetPage() {
         </div>
       </div>
 
-      <style>{`
+      {/* dangerouslySetInnerHTML ולא children: מונע hydration mismatch על גרשיים ב-CSS */}
+      <style dangerouslySetInnerHTML={{ __html: `
         .vet-disclaimer {
           display: flex; gap: 14px; align-items: flex-start;
           background: rgba(201,154,91,.12);
@@ -99,13 +112,13 @@ export default function VetPage() {
         .vet-redflag strong { color: #7a241f; }
         .vet-cta {
           text-align: center; margin: 48px auto 0; max-width: 560px;
-          background: #fff; border: 1px solid rgba(0,0,0,.08);
+          background: #fff; border: 1px solid rgba(201,154,91,.18);
           border-radius: 20px; padding: 28px 24px;
-          box-shadow: 0 4px 18px rgba(42,32,24,.06);
+          box-shadow: var(--shadow-sm);
         }
         .vet-cta p { margin: 0 0 16px; font-size: 18px; font-weight: 800; color: var(--ink); }
         .vet-cta-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-      `}</style>
+      ` }} />
     </main>
   )
 }

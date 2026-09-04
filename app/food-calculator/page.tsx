@@ -19,7 +19,19 @@ export default function FoodCalculatorPage() {
           path: '/food-calculator',
         })}
       />
-      <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 28, padding: '8px 4px 20px', marginBottom: 10 }}>
+      <div
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          borderRadius: 28,
+          padding: '34px 28px',
+          marginBottom: 22,
+          background:
+            'radial-gradient(560px 280px at 50% 0%, rgba(232,200,135,.22), transparent 70%), linear-gradient(160deg, #fdf6e9, #fbf7ef)',
+          border: '1px solid rgba(201,154,91,.14)',
+          boxShadow: 'var(--shadow-sm)',
+        }}
+      >
         <FloatingShapes />
         <div style={{ position: 'relative', zIndex: 2 }}>
           <span className="section-tag">הקערה הנכונה</span>

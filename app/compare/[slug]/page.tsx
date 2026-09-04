@@ -54,8 +54,8 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
           __html: `
             /* ── אקורדיון שאלות נפוצות (פתיחה קפיצית חתומה) ── */
             .cmp-faq { transition: border-color var(--kv-dur-2, .34s) var(--kv-ease-warm, ease), box-shadow var(--kv-dur-2, .34s) var(--kv-ease-warm, ease), background var(--kv-dur-2, .34s) var(--kv-ease-warm, ease); }
-            .cmp-faq:hover { border-color: rgba(201,154,91,.5); box-shadow: 0 4px 16px rgba(42,32,24,.06); }
-            .cmp-faq[open] { border-color: rgba(201,154,91,.55); box-shadow: 0 6px 20px rgba(42,32,24,.07); }
+            .cmp-faq:hover { border-color: rgba(201,154,91,.5); box-shadow: var(--hover-shadow-sm, 0 4px 16px rgba(42,32,24,.06)); }
+            .cmp-faq[open] { border-color: rgba(201,154,91,.55); box-shadow: var(--hover-shadow-sm, 0 6px 20px rgba(42,32,24,.07)); }
             .cmp-faq summary { list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
             .cmp-faq summary::-webkit-details-marker { display: none; }
             .cmp-faq summary::after {
@@ -124,7 +124,19 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
         }}
       />
 
-      <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 28, padding: '6px 4px 18px', marginBottom: 14 }}>
+      <div
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          borderRadius: 28,
+          padding: '34px 28px',
+          marginBottom: 22,
+          background:
+            'radial-gradient(560px 280px at 50% 0%, rgba(232,200,135,.22), transparent 70%), linear-gradient(160deg, #fdf6e9, #fbf7ef)',
+          border: '1px solid rgba(201,154,91,.14)',
+          boxShadow: 'var(--shadow-sm)',
+        }}
+      >
         <FloatingShapes />
         <div style={{ position: 'relative', zIndex: 2 }}>
           <span className="section-tag">השוואת גזעים</span>
@@ -134,7 +146,7 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
       </div>
 
       {/* ★ תשובה מהירה - Featured Snippet bait (כניסה חתומה + מבטא נצנוץ זהב) */}
-      <section className="kv-reveal" style={{ position: 'relative', marginTop: 8, padding: '20px 24px', background: 'linear-gradient(135deg,#fff8ea,#fef0d8)', border: '2px solid rgba(201,154,91,.35)', borderRadius: 18, boxShadow: '0 6px 22px rgba(201,154,91,.12)', overflow: 'hidden' }}>
+      <section className="kv-reveal" style={{ position: 'relative', marginTop: 8, padding: '20px 24px', background: 'linear-gradient(135deg,#fff8ea,#fef0d8)', border: '1px solid rgba(201,154,91,.45)', borderRadius: 18, boxShadow: 'var(--shadow-sm)', overflow: 'hidden' }}>
         <span aria-hidden="true" style={{ position: 'absolute', top: 0, insetInlineStart: 0, width: 5, height: '100%', background: 'linear-gradient(180deg,#c99a5b,#e8c887)' }} />
         <div style={{ fontWeight: 900, color: 'var(--brand-dark)', fontSize: 14, letterSpacing: 0.5, marginBottom: 8 }}>⚡ תשובה מהירה</div>
         <p style={{ margin: 0, fontSize: 16.5, color: 'var(--ink)', lineHeight: 1.75, maxWidth: '68ch' }}>{c.quickAnswer}</p>
@@ -189,7 +201,7 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
       <div className="kv-paw-divider" aria-hidden="true" />
 
       {/* פסיקה */}
-      <section className="kv-reveal" style={{ marginTop: 28, padding: '22px 22px', background: '#fff', border: '2px solid rgba(201,154,91,.32)', borderRadius: 18 }}>
+      <section className="kv-reveal" style={{ marginTop: 28, padding: '24px 22px', background: '#fff', border: '1px solid rgba(201,154,91,.4)', borderRadius: 18, boxShadow: 'var(--shadow-sm)' }}>
         <h2 style={{ fontSize: 22, fontWeight: 900, color: 'var(--ink)', margin: '0 0 14px' }}>אז במי לבחור?</h2>
         <div style={{ display: 'grid', gap: 14, gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
           <div style={{ padding: 16, background: '#fbf7ef', borderRadius: 12 }}>
@@ -212,7 +224,7 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
         <h2 className="cmp-section-h" style={{ fontSize: 22, fontWeight: 900, color: 'var(--ink)', margin: '0 0 16px' }}>שאלות נפוצות</h2>
         <div style={{ display: 'grid', gap: 10 }}>
           {c.faq.map((f, i) => (
-            <details key={i} className="cmp-faq" style={{ background: '#fff', border: '1px solid rgba(201,154,91,.22)', borderRadius: 14, padding: '14px 18px' }}>
+            <details key={i} className="cmp-faq" style={{ background: '#fff', border: '1px solid rgba(201,154,91,.22)', borderRadius: 14, padding: '14px 18px', boxShadow: 'var(--shadow-xs)' }}>
               <summary className="kv-press" style={{ cursor: 'pointer', fontWeight: 800, color: 'var(--ink)', fontSize: 16 }}>{f.q}</summary>
               <div className="cmp-faq-body">
                 <p style={{ margin: '10px 0 0', fontSize: 15.5, color: '#5b4d3c', lineHeight: 1.75 }}>{f.a}</p>

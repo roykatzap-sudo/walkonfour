@@ -64,8 +64,10 @@ export default function BusinessesPage() {
           padding: '56px 28px',
           marginBottom: 32,
           textAlign: 'center',
-          background: 'linear-gradient(160deg, #fdf6e9, #fbf7ef)',
-          border: '1px solid rgba(201,154,91,.12)',
+          background:
+            'radial-gradient(560px 280px at 50% 0%, rgba(232,200,135,.22), transparent 70%), linear-gradient(160deg, #fdf6e9, #fbf7ef)',
+          border: '1px solid rgba(201,154,91,.14)',
+          boxShadow: 'var(--shadow-sm)',
         }}
       >
         <FloatingShapes />
@@ -95,10 +97,11 @@ export default function BusinessesPage() {
           alignItems: 'center',
           justifyContent: 'space-between',
           gap: 16,
-          background: '#2a2018',
+          background: 'linear-gradient(135deg, #2a2018, #3a2c1e)',
           borderRadius: 20,
           padding: '22px 26px',
           marginBottom: 28,
+          boxShadow: 'var(--shadow-sm)',
         }}
       >
         <div>

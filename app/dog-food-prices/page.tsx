@@ -16,7 +16,19 @@ export default function FoodPricesPage() {
   return (
     <main className="page" style={{ maxWidth: 760 }}>
       {/* HERO */}
-      <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 28, padding: '6px 4px 18px', marginBottom: 12 }}>
+      <div
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          borderRadius: 28,
+          padding: '34px 28px',
+          marginBottom: 22,
+          background:
+            'radial-gradient(560px 280px at 50% 0%, rgba(232,200,135,.22), transparent 70%), linear-gradient(160deg, #fdf6e9, #fbf7ef)',
+          border: '1px solid rgba(201,154,91,.14)',
+          boxShadow: 'var(--shadow-sm)',
+        }}
+      >
         <FloatingShapes />
         <div style={{ position: 'relative', zIndex: 2 }}>
           <span className="section-tag">מחירון</span>
@@ -51,7 +63,7 @@ export default function FoodPricesPage() {
       <FoodPriceTable />
 
       {/* קבוצת רכישה - רשימת המתנה (טרם פעיל) */}
-      <section style={{ marginTop: 30, background: 'linear-gradient(135deg, #fffaf0, #fdf6e9)', border: '2px solid var(--brand)', borderRadius: 22, padding: '24px 26px', textAlign: 'center' }}>
+      <section style={{ marginTop: 30, background: 'linear-gradient(135deg, #fffaf0, #fdf6e9)', border: '1px solid rgba(201,154,91,.45)', borderRadius: 22, padding: '28px 26px', textAlign: 'center', boxShadow: 'var(--shadow-sm)' }}>
         <div style={{ fontSize: 38, marginBottom: 6 }}>🛒</div>
         <h2 style={{ fontSize: 24, fontWeight: 900, color: 'var(--ink)', margin: '0 0 8px' }}>רוצים שנארגן קבוצת רכישה?</h2>
         <p style={{ fontSize: 16, color: '#6a6155', lineHeight: 1.7, maxWidth: 520, margin: '0 auto 16px' }}>
@@ -71,7 +83,7 @@ export default function FoodPricesPage() {
             ['בדקו מבצעי "2 שקים"', 'הרבה חנויות מציעות זוג שקים במחיר מוזל. אם יש לכם מקום אחסון יבש וקריר - משתלם.'],
             ['אל תרדפו אחרי הזול ביותר בלבד', 'מזון איכותי יותר = פחות כמות נדרשת ובריאות טובה יותר לאורך זמן. הזול לק״ג לא תמיד הזול לאורך חיי הכלב.'],
           ].map(([t, d]) => (
-            <li key={t} style={{ background: '#fff', border: '1px solid rgba(201,154,91,.18)', borderRadius: 14, padding: '14px 16px' }}>
+            <li key={t} style={{ background: '#fff', border: '1px solid rgba(201,154,91,.18)', borderRadius: 14, padding: '14px 16px', boxShadow: 'var(--shadow-xs)' }}>
               <div style={{ fontWeight: 800, color: 'var(--ink)', fontSize: 15.5, marginBottom: 4 }}>✓ {t}</div>
               <div style={{ fontSize: 14.5, color: '#6a6155', lineHeight: 1.6 }}>{d}</div>
             </li>

@@ -29,7 +29,7 @@ export function SitterCard({ sitter, sharedBy }: { sitter: Sitter; sharedBy?: st
           background: '#fff',
           borderRadius: 24,
           padding: 24,
-          boxShadow: '0 12px 40px rgba(42,32,24,.08)',
+          boxShadow: 'var(--shadow-md)',
           border: '1px solid rgba(42,32,24,.06)',
           display: 'flex',
           flexDirection: 'column',

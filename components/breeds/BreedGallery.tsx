@@ -280,7 +280,7 @@ const BreedFlipCard = memo(function BreedFlipCard({ breed }: { breed: Breed }) {
         {/* ── פנים קדמית ── */}
         <div
           className="flip-face"
-          style={{ boxShadow: '0 14px 36px rgba(42,32,24,.16)' }}
+          style={{ boxShadow: 'var(--shadow-lg)' }}
         >
           {/* כל הפנים הקדמית = קישור לפרופיל (יעד עקבי לכל הגזעים) */}
           <Link
@@ -418,7 +418,7 @@ const BreedFlipCard = memo(function BreedFlipCard({ breed }: { breed: Breed }) {
             display: 'flex',
             flexDirection: 'column',
             gap: 10,
-            boxShadow: '0 14px 36px rgba(42,32,24,.16)',
+            boxShadow: 'var(--shadow-lg)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>

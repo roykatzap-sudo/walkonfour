@@ -24,7 +24,19 @@ const accentFor = (cat: string) => CATEGORY_ACCENT[cat] ?? '#c99a5b'
 export default function GuidesPage() {
   return (
     <main className="page" style={{ maxWidth: 1180 }}>
-      <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 28, padding: '8px 4px 28px', marginBottom: 8 }}>
+      <div
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          borderRadius: 28,
+          padding: '34px 28px',
+          marginBottom: 22,
+          background:
+            'radial-gradient(560px 280px at 50% 0%, rgba(232,200,135,.22), transparent 70%), linear-gradient(160deg, #fdf6e9, #fbf7ef)',
+          border: '1px solid rgba(201,154,91,.14)',
+          boxShadow: 'var(--shadow-sm)',
+        }}
+      >
         <FloatingShapes />
         <div style={{ position: 'relative', zIndex: 2 }}>
           <span className="section-tag">מדריכי טיפול ואילוף</span>
@@ -63,7 +75,7 @@ export default function GuidesPage() {
                     overflow: 'hidden',
                     border: '1px solid rgba(42,32,24,.08)',
                     borderTop: `3px solid ${accentFor(g.category)}`,
-                    boxShadow: '0 4px 18px rgba(42,32,24,.06)',
+                    boxShadow: 'var(--shadow-sm)',
                     height: '100%',
                   }}
                 >
@@ -102,7 +114,7 @@ export default function GuidesPage() {
         <div style={{ textAlign: 'center', marginBottom: 8 }}>
           <span className="section-tag">לפני שמאמצים</span>
           <h2 id="cost-calc-heading" className="page-title" style={{ fontSize: 38 }}>
-            💰 כמה יעלה לגדל <span className="grad-text">דווקא את הכלב שלכם?</span>
+            כמה יעלה לגדל <span className="grad-text">דווקא את הכלב שלכם?</span>
           </h2>
           <p className="page-sub" style={{ maxWidth: 640, margin: '0 auto' }}>
             בחרו גזע ספציפי (הגודל והמשקל ייקבעו אוטומטית), ולכמה שנים - וקבלו הערכת עלות כוללת

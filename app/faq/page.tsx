@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { FaqAccordion, type FaqGroup } from '@/components/marketing/FaqAccordion'
 import { CtaBanner } from '@/components/marketing/CtaBanner'
 import { JsonLd, faqSchema, type FaqItem } from '@/components/seo/JsonLd'
+import { FloatingShapes } from '@/components/fx/FloatingShapes'
 // משתמש ב-helper המרכזי buildMetadata מ-lib/seo.ts
 import { buildMetadata } from '@/lib/seo'
 
@@ -258,11 +259,28 @@ export default function FaqPage() {
   return (
     <main className="page page-narrow">
       <JsonLd data={faqSchema(FAQ_SCHEMA_ITEMS)} />
-      <span className="section-tag">מרכז העזרה</span>
-      <h1 className="page-title display">השאלות שאתם הכי שואלים</h1>
-      <p className="page-sub">
-        אספנו את מה שחוזר אצלנו הכי הרבה. לא מצאתם תשובה? יש לזה כפתור בהמשך.
-      </p>
+      <div
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          borderRadius: 28,
+          padding: '34px 28px',
+          marginBottom: 22,
+          background:
+            'radial-gradient(560px 280px at 50% 0%, rgba(232,200,135,.22), transparent 70%), linear-gradient(160deg, #fdf6e9, #fbf7ef)',
+          border: '1px solid rgba(201,154,91,.14)',
+          boxShadow: 'var(--shadow-sm)',
+        }}
+      >
+        <FloatingShapes />
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <span className="section-tag">מרכז העזרה</span>
+          <h1 className="page-title display">השאלות שאתם הכי שואלים</h1>
+          <p className="page-sub" style={{ margin: 0 }}>
+            אספנו את מה שחוזר אצלנו הכי הרבה. לא מצאתם תשובה? יש לזה כפתור בהמשך.
+          </p>
+        </div>
+      </div>
 
       <FaqAccordion groups={GROUPS} />
 

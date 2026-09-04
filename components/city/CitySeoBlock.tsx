@@ -17,9 +17,10 @@ export function CitySeoBlock({ city, seo }: { city: string; seo: CitySeo }) {
       <div
         style={{
           background: 'linear-gradient(135deg, #fff7e9, #fbeece)',
-          border: '1.5px solid var(--brand)',
+          border: '1px solid rgba(201,154,91,.45)',
           borderRadius: 18,
           padding: '20px 24px',
+          boxShadow: 'var(--shadow-sm)',
           fontSize: 16.5,
           lineHeight: 1.7,
           color: 'var(--ink)',
@@ -48,7 +49,7 @@ export function CitySeoBlock({ city, seo }: { city: string; seo: CitySeo }) {
 
       {/* FAQ */}
       {seo.faq.length > 0 && (
-        <div style={{ background: '#fff', border: '1px solid rgba(201,154,91,.22)', borderRadius: 16, padding: '22px 24px' }}>
+        <div style={{ background: '#fff', border: '1px solid rgba(201,154,91,.22)', borderRadius: 16, padding: '22px 24px', boxShadow: 'var(--shadow-sm)' }}>
           <h2 style={{ margin: '0 0 16px', fontSize: 22, fontWeight: 900, color: 'var(--ink)', letterSpacing: '-.3px' }}>
             שאלות נפוצות על כלבים ב{city}
           </h2>

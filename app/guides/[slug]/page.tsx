@@ -109,9 +109,10 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
             .guide-faq {
               background: #fff; border: 1px solid rgba(201,154,91,.22);
               border-radius: 14px; padding: 14px 18px;
+              box-shadow: var(--shadow-xs);
               transition: box-shadow var(--kv-dur-2,.34s) var(--kv-ease-warm,ease);
             }
-            .guide-faq[open] { box-shadow: 0 6px 20px rgba(42,32,24,.08); }
+            .guide-faq[open] { box-shadow: var(--hover-shadow-sm, 0 6px 20px rgba(42,32,24,.08)); }
             .guide-faq:focus-within { outline: 3px solid #c99a5b; outline-offset: 2px; }
             .guide-faq summary { list-style: none; }
             .guide-faq summary::-webkit-details-marker { display: none; }

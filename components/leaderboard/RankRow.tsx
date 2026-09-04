@@ -45,7 +45,7 @@ export function RankRow({ leader }: { leader: RankedLeader }) {
           borderRadius: 18,
           background: '#fff',
           border: '1px solid rgba(0,0,0,.07)',
-          boxShadow: '0 2px 12px rgba(42,32,24,.05)',
+          boxShadow: 'var(--shadow-xs)',
           cursor: 'pointer',
           fontFamily: 'inherit',
           color: 'var(--text)',

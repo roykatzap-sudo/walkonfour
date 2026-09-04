@@ -117,7 +117,8 @@ export default function BusinessApplyPage() {
             padding: '48px 24px',
             background: 'linear-gradient(135deg, #fffaf0, #fdf6e9)',
             borderRadius: 24,
-            border: '2px solid rgba(201,154,91,.5)',
+            border: '1px solid rgba(201,154,91,.45)',
+            boxShadow: 'var(--shadow-sm)',
             maxWidth: 560,
             margin: '0 auto',
           }}
@@ -146,7 +147,8 @@ export default function BusinessApplyPage() {
             padding: '48px 24px',
             background: 'linear-gradient(135deg, #fffaf0, #fdf6e9)',
             borderRadius: 24,
-            border: '2px solid var(--brand)',
+            border: '1px solid rgba(201,154,91,.45)',
+            boxShadow: 'var(--shadow-sm)',
             maxWidth: 560,
             margin: '0 auto',
           }}
@@ -187,8 +189,10 @@ export default function BusinessApplyPage() {
           padding: '48px 28px',
           marginBottom: 24,
           textAlign: 'center',
-          background: 'linear-gradient(160deg, #fdf6e9, #fbf7ef)',
-          border: '1px solid rgba(201,154,91,.12)',
+          background:
+            'radial-gradient(560px 280px at 50% 0%, rgba(232,200,135,.22), transparent 70%), linear-gradient(160deg, #fdf6e9, #fbf7ef)',
+          border: '1px solid rgba(201,154,91,.14)',
+          boxShadow: 'var(--shadow-sm)',
         }}
       >
         <FloatingShapes />

@@ -31,9 +31,10 @@ export function BreedSeoBlock({ breed, detail, seo }: Props) {
         <div
           style={{
             background: 'linear-gradient(135deg, #fff7e9, #fbeece)',
-            border: '1.5px solid var(--brand)',
+            border: '1px solid rgba(201,154,91,.45)',
             borderRadius: 18,
             padding: '20px 24px',
+            boxShadow: 'var(--shadow-sm)',
             fontSize: 16.5,
             lineHeight: 1.7,
             color: 'var(--ink)',
@@ -63,7 +64,7 @@ export function BreedSeoBlock({ breed, detail, seo }: Props) {
 
       {/* 2. Infobox - טבלת עובדות מהירות (snippet candidate) */}
       {detail && (
-        <div style={{ background: '#fff', border: '1px solid rgba(201,154,91,.22)', borderRadius: 16, overflow: 'hidden' }}>
+        <div style={{ background: '#fff', border: '1px solid rgba(201,154,91,.22)', borderRadius: 16, overflow: 'hidden', boxShadow: 'var(--shadow-sm)' }}>
           <div style={{ background: '#fbf7ef', padding: '12px 18px', borderBottom: '1px solid rgba(201,154,91,.22)' }}>
             <h2 style={{ margin: 0, fontSize: 17, fontWeight: 900, color: 'var(--ink)' }}>עובדות מהירות על {breed.name}</h2>
           </div>
@@ -85,7 +86,7 @@ export function BreedSeoBlock({ breed, detail, seo }: Props) {
 
       {/* 3. FAQ - 5-7 שאלות נפוצות (FAQPage schema candidate) */}
       {seo?.faq && seo.faq.length > 0 && (
-        <div style={{ background: '#fff', border: '1px solid rgba(201,154,91,.22)', borderRadius: 16, padding: '22px 24px' }}>
+        <div style={{ background: '#fff', border: '1px solid rgba(201,154,91,.22)', borderRadius: 16, padding: '22px 24px', boxShadow: 'var(--shadow-sm)' }}>
           <h2 style={{ margin: '0 0 16px', fontSize: 22, fontWeight: 900, color: 'var(--ink)', letterSpacing: '-.3px' }}>
             שאלות נפוצות על {breed.name}
           </h2>
@@ -123,7 +124,7 @@ export function BreedSeoBlock({ breed, detail, seo }: Props) {
 
       {/* 4. "X בישראל" - הפער של המתחרים (אף אחד לא עושה!) */}
       {seo?.inIsrael && (
-        <div style={{ background: '#fff', border: '1px solid rgba(201,154,91,.22)', borderRadius: 16, padding: '22px 24px' }}>
+        <div style={{ background: '#fff', border: '1px solid rgba(201,154,91,.22)', borderRadius: 16, padding: '22px 24px', boxShadow: 'var(--shadow-sm)' }}>
           <h2 style={{ margin: '0 0 14px', fontSize: 22, fontWeight: 900, color: 'var(--ink)', letterSpacing: '-.3px' }}>
             🇮🇱 {breed.name} בישראל
           </h2>

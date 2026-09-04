@@ -34,7 +34,7 @@ export function CityParksList({ parks, city }: { parks: DogPark[]; city: string 
               href={gmaps(p)}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ display: 'block', background: '#fff', border: '1px solid rgba(201,154,91,.2)', borderRadius: 14, padding: '13px 15px', textDecoration: 'none', color: 'inherit', height: '100%' }}
+              style={{ display: 'block', background: '#fff', border: '1px solid rgba(201,154,91,.2)', borderRadius: 14, padding: '13px 15px', textDecoration: 'none', color: 'inherit', height: '100%', boxShadow: 'var(--shadow-xs)' }}
             >
               <div style={{ fontWeight: 800, color: 'var(--ink)', fontSize: 15 }}>
                 {isNamed(p) ? p.name : 'גינת כלבים'}

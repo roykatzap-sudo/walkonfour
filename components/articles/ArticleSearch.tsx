@@ -38,7 +38,7 @@ export function ArticleSearch() {
           flexWrap: 'wrap',
           background: '#fff',
           border: '1px solid rgba(42,32,24,.08)',
-          boxShadow: '0 4px 18px rgba(42,32,24,.06)',
+          boxShadow: 'var(--shadow-sm)',
         }}
       >
         <input
@@ -71,7 +71,7 @@ export function ArticleSearch() {
                   style={{ textDecoration: 'none', color: 'inherit', display: 'block', borderRadius: 20 }}
                 >
                   <Tilt3D className="sweep" max={8} glare>
-                    <article style={{ background: '#fff', borderRadius: 20, overflow: 'hidden', border: '1px solid rgba(42,32,24,.08)', boxShadow: '0 4px 18px rgba(42,32,24,.06)', height: '100%' }}>
+                    <article style={{ background: '#fff', borderRadius: 20, overflow: 'hidden', border: '1px solid rgba(42,32,24,.08)', boxShadow: 'var(--shadow-sm)', height: '100%' }}>
                       <div style={{ position: 'relative', aspectRatio: '1 / 1' }}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img

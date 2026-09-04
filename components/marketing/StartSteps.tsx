@@ -37,7 +37,8 @@ export function StartSteps({ steps }: { steps: StartStep[] }) {
         </li>
       ))}
 
-      <style>{`
+      {/* dangerouslySetInnerHTML ולא children: מונע hydration mismatch על גרשיים ב-CSS */}
+      <style dangerouslySetInnerHTML={{ __html: `
         .mkt-steps {
           list-style: none;
           margin: 0;
@@ -52,10 +53,10 @@ export function StartSteps({ steps }: { steps: StartStep[] }) {
           align-items: flex-start;
           gap: 20px;
           background: #fff;
-          border: 1px solid rgba(0,0,0,.08);
+          border: 1px solid rgba(201,154,91,.18);
           border-radius: 20px;
           padding: 26px;
-          box-shadow: 0 2px 12px rgba(0,0,0,.04);
+          box-shadow: var(--shadow-xs);
           position: relative;
           transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
         }
@@ -113,7 +114,7 @@ export function StartSteps({ steps }: { steps: StartStep[] }) {
           .mkt-step { transition: none; }
           .mkt-step:hover { transform: none; }
         }
-      `}</style>
+      ` }} />
     </ol>
   )
 }

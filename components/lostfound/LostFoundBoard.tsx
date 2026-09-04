@@ -154,7 +154,7 @@ function ReportCard({ report: r, now, onContact }: { report: LostFoundReport; no
           borderRadius: 18,
           overflow: 'hidden',
           border: '1px solid rgba(42,32,24,.08)',
-          boxShadow: '0 4px 18px rgba(42,32,24,.06)',
+          boxShadow: 'var(--shadow-sm)',
           height: '100%',
         }}
       >

@@ -119,7 +119,8 @@ export default function ListingPage({ params }: { params: { id: string } }) {
         </section>
       )}
 
-      <style>{`
+      {/* dangerouslySetInnerHTML ולא children: מונע hydration mismatch על גרשיים ב-CSS */}
+      <style dangerouslySetInnerHTML={{ __html: `
         .ml-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
         @media (min-width: 820px) { .ml-grid { grid-template-columns: 1.1fr 0.9fr; gap: 32px; align-items: start; } }
         .ml-photo { position: relative; border-radius: 22px; overflow: hidden; background: #f0eadd; aspect-ratio: 4 / 3; }
@@ -149,7 +150,7 @@ export default function ListingPage({ params }: { params: { id: string } }) {
         .ml-related-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
         .ml-related-title { font-size: 14.5px; font-weight: 800; color: var(--ink); line-height: 1.35; }
         .ml-related-price { font-size: 13px; color: #8a7c66; font-weight: 700; }
-      `}</style>
+      ` }} />
     </main>
   )
 }

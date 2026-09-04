@@ -195,7 +195,7 @@ export function Navbar() {
     ...(scrolled
       ? {
           backgroundColor: 'rgba(251,247,239,.97)',
-          boxShadow: '0 6px 22px rgba(42,32,24,.09)',
+          boxShadow: 'var(--hover-shadow-sm, 0 6px 22px rgba(42,32,24,.09))',
           borderBottomColor: 'rgba(201,154,91,.28)',
         }
       : null),

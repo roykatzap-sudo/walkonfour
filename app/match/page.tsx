@@ -116,7 +116,7 @@ export default function MatchPage() {
               border-radius: 14px; padding: 14px 18px;
               transition: box-shadow var(--kv-dur-2,.34s) var(--kv-ease-warm,ease);
             }
-            .match-faq[open] { box-shadow: 0 6px 20px rgba(42,32,24,.08); }
+            .match-faq[open] { box-shadow: var(--hover-shadow-sm, 0 6px 20px rgba(42,32,24,.08)); }
             .match-faq:focus-within { outline: 3px solid #c99a5b; outline-offset: 2px; }
             .match-faq summary { list-style: none; }
             .match-faq summary::-webkit-details-marker { display: none; }
@@ -130,6 +130,7 @@ export default function MatchPage() {
               border: 1.5px solid rgba(201,154,91,.2);
               color: var(--ink); text-decoration: none;
               font-size: 16px; font-weight: 800; line-height: 1.4;
+              box-shadow: var(--shadow-xs);
             }
             @media (prefers-reduced-motion: reduce) { .match-faq { transition: none; } }
           `,
@@ -145,8 +146,10 @@ export default function MatchPage() {
           padding: '52px 28px 44px',
           marginBottom: 36,
           textAlign: 'center',
-          background: 'linear-gradient(160deg, #fdf6e9, #fbf7ef)',
-          border: '1px solid rgba(201,154,91,.12)',
+          background:
+            'radial-gradient(560px 280px at 50% 0%, rgba(232,200,135,.22), transparent 70%), linear-gradient(160deg, #fdf6e9, #fbf7ef)',
+          border: '1px solid rgba(201,154,91,.14)',
+          boxShadow: 'var(--shadow-sm)',
         }}
       >
         <FloatingShapes />

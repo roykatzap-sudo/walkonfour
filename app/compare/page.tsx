@@ -32,6 +32,7 @@ export default function CompareHubPage() {
             .cmp-hub-card {
               display: block; padding: 20px 22px; background: #fff;
               border: 1px solid rgba(201,154,91,.22); border-radius: 18px;
+              box-shadow: var(--shadow-xs);
               text-decoration: none; position: relative; overflow: hidden;
               transition: transform .2s cubic-bezier(.2,.7,.3,1), box-shadow .2s ease, border-color .2s ease;
             }
@@ -42,7 +43,7 @@ export default function CompareHubPage() {
             }
             .cmp-hub-card:hover {
               transform: translateY(-3px);
-              box-shadow: 0 12px 30px rgba(42,32,24,.1);
+              box-shadow: var(--hover-shadow-md, 0 12px 30px rgba(42,32,24,.1));
               border-color: rgba(201,154,91,.45);
             }
             .cmp-hub-card:hover::before { transform: scaleY(1); }
@@ -57,7 +58,19 @@ export default function CompareHubPage() {
         }}
       />
 
-      <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 28, padding: '6px 4px 18px', marginBottom: 14 }}>
+      <div
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          borderRadius: 28,
+          padding: '34px 28px',
+          marginBottom: 22,
+          background:
+            'radial-gradient(560px 280px at 50% 0%, rgba(232,200,135,.22), transparent 70%), linear-gradient(160deg, #fdf6e9, #fbf7ef)',
+          border: '1px solid rgba(201,154,91,.14)',
+          boxShadow: 'var(--shadow-sm)',
+        }}
+      >
         <FloatingShapes />
         <div className="kv-reveal" style={{ position: 'relative', zIndex: 2 }}>
           <span className="section-tag">השוואות גזעים</span>

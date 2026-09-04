@@ -25,7 +25,7 @@ export function CommunityCard({ community }: { community: Community }) {
           textDecoration: 'none',
           color: '#fff',
           border: `1px solid ${c.accent}55`,
-          boxShadow: '0 18px 40px rgba(42,32,24,.18)',
+          boxShadow: 'var(--shadow-lg)',
           outlineOffset: 3,
         }}
       >

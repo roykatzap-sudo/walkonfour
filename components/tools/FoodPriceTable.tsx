@@ -55,7 +55,7 @@ export function FoodPriceTable() {
           const highKg = p.high / p.weightKg
           const isBest = p.brand + p.product === bestValueId
           return (
-            <div key={p.brand + p.product} style={{ background: '#fff', border: isBest ? '2px solid var(--brand)' : '1px solid rgba(201,154,91,.18)', borderRadius: 16, padding: '14px 18px' }}>
+            <div key={p.brand + p.product} style={{ background: '#fff', border: isBest ? '2px solid var(--brand)' : '1px solid rgba(201,154,91,.18)', borderRadius: 16, padding: '14px 18px', boxShadow: 'var(--shadow-xs)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>

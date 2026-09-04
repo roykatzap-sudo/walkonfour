@@ -496,7 +496,8 @@ export function DogParksMap() {
       </div>
 
       {/* רספונסיביות למובייל: סרגל בקרה ברוחב מלא, מינימלי */}
-      <style>{`
+      {/* dangerouslySetInnerHTML ולא children: מונע hydration mismatch על גרשיים ב-CSS */}
+      <style dangerouslySetInnerHTML={{ __html: `
         .map-city-select {
           background: rgba(42,32,24,.92);
           backdrop-filter: blur(10px);
@@ -586,7 +587,7 @@ export function DogParksMap() {
           }
           .map-count-chip { font-size: 14px; }
         }
-      `}</style>
+      ` }} />
 
       {/* ── מודאל דיווח על גינה חסרה ── */}
       {reportPoint && (

@@ -140,8 +140,8 @@
   overflow: hidden;
   transition: box-shadow 0.25s, border-color 0.25s;
 }
-.triage-item:hover { box-shadow: 0 8px 28px rgba(42, 32, 24, 0.08); }
-.triage-item[open] { box-shadow: 0 12px 36px rgba(42, 32, 24, 0.1); }
+.triage-item:hover { box-shadow: var(--hover-shadow-sm); }
+.triage-item[open] { box-shadow: var(--hover-shadow-md); }
 .u-border-emergency { border-right: 5px solid var(--u-emergency); }
 .u-border-urgent { border-right: 5px solid var(--u-urgent); }
 .u-border-watch { border-right: 5px solid var(--u-watch); }

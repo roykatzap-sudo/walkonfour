@@ -14,7 +14,19 @@ export default function CitiesPage() {
   const hubs = allCityHubs()
   return (
     <main className="page" style={{ maxWidth: 1000 }}>
-      <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 28, padding: '6px 4px 18px', marginBottom: 18 }}>
+      <div
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          borderRadius: 28,
+          padding: '34px 28px',
+          marginBottom: 28,
+          background:
+            'radial-gradient(560px 280px at 50% 0%, rgba(232,200,135,.22), transparent 70%), linear-gradient(160deg, #fdf6e9, #fbf7ef)',
+          border: '1px solid rgba(201,154,91,.14)',
+          boxShadow: 'var(--shadow-sm)',
+        }}
+      >
         <FloatingShapes />
         <div style={{ position: 'relative', zIndex: 2 }}>
           <span className="section-tag">מדריכי ערים</span>
@@ -27,7 +39,9 @@ export default function CitiesPage() {
         </div>
       </div>
 
-      <style>{`
+      {/* dangerouslySetInnerHTML - חובה: string child רגיל ב-<style> עם גרשיים
+          נכתב בצד השרת כ-&#x27; ולא מפוענח בתוך style => hydration mismatch */}
+      <style dangerouslySetInnerHTML={{ __html: `
         .city-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
         .city-card {
           position: relative;
@@ -67,7 +81,7 @@ export default function CitiesPage() {
           .city-card, .city-card::before, .city-card .city-go { transition: none; }
           .city-card:hover, .city-card:focus-visible { transform: none; }
         }
-      `}</style>
+      ` }} />
       <div className="city-grid">
         {hubs.map((h) => (
           <Link
