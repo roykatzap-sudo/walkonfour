@@ -49,8 +49,9 @@
 .spin3d { animation: spin3d 18s linear infinite; transform-style: preserve-3d; }
 
 /* ── reveal-3d (JS toggles .in) - כניסה מודגשת: מרחק גדול יותר + blur-in ── */
-.rv3d { opacity: 0; filter: blur(7px); transform: perspective(1000px) rotateX(16deg) translateY(64px) scale(.96); transition: opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1), filter .9s cubic-bezier(.22,1,.36,1); }
-.rv3d.in { opacity: 1; filter: blur(0); transform: perspective(1000px) rotateX(0) translateY(0) scale(1); }
+/* חשיפה בסגנון upwind - fade-up נקי ושקט, בלי דרמת 3D */
+.rv3d { opacity: 0; filter: blur(4px); transform: translateY(32px); transition: opacity .7s ease-in-out, transform .7s ease-in-out, filter .7s ease-in-out; }
+.rv3d.in { opacity: 1; filter: blur(0); transform: translateY(0); }
 .rv3d.d1 { transition-delay: .08s } .rv3d.d2 { transition-delay: .18s }
 .rv3d.d3 { transition-delay: .28s } .rv3d.d4 { transition-delay: .38s }
 
@@ -75,28 +76,31 @@
 .flip-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 22px; overflow: hidden; }
 .flip-back { transform: rotateY(180deg); }
 
-/* ── breed card hover polish - lift + זום תמונה + sheen + הילה זהובה ── */
+/* ── breed card hover - שפת upwind: 300ms ease-in-out, lift עדין,
+      מסגרת גרדיאנט-זהב + glow אמביינטי רך. בלי ספרינג, בלי sheen. ── */
 .breed-flip {
-  transition: transform .35s cubic-bezier(.22,1,.36,1);
+  transition: transform 300ms ease-in-out;
 }
-.breed-flip:hover { transform: translateY(-6px); }
-.breed-flip .flip-face { transition: box-shadow .35s ease; }
+.breed-flip:hover { transform: translateY(-4px); }
+.breed-flip .flip-face { transition: box-shadow 300ms ease-in-out; }
 .breed-flip:hover .flip-face {
-  box-shadow: 0 24px 56px rgba(42,32,24,.26), 0 0 0 1px rgba(232,200,135,.4);
+  box-shadow:
+    0 0 0 1px rgba(216,176,106,.55),
+    0 0 24px rgba(216,176,106,.22),
+    0 20px 48px rgba(42,32,24,.2);
 }
 .breed-flip .flip-face > img {
-  transition: transform .8s cubic-bezier(.22,1,.36,1);
+  transition: transform 600ms ease-in-out;
   will-change: transform;
 }
-.breed-flip:hover .flip-face > img { transform: scale(1.07); }
-/* פס אור אלכסוני שחוצה את התמונה ב-hover - רק על הפנים הקדמית */
+.breed-flip:hover .flip-face > img { transform: scale(1.04); }
+/* glow פנימי עדין בתחתית התמונה - כמו ה-gradient-sections של upwind */
 .breed-flip .flip-face:not(.flip-back)::after {
-  content: ''; position: absolute; top: 0; left: -70%; width: 50%; height: 100%;
-  background: linear-gradient(115deg, transparent, rgba(255,255,255,.3), transparent);
-  transform: skewX(-18deg); pointer-events: none; z-index: 2;
-  transition: left .7s ease;
+  content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 2;
+  background: radial-gradient(120% 60% at 50% 110%, rgba(216,176,106,.22), transparent 60%);
+  opacity: 0; transition: opacity 300ms ease-in-out;
 }
-.breed-flip:hover .flip-face:not(.flip-back)::after { left: 130%; }
+.breed-flip:hover .flip-face:not(.flip-back)::after { opacity: 1; }
 
 /* ── 3D pill chip ── */
 .chip3d {
@@ -104,9 +108,9 @@
   padding: var(--chip-lg-pad); border-radius: var(--pill-radius); font-size: 12px; font-weight: 800;
   background: rgba(232,200,135,.12); color: #c99a5b; border: 1px solid rgba(232,200,135,.25);
 }
-/* צ'יפים לחיצים קופצים קלות ב-hover */
-button.chip3d { transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease, background .2s, color .2s, border-color .2s; }
-button.chip3d:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(201,154,91,.28); }
+/* צ'יפים לחיצים - מעבר חלק בסגנון upwind (בלי קפיצת ספרינג) */
+button.chip3d { transition: all 300ms ease-in-out; }
+button.chip3d:hover { border-color: rgba(216,176,106,.6); box-shadow: 0 0 14px rgba(216,176,106,.25); background: rgba(232,200,135,.2); }
 .chip3d-dark { background: rgba(232,200,135,.1); color: #e8c887; border-color: rgba(232,200,135,.2); }
 
 /* ── shiny hover sweep ── */
