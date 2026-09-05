@@ -56,7 +56,7 @@
 .rv3d.d3 { transition-delay: .28s } .rv3d.d4 { transition-delay: .38s }
 
 /* ── magnetic button ── */
-.magnetic { display: inline-flex; align-items: center; justify-content: center; will-change: transform; transition: transform .25s cubic-bezier(.34,1.56,.64,1); }
+.magnetic { display: inline-flex; align-items: center; justify-content: center; will-change: transform; transition: transform 300ms ease-in-out; }
 
 /* ── floating decorative paws layer ── */
 .paws-layer { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 1; }
