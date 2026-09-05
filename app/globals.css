@@ -83,15 +83,17 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 84px; overflow-x: clip; max-width: 100%; }
 
-/* ── מעבר עמודים חלק (Template) - fade + עלייה קלה בכל ניווט ── */
-.route-fade { animation: routeFade .42s cubic-bezier(.22,1,.36,1) both; }
+/* ── מעבר עמודים חלק (Template) - fade + עלייה + blur-in קצר בכל ניווט ── */
+.route-fade { animation: routeFade .5s cubic-bezier(.22,1,.36,1) both; }
 @keyframes routeFade {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(14px) scale(.995); filter: blur(4px); }
+  60%  { filter: blur(0); }
+  to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .route-fade { animation: none; }
+  .card, .card:hover { transform: none; }
 }
 
 /* ── פס התקדמות לניווט ── */
@@ -782,8 +784,8 @@ body.kv-zoomed, body.kv-zoomed * { cursor: auto !important; }
 .page-narrow { max-width: 720px; }
 .page-title { font-size: var(--h3); font-weight: 900; letter-spacing: -1.5px; margin-bottom: 6px; }
 .page-sub { color: var(--text-muted); font-size: 16px; margin-bottom: 36px; }
-.card { background: #fff; border: 1px solid rgba(42,32,24,.07); border-radius: 20px; padding: 28px; box-shadow: var(--shadow-sm); transition: box-shadow .3s ease, border-color .3s ease; }
-.card:hover { box-shadow: var(--shadow-md); border-color: rgba(201,154,91,.22); }
+.card { background: #fff; border: 1px solid rgba(42,32,24,.07); border-radius: 20px; padding: 28px; box-shadow: var(--shadow-sm); transition: box-shadow .3s ease, border-color .3s ease, transform .3s cubic-bezier(.22,1,.36,1); }
+.card:hover { box-shadow: var(--shadow-md); border-color: rgba(201,154,91,.22); transform: translateY(-3px); }
 .field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
 .field label { font-size: 14px; font-weight: 700; color: #3a3128; }
 .input { padding: 13px 16px; min-height: 46px; border: 1.5px solid #d8d2c7; border-radius: 12px; font-size: 16px; font-family: inherit; background: #fff; outline: none; transition: border-color .2s, box-shadow .2s; }

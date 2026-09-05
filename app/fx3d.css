@@ -49,8 +49,8 @@
 .spin3d { animation: spin3d 18s linear infinite; transform-style: preserve-3d; }
 
 /* ── reveal-3d (JS toggles .in) - כניסה מודגשת: מרחק גדול יותר + blur-in ── */
-.rv3d { opacity: 0; filter: blur(7px); transform: perspective(1000px) rotateX(16deg) translateY(64px); transition: opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1), filter .9s cubic-bezier(.22,1,.36,1); }
-.rv3d.in { opacity: 1; filter: blur(0); transform: perspective(1000px) rotateX(0) translateY(0); }
+.rv3d { opacity: 0; filter: blur(7px); transform: perspective(1000px) rotateX(16deg) translateY(64px) scale(.96); transition: opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1), filter .9s cubic-bezier(.22,1,.36,1); }
+.rv3d.in { opacity: 1; filter: blur(0); transform: perspective(1000px) rotateX(0) translateY(0) scale(1); }
 .rv3d.d1 { transition-delay: .08s } .rv3d.d2 { transition-delay: .18s }
 .rv3d.d3 { transition-delay: .28s } .rv3d.d4 { transition-delay: .38s }
 
@@ -71,9 +71,32 @@
 /* ── breed flip card ── */
 .flip { perspective: 1100px; }
 .flip-inner { position: relative; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.22,1,.36,1); }
-.flip:hover .flip-inner, .flip.flipped .flip-inner { transform: rotateY(180deg); }
+.flip.flipped .flip-inner { transform: rotateY(180deg); }
 .flip-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 22px; overflow: hidden; }
 .flip-back { transform: rotateY(180deg); }
+
+/* ── breed card hover polish - lift + זום תמונה + sheen + הילה זהובה ── */
+.breed-flip {
+  transition: transform .35s cubic-bezier(.22,1,.36,1);
+}
+.breed-flip:hover { transform: translateY(-6px); }
+.breed-flip .flip-face { transition: box-shadow .35s ease; }
+.breed-flip:hover .flip-face {
+  box-shadow: 0 24px 56px rgba(42,32,24,.26), 0 0 0 1px rgba(232,200,135,.4);
+}
+.breed-flip .flip-face > img {
+  transition: transform .8s cubic-bezier(.22,1,.36,1);
+  will-change: transform;
+}
+.breed-flip:hover .flip-face > img { transform: scale(1.07); }
+/* פס אור אלכסוני שחוצה את התמונה ב-hover - רק על הפנים הקדמית */
+.breed-flip .flip-face:not(.flip-back)::after {
+  content: ''; position: absolute; top: 0; left: -70%; width: 50%; height: 100%;
+  background: linear-gradient(115deg, transparent, rgba(255,255,255,.3), transparent);
+  transform: skewX(-18deg); pointer-events: none; z-index: 2;
+  transition: left .7s ease;
+}
+.breed-flip:hover .flip-face:not(.flip-back)::after { left: 130%; }
 
 /* ── 3D pill chip ── */
 .chip3d {
@@ -81,6 +104,9 @@
   padding: var(--chip-lg-pad); border-radius: var(--pill-radius); font-size: 12px; font-weight: 800;
   background: rgba(232,200,135,.12); color: #c99a5b; border: 1px solid rgba(232,200,135,.25);
 }
+/* צ'יפים לחיצים קופצים קלות ב-hover */
+button.chip3d { transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease, background .2s, color .2s, border-color .2s; }
+button.chip3d:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(201,154,91,.28); }
 .chip3d-dark { background: rgba(232,200,135,.1); color: #e8c887; border-color: rgba(232,200,135,.2); }
 
 /* ── shiny hover sweep ── */
@@ -108,8 +134,11 @@
     transition: none !important;
   }
   .tilt-glare { opacity: 0 !important; }
+  .breed-flip, .breed-flip:hover { transform: none !important; }
+  .breed-flip .flip-face > img, .breed-flip:hover .flip-face > img { transform: none !important; transition: none !important; }
+  .breed-flip .flip-face:not(.flip-back)::after { display: none !important; }
+  button.chip3d, button.chip3d:hover { transform: none !important; }
   .flip-inner { transition: none !important; }
-  .flip:hover .flip-inner,
   .flip.flipped .flip-inner { transform: none !important; }
   .sweep::after { transition: none !important; }
   .rv3d {

@@ -26,7 +26,7 @@ function prefersReducedMotion(): boolean {
 export function Tilt3D({
   children,
   className = '',
-  max = 12,
+  max = 6,
   glare = true,
   style,
 }: {
@@ -37,23 +37,44 @@ export function Tilt3D({
   style?: React.CSSProperties
 }) {
   const ref = useRef<HTMLDivElement>(null)
+  const raf = useRef(0)
+  const pos = useRef({ px: 0.5, py: 0.5 })
 
-  function onMove(e: React.MouseEvent) {
+  // מחילים את ההטיה רק פעם בפריים (rAF) ובלי transition בזמן תנועה -
+  // אחרת ה-transition "רודף" אחרי העכבר וכל הכרטיס רועד ומהבהב.
+  function apply() {
+    raf.current = 0
     const el = ref.current
-    if (!el || prefersReducedMotion()) return
-    const r = el.getBoundingClientRect()
-    const px = (e.clientX - r.left) / r.width
-    const py = (e.clientY - r.top) / r.height
+    if (!el) return
+    const { px, py } = pos.current
     const ry = (px - 0.5) * max * 2
     const rx = -(py - 0.5) * max * 2
+    el.style.transition = 'box-shadow .3s ease'
     el.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`
     el.style.setProperty('--g', glare ? '1' : '0')
     el.style.setProperty('--gx', `${px * 100}%`)
     el.style.setProperty('--gy', `${py * 100}%`)
   }
+
+  function onMove(e: React.MouseEvent) {
+    const el = ref.current
+    if (!el || prefersReducedMotion()) return
+    const r = el.getBoundingClientRect()
+    pos.current = {
+      px: (e.clientX - r.left) / r.width,
+      py: (e.clientY - r.top) / r.height,
+    }
+    if (!raf.current) raf.current = requestAnimationFrame(apply)
+  }
   function reset() {
     const el = ref.current
     if (!el) return
+    if (raf.current) {
+      cancelAnimationFrame(raf.current)
+      raf.current = 0
+    }
+    // חזרה רכה למצב מנוחה - כאן דווקא רוצים transition
+    el.style.transition = ''
     el.style.transform = 'rotateX(0) rotateY(0)'
     el.style.setProperty('--g', '0')
   }

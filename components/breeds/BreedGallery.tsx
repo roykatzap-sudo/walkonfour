@@ -66,14 +66,11 @@ export function BreedGallery({ breeds }: { breeds: Breed[] }) {
 
   return (
     <div>
-      {/* גישת hover-flip רק במכשירים עם עכבר אמיתי - במגע אין hover ולכן הכרטיס לא יתהפך בטעות */}
+      {/* הפיכה רק בלחיצה מפורשת על כפתור ה-↻ - בלי hover-flip שמקפיץ את הכרטיס כשרק רוצים ללחוץ */}
       <style
         dangerouslySetInnerHTML={{
           __html: `
             .breed-flip:hover .flip-inner { transform: none; }
-            @media (hover: hover) and (pointer: fine) {
-              .breed-flip:hover .flip-inner { transform: rotateY(180deg); }
-            }
             .breed-flip.flipped .flip-inner { transform: rotateY(180deg) !important; }
             .breed-toggle { display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:8px 16px; border-radius:999px; font-size:14px; font-weight:700; cursor:pointer; transition: all .2s ease; }
           `,
@@ -303,16 +300,19 @@ const BreedFlipCard = memo(function BreedFlipCard({ breed }: { breed: Breed }) {
             }}
           />
 
-          {/* כפתור שמירה למועדפים - פינה תחתונה-התחלה, מעל הגרדיאנט */}
+          {/* כפתור שמירה למועדפים - פינה עליונה-התחלה (לא מסתיר את שם הגזע למטה).
+              בלי backdrop-filter: הוא שובר backface-visibility והכפתור "מבצבץ" דרך הצד האחורי */}
           <FavButton
             type="breed"
             id={breed.slug}
             label={breed.name}
             style={{
               position: 'absolute',
-              bottom: 12,
-              insetInlineStart: 12,
+              top: 10,
+              insetInlineStart: 10,
               zIndex: 3,
+              backdropFilter: 'none',
+              WebkitBackdropFilter: 'none',
             }}
           />
 
@@ -323,8 +323,7 @@ const BreedFlipCard = memo(function BreedFlipCard({ breed }: { breed: Breed }) {
               position: 'absolute',
               bottom: 12,
               insetInlineEnd: 12,
-              backdropFilter: 'blur(6px)',
-              background: 'rgba(42,32,24,.55)',
+              background: 'rgba(42,32,24,.72)',
               color: '#fff',
               border: '1px solid rgba(255,255,255,.25)',
               zIndex: 2,
@@ -349,8 +348,7 @@ const BreedFlipCard = memo(function BreedFlipCard({ breed }: { breed: Breed }) {
               height: 40,
               borderRadius: '50%',
               border: '1px solid rgba(255,255,255,.3)',
-              background: 'rgba(42,32,24,.55)',
-              backdropFilter: 'blur(6px)',
+              background: 'rgba(42,32,24,.72)',
               color: '#fff',
               fontSize: 18,
               fontWeight: 800,
@@ -391,6 +389,7 @@ const BreedFlipCard = memo(function BreedFlipCard({ breed }: { breed: Breed }) {
               insetInlineEnd: 0,
               bottom: 0,
               padding: '40px 16px 16px',
+              paddingInlineEnd: 86, // מפנה מקום לצ'יפ הגודל - שהשם לא ייחתך
               pointerEvents: 'none',
               background:
                 'linear-gradient(to top, rgba(42,32,24,.92), rgba(42,32,24,.55) 55%, transparent)',
