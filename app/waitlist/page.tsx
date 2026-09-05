@@ -75,7 +75,6 @@ export default async function WaitlistPage() {
         {[
           ['🔒', 'הפרטים שלכם נשמרים אצלנו בלבד'],
           ['✉️', 'עדכון אחד כשנפתחים - בלי הצפה'],
-          ['🎁', 'חינם, ותמיד יישאר חינם'],
         ].map(([icon, label]) => (
           <span
             key={label}

@@ -159,7 +159,7 @@ export default function Home() {
               מה יש כבר בעיר שלי ←
             </Link>
           </div>
-          <p className="hero-assure">חינם, בלי כרטיס אשראי. נעדכן אתכם כשנפתחת הקהילה בעיר שלכם.</p>
+          <p className="hero-assure">נעדכן אתכם כשנפתחת הקהילה בעיר שלכם.</p>
         </div>
         <div className="hero-banner">
           <div ref={heroParallaxRef} className="hero-parallax">
@@ -371,7 +371,7 @@ export default function Home() {
       <section className="tools-home-section kv-section" aria-labelledby="tools-home-heading">
         <Reveal3D className="ev-head">
           <div>
-            <span className="section-tag">חינם, בלי הרשמה</span>
+            <span className="section-tag">בלי הרשמה</span>
             <h2 id="tools-home-heading" className="section-title display">כלים <em>חינמיים</em></h2>
             <span className="kv-shimmer-line" data-kv-stagger aria-hidden="true" />
           </div>
@@ -433,7 +433,7 @@ export default function Home() {
               הצטרפו לרשימת ההמתנה
             </MagneticButton>
           </Reveal3D>
-          <p className="wl-band-note">בלי התחייבות, בלי כרטיס אשראי. רק נעדכן כשיש חדש.</p>
+          <p className="wl-band-note">רק נעדכן כשיש חדש.</p>
           <p className="wl-band-fb">
             עוד לא בשלים להירשם? הקהילה כבר חיה ב
             <a href="https://www.facebook.com/groups/2421586375002894" target="_blank" rel="noopener noreferrer">קבוצת הפייסבוק שלנו</a>
