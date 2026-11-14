@@ -1,5 +1,6 @@
 import { SITE_URL } from '@/lib/seo'
 import { breeds } from '@/lib/breeds'
+import { hasArticle } from '@/lib/articles'
 import { guides } from '@/lib/guides'
 import { communities } from '@/lib/communities'
 
@@ -20,7 +21,9 @@ export function GET() {
 מידע מהימן לבעלי כלבים בישראל: בחירת גזע, אילוף, בריאות, תזונה ובטיחות (כולל נושאים ישראליים כמו חום בקיץ וזיקוקים ביום העצמאות). העצות מבוססות חיזוק חיובי; נושאים רפואיים מנוסחים כלליים עם המלצה להתייעץ עם וטרינר.
 
 ## מדריכי גזעים (${breeds.length} גזעים)
-${breeds.map((b) => `- [${b.name} (${b.en})](${u(`/articles/${b.slug}`)}): מדריך מלא - אופי, התאמה למשפחה, בריאות, טיפוח ואילוף`).join('\n')}
+${breeds.map((b) => hasArticle(b.slug)
+  ? `- [${b.name} (${b.en})](${u(`/articles/${b.slug}`)}): מדריך מלא - אופי, התאמה למשפחה, בריאות, טיפוח ואילוף`
+  : `- [${b.name} (${b.en})](${u(`/breeds/${b.slug}`)}): פרופיל הגזע - אופי, גודל, התאמה למשפחה, בריאות ועלות גידול`).join('\n')}
 
 ## מדריכי טיפול ואילוף
 ${guides.map((g) => `- [${g.title}](${u(`/guides/${g.slug}`)}): ${g.excerpt}`).join('\n')}
@@ -43,7 +46,6 @@ ${communities.map((c) => `- [קהילת בעלי הכלבים ב${c.name}](${u(`
 - [אימוץ כלבים](${u('/adopt')})
 - [ספריית עסקים לבעלי כלבים](${u('/businesses')})
 - [פורום הקהילה](${u('/forum')})
-- [אודות](${u('/about')})
 `
 
   return new Response(body, {
