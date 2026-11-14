@@ -11,3 +11,6 @@ npm-debug.log*
 .vercel
 next-env.d.ts
 *.tsbuildinfo
+
+# video production workspace (kinetograph project, not part of the site)
+/video/

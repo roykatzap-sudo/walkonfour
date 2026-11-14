@@ -199,6 +199,40 @@ export default function Home() {
         </div>
       </div>
 
+      {/* סרטון תדמית */}
+      <section className="kv-section" aria-labelledby="film-heading" style={{ paddingBottom: 0 }}>
+        <Reveal3D className="ev-head">
+          <div>
+            <span className="section-tag">23 שניות</span>
+            <h2 id="film-heading" className="section-title display">כל האתר <em>בסרטון אחד</em></h2>
+            <span className="kv-shimmer-line" data-kv-stagger aria-hidden="true" />
+          </div>
+        </Reveal3D>
+        <Reveal3D as="div">
+          <div
+            style={{
+              borderRadius: 24,
+              overflow: 'hidden',
+              border: '1px solid rgba(201,154,91,.3)',
+              boxShadow: 'var(--kv-card-shadow-lg)',
+              background: '#2a2018',
+              aspectRatio: '16 / 9',
+            }}
+          >
+            <video
+              controls
+              playsInline
+              preload="none"
+              poster="/film/walkonfour-film-poster.jpg"
+              aria-label="סרטון תדמית של קהילה על ארבע"
+              style={{ width: '100%', height: '100%', display: 'block' }}
+            >
+              <source src="/film/walkonfour-film.mp4" type="video/mp4" />
+            </video>
+          </div>
+        </Reveal3D>
+      </section>
+
       {/* קהילה בכל עיר */}
       <section className="cities-section kv-section" aria-labelledby="cities-heading">
         <Reveal3D className="ev-head">
