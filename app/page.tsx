@@ -168,10 +168,11 @@ export default function Home() {
               loading="eager"
               fetchPriority="high"
               decoding="async"
-              src="/hero-opener.png"
+              src="/hero-opener.webp"
+              srcSet="/hero-opener-640.webp 640w, /hero-opener.webp 1122w"
               width={1122}
               height={1402}
-              sizes="(max-width: 1240px) 100vw, 1240px"
+              sizes="(max-width: 700px) 92vw, 1122px"
               alt="בעל כלב וכלבו בפארק עירוני - קהילה על ארבע"
             />
           </div>

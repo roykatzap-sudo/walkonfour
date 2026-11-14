@@ -23,7 +23,7 @@ export default function SoonPage() {
     <main className="page" style={{ maxWidth: 680, textAlign: 'center' }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/breeds-wc/goldendoodle.png"
+        src="/breeds-wc/goldendoodle.webp"
         alt="איור צבעי-מים של כלב"
         width={160}
         height={224}

@@ -89,11 +89,15 @@ export const breeds: Breed[] = [
   { slug: 'mixed',         name: 'מעורב / כלאיים',     en: 'Mixed Breed',       size: 'בינוני', energy: 3, aggression: 2, group: 'אימוץ', temperament: ['ייחודי','חברמן','אסיר תודה'], blurb: 'אין עוד אחד כמוהו בעולם, מילולית. כל כלב מעורב הוא קוקטייל חד-פעמי של גזעים, מראה ואופי - אף פעם לא תדעו בדיוק מה קיבלתם, וזה חצי מהכיף. בונוס לא קטן: בזכות המגוון הגנטי הם לרוב בריאים ועמידים יותר מכלבי גזע. ומשהו שאי אפשר ללמד - כלב שאימצתם מהרחוב או מהעמותה יודע שהצלתם אותו, ומחזיר את זה בנאמנות שתשבור לכם את הלב. בעינינו? הבחירה הכי טובה שיש.', lifespan: '12-16', goodWithKids: true,  photo: '/breeds-wc/mixed.png' },
 ]
 
+// תמונות הגזעים המקומיות מוגשות כ-WebP (כ-16KB במקום כ-270KB ל-PNG).
+// קובצי ה-PNG נשארים ב-public לשימושים שדורשים PNG (schema / שיתוף).
+const toWebp = (p: string) => (p.startsWith('/breeds-wc/') ? p.replace(/\.png$/, '.webp') : p)
+
 export const breedImg = (id: string, w = 700) => {
   const clean = id.replace(/\s/g, '')
   // תמונות מקומיות (public/) או כתובת מלאה - מועברות כמו שהן.
   // למשל גזעים שאין להם תמונה ב-Unsplash ונשמרת תמונה אמיתית מ-Wikimedia.
-  if (clean.startsWith('/') || clean.startsWith('http')) return clean
+  if (clean.startsWith('/') || clean.startsWith('http')) return toWebp(clean)
   return `https://images.unsplash.com/${clean}?w=${w}&auto=format&fit=crop&q=55`
 }
 
@@ -105,7 +109,7 @@ export const breedFace = (id: string, w = 600) => {
     // מציגים את התמונה המלאה (לא חיתוך) - הכלב השלם נראה בדיוק כמו במקור, בלי ראש חתוך.
     // ?v= מבטיח שדפדפנים/CDN לא יגישו גרסה ישנה מה-cache.
     const full = clean.includes('/face/') ? clean.replace('/breeds-wc/face/', '/breeds-wc/') : clean
-    return full + '?v=8'
+    return toWebp(full) + '?v=9'
   }
   return breedImg(id, w)
 }

@@ -83,7 +83,7 @@ export default function CanaanDogPage() {
       <figure style={{ margin: '0 0 8px' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/breeds-wc/canaan.png"
+          src="/breeds-wc/canaan.webp"
           alt="איור צבעי-מים של כלב כנעני"
           style={{ width: '100%', maxWidth: 420, display: 'block', margin: '0 auto', borderRadius: 24, boxShadow: '0 18px 50px rgba(42,32,24,.18)' }}
         />

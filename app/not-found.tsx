@@ -5,7 +5,7 @@ export default function NotFound() {
     <main className="page" style={{ maxWidth: 600, textAlign: 'center', paddingTop: 48 }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/breeds-wc/pomeranian.png"
+        src="/breeds-wc/pomeranian.webp"
         alt="איור צבעי-מים של כלב מבולבל"
         width={170}
         height={238}
