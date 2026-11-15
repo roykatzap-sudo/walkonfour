@@ -13,16 +13,19 @@
 
 import type { Breed } from '@/lib/breeds'
 import type { BreedDetail } from '@/lib/breedDetails'
-import type { BreedSeo } from '@/lib/breedSeo'
+import type { BreedSeo, BreedFaq } from '@/lib/breedSeo'
 
 type Props = {
   breed: Breed
   detail: BreedDetail | null
   seo: BreedSeo | null
+  /** שאלות נפוצות להצגה. ברירת מחדל: ה-FAQ הידני של הגזע. */
+  faq?: BreedFaq[]
 }
 
-export function BreedSeoBlock({ breed, detail, seo }: Props) {
+export function BreedSeoBlock({ breed, detail, seo, faq: faqProp }: Props) {
   if (!seo && !detail) return null
+  const faq = faqProp ?? seo?.faq ?? []
 
   return (
     <div style={{ display: 'grid', gap: 24, margin: '28px 0' }}>
@@ -85,13 +88,13 @@ export function BreedSeoBlock({ breed, detail, seo }: Props) {
       )}
 
       {/* 3. FAQ - 5-7 שאלות נפוצות (FAQPage schema candidate) */}
-      {seo?.faq && seo.faq.length > 0 && (
+      {faq.length > 0 && (
         <div style={{ background: '#fff', border: '1px solid rgba(201,154,91,.22)', borderRadius: 16, padding: '22px 24px', boxShadow: 'var(--shadow-sm)' }}>
           <h2 style={{ margin: '0 0 16px', fontSize: 22, fontWeight: 900, color: 'var(--ink)', letterSpacing: '-.3px' }}>
             שאלות נפוצות על {breed.name}
           </h2>
           <div style={{ display: 'grid', gap: 14 }}>
-            {seo.faq.map((item, i) => (
+            {faq.map((item, i) => (
               <details
                 key={i}
                 style={{

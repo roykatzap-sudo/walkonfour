@@ -5,6 +5,8 @@
    טובים יותר לגוגל מקישורים אקראיים.
    ════════════════════════════════════════════════════════════ */
 
+import { breeds } from '@/lib/breeds'
+
 export type RelatedBreed = { slug: string; reason: string }
 
 export const relatedBreeds: Record<string, RelatedBreed[]> = {
@@ -179,5 +181,36 @@ export const relatedBreeds: Record<string, RelatedBreed[]> = {
 }
 
 export function getRelatedBreeds(slug: string): RelatedBreed[] {
-  return relatedBreeds[slug] ?? []
+  const manual = relatedBreeds[slug]
+  if (manual && manual.length > 0) return manual
+  return similarBreeds(slug)
+}
+
+/**
+ * גיבוי לגזעים שאין להם מיפוי ידני: 4 הגזעים הקרובים ביותר לפי קבוצת ייעוד,
+ * גודל, אנרגיה והתאמה לילדים. דטרמיניסטי, והסיבה המוצגת נגזרת מהנתונים עצמם.
+ */
+function similarBreeds(slug: string): RelatedBreed[] {
+  const me = breeds.find((b) => b.slug === slug)
+  if (!me) return []
+  return breeds
+    .filter((b) => b.slug !== slug && b.slug !== 'mixed')
+    .map((b) => {
+      const sameGroup = b.group === me.group
+      const sameSize = b.size === me.size
+      const nearEnergy = Math.abs(b.energy - me.energy) <= 1
+      const score = (sameGroup ? 3 : 0) + (sameSize ? 2 : 0) + (nearEnergy ? 1 : 0) + (b.goodWithKids === me.goodWithKids ? 1 : 0)
+      const reason = sameGroup
+        ? `אותה קבוצת ייעוד (${b.group})`
+        : sameSize && nearEnergy
+          ? 'גודל ורמת אנרגיה דומים'
+          : sameSize
+            ? 'גודל דומה'
+            : 'רמת אנרגיה דומה'
+      return { slug: b.slug, reason, score }
+    })
+    .filter((x) => x.score >= 3)
+    .sort((a, b) => b.score - a.score || a.slug.localeCompare(b.slug))
+    .slice(0, 4)
+    .map(({ slug: s, reason }) => ({ slug: s, reason }))
 }

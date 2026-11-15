@@ -1,9 +1,22 @@
 import { breeds } from '@/lib/breeds'
+import { JsonLd, breedListSchema } from '@/components/seo/JsonLd'
+import { ogImageUrl } from '@/lib/seo'
+import { getBreedSeo } from '@/lib/breedSeo'
 import { BreedGallery } from '@/components/breeds/BreedGallery'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
 
+const BREEDS_OG = ogImageUrl({ title: `${breeds.length} גזעי כלבים`, subtitle: 'איזה כלב באמת מתאים לכם?', tag: 'מדריך הגזעים' })
+
 export const metadata = {
   alternates: { canonical: '/breeds' },
+  openGraph: {
+    title: 'גזעי כלבים - כל הגזעים הנפוצים בישראל',
+    url: '/breeds',
+    type: 'website',
+    locale: 'he_IL',
+    images: [{ url: BREEDS_OG, width: 1200, height: 630 }],
+  },
+  twitter: { card: 'summary_large_image', images: [BREEDS_OG] },
   title: 'גזעי כלבים - כל הגזעים הנפוצים בישראל | קהילה על ארבע',
   description:
     `מדריך גזעי כלבים מלא: סוגי כלבים, איזה כלב מתאים לכם, כלב לדירה, כלב לילדים - אופי, גודל, נטייה לתוקפנות, טיפוח ואילוף ל-${breeds.length} הגזעים הנפוצים בישראל.`,
@@ -13,6 +26,13 @@ export const metadata = {
 export default function BreedsPage() {
   return (
     <main className="page">
+      <JsonLd
+        data={breedListSchema({
+          name: 'גזעי כלבים נפוצים בישראל',
+          description: `${breeds.length} גזעי כלבים עם פרופיל מלא: אופי, גודל, התאמה למשפחה, בריאות ועלות גידול.`,
+          breeds: breeds.map((b) => ({ slug: b.slug, name: b.name, en: b.en, wikidataId: getBreedSeo(b.slug)?.wikidataId })),
+        })}
+      />
       {/* ── Hero ── */}
       <section
         style={{

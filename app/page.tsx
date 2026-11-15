@@ -202,6 +202,22 @@ export default function Home() {
       </div>
 
       {/* סרטון תדמית */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'VideoObject',
+            name: 'קהילה על ארבע - כל האתר בסרטון אחד',
+            description: 'סרטון של 23 שניות שמציג את קהילה על ארבע: מדריך 69 גזעי כלבים, מחשבון כמות אוכל ומדריך בעלי מקצוע לכלבים בישראל.',
+            thumbnailUrl: 'https://walkonfour.org/film/walkonfour-film-poster.jpg',
+            contentUrl: 'https://walkonfour.org/film/walkonfour-film.mp4',
+            uploadDate: '2026-11-15T12:00:00+02:00',
+            duration: 'PT23S',
+            inLanguage: 'he',
+          }),
+        }}
+      />
       <section className="kv-section" aria-labelledby="film-heading" style={{ paddingBottom: 0 }}>
         <Reveal3D className="ev-head">
           <div>

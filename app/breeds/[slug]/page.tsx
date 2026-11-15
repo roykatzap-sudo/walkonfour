@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { breeds, getBreed } from '@/lib/breeds'
 import { getBreedDetail } from '@/lib/breedDetails'
-import { getBreedSeo } from '@/lib/breedSeo'
+import { getBreedSeo, deriveBreedFaq } from '@/lib/breedSeo'
 import { BreedProfile } from '@/components/breeds/BreedProfile'
 import { BreedSeoBlock } from '@/components/breeds/BreedSeoBlock'
 import { RelatedBreedsBlock } from '@/components/breeds/RelatedBreedsBlock'
@@ -79,9 +79,9 @@ export default function BreedPage({ params }: { params: { slug: string } }) {
       wikidataId: seo?.wikidataId,
     }),
   ]
-  if (seo?.faq && seo.faq.length > 0) {
-    schemas.push(faqSchema(seo.faq))
-  }
+  // FAQ ידני אם קיים; אחרת שאלות שנגזרות מנתוני הגזע (מוצגות בעמוד וגם בסכמה).
+  const faq = seo?.faq && seo.faq.length > 0 ? seo.faq : deriveBreedFaq(b)
+  schemas.push(faqSchema(faq))
 
   return (
     <>
@@ -89,7 +89,7 @@ export default function BreedPage({ params }: { params: { slug: string } }) {
       {/* בלוק SEO חדש - מוצג מעל ה-BreedProfile הוויזואלי המלא */}
       {(seo || detail) && (
         <div className="page" style={{ paddingTop: 84, paddingBottom: 0 }}>
-          <BreedSeoBlock breed={b} detail={detail} seo={seo} />
+          <BreedSeoBlock breed={b} detail={detail} seo={seo} faq={faq} />
         </div>
       )}
       <BreedProfile breed={b} />
