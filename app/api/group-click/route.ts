@@ -12,6 +12,7 @@ export async function POST(req: Request) {
   const raw = await req.text().catch(() => '')
   let body: { src?: unknown; page?: unknown } = {}
   try { body = JSON.parse(raw) } catch {}
-  await addGroupClick(cleanSrc(body.src), cleanPage(body.page))
-  return new NextResponse(null, { status: 204 })
+  const stored = await addGroupClick(cleanSrc(body.src), cleanPage(body.page))
+  // 204 = נשמר, 202 = התקבל אבל לא נשמר (מסד נתונים לא מוגדר או שגיאה). מאפשר בדיקת תקינות מבחוץ.
+  return new NextResponse(null, { status: stored ? 204 : 202 })
 }
