@@ -1,0 +1,8 @@
+[out:json][timeout:90][bbox:29.4,34.2,33.4,35.9];
+(
+  nwr["leisure"="dog_park"];
+  nwr["amenity"="veterinary"];
+  nwr["shop"="pet"];
+  nwr["dog"~"^(yes|leashed|unleashed|designated)$"];
+);
+out center tags;
