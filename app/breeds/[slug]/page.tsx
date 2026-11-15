@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { breeds, getBreed } from '@/lib/breeds'
 import { getBreedDetail } from '@/lib/breedDetails'
 import { getBreedSeo, deriveBreedFaq } from '@/lib/breedSeo'
+import { ShareResult } from '@/components/shared/ShareResult'
 import { BreedProfile } from '@/components/breeds/BreedProfile'
 import { BreedSeoBlock } from '@/components/breeds/BreedSeoBlock'
 import { RelatedBreedsBlock } from '@/components/breeds/RelatedBreedsBlock'
@@ -114,6 +115,13 @@ export default function BreedPage({ params }: { params: { slug: string } }) {
           )
         })()}
         <RelatedBreedsBlock currentSlug={b.slug} />
+        <div style={{ marginTop: 28 }}>
+          <ShareResult
+            text={`${b.name} (${b.en}) - אופי, התאמה למשפחה, בריאות ועלות גידול, במדריך הגזעים של קהילה על ארבע`}
+            url={`${absoluteUrl(`/breeds/${b.slug}`)}?utm_source=share`}
+            label="מכירים מישהו ששוקל את הגזע? שתפו"
+          />
+        </div>
         <WaitlistCTA variant="breed" />
       </div>
     </>
