@@ -6,7 +6,6 @@ import { Counter } from '@/components/shared/Counter'
 import { MapSection } from '@/components/map/MapSection'
 import { Reveal3D } from '@/components/fx/Reveal3D'
 import { Tilt3D } from '@/components/fx/Tilt3D'
-import { MagneticButton } from '@/components/fx/MagneticButton'
 import { FloatingPaws } from '@/components/fx/FloatingPaws'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { Carousel } from '@/components/fx/Carousel'
@@ -80,21 +79,6 @@ const srcSetFor = (id: string, widths: number[]) =>
 export default function Home() {
   const heroParallaxRef = useRef<HTMLDivElement>(null)
   const heroDepthRef = useRef<HTMLDivElement>(null)
-
-  // CTA דביק לרשימת ההמתנה - מופיע אחרי גלילה קלה, ניתן לסגירה.
-  const [stickyCta, setStickyCta] = useState(false)
-  const [ctaDismissed, setCtaDismissed] = useState(false)
-
-  useEffect(() => {
-    if (ctaDismissed) return
-    const onScroll = () => {
-      // מופיע אחרי גלילה מעבר לגובה מסך אחד (עברנו את ההירו)
-      setStickyCta(window.scrollY > window.innerHeight * 0.9)
-    }
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [ctaDismissed])
 
   // ── פרלקס-גלילה חתום להירו: התמונה והשכבה הדקורטיבית נעות בקצב שונה
   //    כשגוללים מעבר להירו, כדי לתת עומק "חי". transform בלבד (GPU),
@@ -474,7 +458,7 @@ export default function Home() {
       </section>
       </div>
 
-      {/* CTA חוזר - רשימת המתנה */}
+      {/* CTA חוזר - קבוצת הפייסבוק (היעד המרכזי), ורשימת ההמתנה כאפשרות משנית */}
       <section className="wl-band" aria-labelledby="wl-band-heading">
         <div className="wl-band-inner">
           <span className="wl-band-paw" aria-hidden="true">🐾</span>
@@ -482,42 +466,19 @@ export default function Home() {
             הכלב שלכם כבר <em>בפנים?</em>
           </h2>
           <p className="wl-band-sub">
-            אנחנו בונים את הקהילה עכשיו. הצטרפו לרשימת ההמתנה ותהיו הראשונים לדעת כשנפתח בעיר שלכם.
+            הקהילה כבר חיה בקבוצת הפייסבוק: שואלים, ממליצים, מזהירים ומוצאים חברים לטיול. בואו להגיד שלום.
           </p>
           <Reveal3D as="div">
-            <MagneticButton href="/waitlist" className="wl-band-btn kv-press-mag kv-glow">
-              הצטרפו לרשימת ההמתנה
-            </MagneticButton>
+            <GroupLink src="home-band" className="wl-band-btn kv-press-mag kv-glow">
+              הצטרפו לקבוצת הפייסבוק
+            </GroupLink>
           </Reveal3D>
-          <p className="wl-band-note">רק נעדכן כשיש חדש.</p>
           <p className="wl-band-fb">
-            עוד לא בשלים להירשם? הקהילה כבר חיה ב
-            <GroupLink src="home-footer">קבוצת הפייסבוק שלנו</GroupLink>
-            . בואו להגיד שלום.
+            רוצים גם עדכון כשהקהילה נפתחת בעיר שלכם? <Link href="/waitlist">הצטרפו לרשימת ההמתנה</Link>.
           </p>
         </div>
       </section>
 
-      {/* CTA דביק - מופיע אחרי גלילה, ניתן לסגירה */}
-      {!ctaDismissed && (
-        <div className={`wl-sticky${stickyCta ? ' show' : ''}`} role="region" aria-label="הצטרפות לרשימת ההמתנה" aria-hidden={!stickyCta}>
-          <span className="wl-sticky-txt">
-            <span aria-hidden="true">🐾</span> נפתחים עיר אחרי עיר. רוצים להיות ראשונים?
-          </span>
-          <Link href="/waitlist" className="wl-sticky-btn kv-press kv-glow" tabIndex={stickyCta ? 0 : -1}>
-            שריינו לי מקום
-          </Link>
-          <button
-            type="button"
-            className="wl-sticky-close"
-            aria-label="סגירת פס ההצטרפות"
-            tabIndex={stickyCta ? 0 : -1}
-            onClick={() => setCtaDismissed(true)}
-          >
-            ×
-          </button>
-        </div>
-      )}
     </>
   )
 }

@@ -52,7 +52,7 @@ const FAQ = [
   },
   {
     q: 'איך מצטרפים לקבוצה?',
-    a: 'לוחצים על כפתור ההצטרפות בעמוד הזה, עוברים לפייסבוק ומצטרפים לקבוצה "קהילה על ארבע".',
+    a: 'לוחצים על כפתור ההצטרפות בעמוד הזה, עוברים לפייסבוק ולוחצים שם על "הצטרפות לקבוצה". אחר כך כדאי לכתוב פוסט קצר שמציג את הכלב.',
   },
   {
     q: 'אין לי פייסבוק. מה אפשר לעשות?',
@@ -64,10 +64,18 @@ const FAQ = [
   },
 ]
 
+const STEPS: { h: string; p: string }[] = [
+  { h: 'לוחצים על הכפתור', p: 'הוא פותח את הקבוצה בפייסבוק, באפליקציה או בדפדפן.' },
+  { h: 'לוחצים "הצטרפות לקבוצה"', p: 'הקבוצה מיועדת לכל מי שמגדל כלב או חושב לאמץ.' },
+  { h: 'מציגים את הכלב', p: 'שם, גיל, עיר ותמונה אחת. כך מוצאים חברים לטיול מהשכונה.' },
+]
+
+const TOPICS = ['גינות כלבים', 'וטרינרים לפי עיר', 'אילוף', 'כלב אבד או נמצא', 'טיולים בשבת', 'אוכל וציוד', 'גורים', 'אימוץ']
+
 const fbBtn: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 12,
   minHeight: 60, padding: '16px 34px', borderRadius: 100,
-  background: '#1877f2', color: '#fff', fontWeight: 800, fontSize: 19, textDecoration: 'none',
+  background: '#1565d8', color: '#fff', fontWeight: 800, fontSize: 20, textDecoration: 'none',
   boxShadow: '0 10px 30px rgba(24,119,242,.32)',
 }
 
@@ -112,9 +120,27 @@ export default function FacebookCommunityPage() {
           מדריך יכול להסביר איך מאלפים גור. רק שכן מהגינה יגיד לכם איזה וטרינר באזור באמת שווה.
         </p>
         <FbButton />
-        <p style={{ margin: '16px 0 0', fontSize: 15, color: 'rgba(255,255,255,.62)' }}>
+        <p style={{ margin: '16px 0 0', fontSize: 16, color: 'rgba(255,255,255,.78)' }}>
           הקבוצה חדשה, ומי שנכנס עכשיו הוא מהראשונים שמעצבים אותה.
         </p>
+      </section>
+
+      {/* ── איך מצטרפים: שלושה צעדים ── */}
+      <section style={{ marginBottom: 44 }} aria-labelledby="fb-steps-h">
+        <h2 id="fb-steps-h" className="section-title display" style={{ marginBottom: 18 }}>
+          מצטרפים <em>בשלושה צעדים</em>
+        </h2>
+        <ol style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 14 }}>
+          {STEPS.map((st, i) => (
+            <li key={st.h} style={{ display: 'flex', gap: 14, alignItems: 'flex-start', background: '#fff', border: '1px solid rgba(201,154,91,.3)', borderRadius: 18, padding: '18px 20px' }}>
+              <span aria-hidden="true" style={{ flexShrink: 0, width: 44, height: 44, borderRadius: '50%', background: '#1565d8', color: '#fff', display: 'grid', placeItems: 'center', fontSize: 20, fontWeight: 900 }}>{i + 1}</span>
+              <div>
+                <h3 style={{ margin: 0, fontSize: 19, fontWeight: 900, color: 'var(--ink)' }}>{st.h}</h3>
+                <p style={{ margin: '4px 0 0', fontSize: 16.5, lineHeight: 1.7, color: '#5b4d3c' }}>{st.p}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
       </section>
 
       {/* ── למה קבוצה ── */}
@@ -147,10 +173,25 @@ export default function FacebookCommunityPage() {
                 {i + 1}
               </div>
               <h3 style={{ margin: '0 0 8px', fontSize: 19, fontWeight: 800, color: 'var(--ink)' }}>{b.title}</h3>
-              <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.65, color: '#5b4d3c' }}>{b.body}</p>
+              <p style={{ margin: 0, fontSize: 16.5, lineHeight: 1.7, color: '#5b4d3c' }}>{b.body}</p>
             </div>
           ))}
         </div>
+      </section>
+
+      {/* ── על מה מדברים ── */}
+      <section style={{ marginBottom: 44 }} aria-labelledby="fb-topics-h">
+        <h2 id="fb-topics-h" className="section-title display" style={{ marginBottom: 14 }}>
+          על מה <em>מדברים שם</em>
+        </h2>
+        <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+          {TOPICS.map((t) => (
+            <li key={t} style={{ fontSize: 17, fontWeight: 700, color: '#1b2a44', background: '#eef4ff', border: '1px solid rgba(24,119,242,.28)', borderRadius: 999, padding: '9px 18px' }}>{t}</li>
+          ))}
+        </ul>
+        <p style={{ margin: '14px 0 0', fontSize: 16.5, lineHeight: 1.75, color: '#5b4d3c', maxWidth: 720 }}>
+          כבר הצטרפתם? <Link href="/welcome" className="link" style={{ fontWeight: 800 }}>חמישה דברים באתר ששווה להכיר</Link>.
+        </p>
       </section>
 
       {/* ── קריאה לפעולה ── */}
@@ -175,8 +216,8 @@ export default function FacebookCommunityPage() {
         <div style={{ display: 'grid', gap: 12 }}>
           {FAQ.map((f) => (
             <details key={f.q} className="card" style={{ padding: '18px 22px' }}>
-              <summary style={{ cursor: 'pointer', fontWeight: 800, fontSize: 17, color: 'var(--ink)' }}>{f.q}</summary>
-              <p style={{ margin: '12px 0 0', fontSize: 16, lineHeight: 1.7, color: '#5b4d3c' }}>{f.a}</p>
+              <summary style={{ cursor: 'pointer', fontWeight: 800, fontSize: 18, color: 'var(--ink)', minHeight: 32 }}>{f.q}</summary>
+              <p style={{ margin: '12px 0 0', fontSize: 17, lineHeight: 1.75, color: '#5b4d3c' }}>{f.a}</p>
             </details>
           ))}
         </div>
@@ -186,13 +227,35 @@ export default function FacebookCommunityPage() {
       <section style={{ marginBottom: 20 }}>
         <h2 style={{ margin: '0 0 14px', fontSize: 20, fontWeight: 900, color: 'var(--ink)' }}>ובינתיים, באתר</h2>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-          <Link href="/breeds" className="chip3d" style={{ textDecoration: 'none', fontSize: 15 }}>מדריך הגזעים →</Link>
-          <Link href="/map" className="chip3d" style={{ textDecoration: 'none', fontSize: 15 }}>מפת גינות הכלבים →</Link>
-          <Link href="/businesses" className="chip3d" style={{ textDecoration: 'none', fontSize: 15 }}>בעלי מקצוע לכלבים →</Link>
-          <Link href="/tools" className="chip3d" style={{ textDecoration: 'none', fontSize: 15 }}>הכלים →</Link>
-          <Link href="/waitlist" className="chip3d" style={{ textDecoration: 'none', fontSize: 15 }}>רשימת ההמתנה →</Link>
+          <Link href="/emergency" className="chip3d" style={{ textDecoration: 'none' }}>מצבי חירום</Link>
+          <Link href="/near-me" className="chip3d" style={{ textDecoration: 'none' }}>הגינה הקרובה אליי</Link>
+          <Link href="/cities" className="chip3d" style={{ textDecoration: 'none' }}>מדריכי ערים</Link>
+          <Link href="/breeds" className="chip3d" style={{ textDecoration: 'none' }}>מדריך הגזעים</Link>
+          <Link href="/tools" className="chip3d" style={{ textDecoration: 'none' }}>הכלים</Link>
+          <Link href="/waitlist" className="chip3d" style={{ textDecoration: 'none' }}>רשימת ההמתנה</Link>
         </div>
       </section>
+
+      {/* פס הצטרפות קבוע בנייד - הכפתור תמיד בהישג יד, בלי לגלול חזרה למעלה */}
+      <div className="fbp-bar no-print">
+        <GroupLink src="facebook-page-bar" className="fbp-bar-btn">
+          להצטרפות לקבוצה בפייסבוק
+        </GroupLink>
+      </div>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            .fbp-bar { display: none; }
+            @media (max-width: 700px) {
+              .fbp-bar { display: block; position: fixed; inset-inline: 0; bottom: 0; z-index: 800; padding: 10px 76px 10px 12px; background: rgba(251,247,239,.96); border-top: 1px solid rgba(201,154,91,.35); backdrop-filter: blur(6px); }
+              [dir="rtl"] .fbp-bar { padding: 10px 12px 10px 76px; }
+              .fbp-bar-btn { display: flex; align-items: center; justify-content: center; min-height: 52px; border-radius: 14px; background: #1565d8; color: #fff; font-weight: 900; font-size: 17.5px; text-decoration: none; }
+              .fbp-bar-btn:focus-visible { outline: 3px solid #241a12; outline-offset: 2px; }
+              main.page { padding-bottom: 150px; }
+            }
+          `,
+        }}
+      />
     </main>
   )
 }
