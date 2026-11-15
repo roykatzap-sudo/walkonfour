@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { pageZoom } from '@/lib/pageZoom'
 
 /**
  * האם יש להפחית תנועה. מכבד גם את הגדרת מערכת ההפעלה (prefers-reduced-motion)
@@ -36,8 +37,8 @@ export function ClickBurst() {
         span.textContent = PAWS[Math.floor(Math.random() * PAWS.length)]
         const angle = (Math.PI * 2 * i) / n + Math.random() * 0.6
         const dist = 34 + Math.random() * 30
-        span.style.left = e.clientX + 'px'
-        span.style.top = e.clientY + 'px'
+        span.style.left = e.clientX / pageZoom() + 'px'
+        span.style.top = e.clientY / pageZoom() + 'px'
         span.style.setProperty('--dx', Math.cos(angle) * dist + 'px')
         span.style.setProperty('--dy', (Math.sin(angle) * dist - 18) + 'px')
         span.style.setProperty('--rot', (Math.random() * 120 - 60) + 'deg')

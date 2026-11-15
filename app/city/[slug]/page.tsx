@@ -5,7 +5,10 @@ import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { JsonLd, breadcrumbSchema, faqSchema, placeListSchema } from '@/components/seo/JsonLd'
 import { getCityHub, cityHubSlugs, allCityHubs } from '@/lib/cityHubs'
 import { buildCitySeo } from '@/lib/citySeo'
-import { CityParksList, isNamedPark, CITY_LIST_CSS } from '@/components/city/CityParksList'
+import { CityParksList, isNamedPark, parkTitle, CITY_LIST_CSS } from '@/components/city/CityParksList'
+import { CityMiniMap } from '@/components/city/CityMiniMap'
+import { CityWeather } from '@/components/city/CityWeather'
+import { CityParkFeatures } from '@/components/city/CityParkFeatures'
 import { CityQuickAnswer, CityFaqBlock } from '@/components/city/CitySeoBlock'
 import { CityPlacesList } from '@/components/city/CityPlacesList'
 import { GroupLink } from '@/components/shared/GroupLink'
@@ -231,6 +234,9 @@ export default function CityPage({ params }: { params: { slug: string } }) {
         </span>
       </GroupLink>
 
+      {/* הטמפרטורה היום לפי שעה - עוזר להחליט מתי לצאת */}
+      <CityWeather slug={community.slug} city={community.name} />
+
       {/* גינות כלבים */}
       {parks.length > 0 && (
         <section id="parks" style={{ marginTop: 36, scrollMarginTop: 96 }}>
@@ -240,7 +246,9 @@ export default function CityPage({ params }: { params: { slug: string } }) {
           <p style={{ color: '#5b4d3c', fontSize: 16, lineHeight: 1.7, margin: '0 0 16px' }}>
             הרשימה כוללת גם גינות ביישובים הצמודים, ולכן ליד כל גינה מופיעים העיר והשכונה שלה. לוחצים על כפתור הניווט ומגיעים למקום. הרחוב שמופיע הוא הרחוב הקרוב לגינה, לצורך התמצאות.
           </p>
+          <CityMiniMap city={community.name} points={parks.map((p) => ({ id: p.id, t: parkTitle(p), lat: p.lat, lng: p.lng }))} />
           <CityParksList parks={parks} city={community.name} />
+          <CityParkFeatures citySlug={community.slug} />
           <Link href="/map" className="btn btn-ghost" style={{ marginTop: 16, display: 'inline-block' }}>
             לכל הגינות על המפה
           </Link>

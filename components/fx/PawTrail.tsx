@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { pageZoom } from '@/lib/pageZoom'
 
 /**
  * שובל כפות עדין שרץ אחרי העכבר בזמן תנועה (דסקטופ בלבד).
@@ -32,7 +33,8 @@ export function PawTrail() {
       st.current.seq += 1
       const id = st.current.seq
       const r = Math.random() * 46 - 23
-      setPaws((p) => [...p.slice(-13), { id, x: e.clientX, y: e.clientY, r }])
+      const z = pageZoom()
+      setPaws((p) => [...p.slice(-13), { id, x: e.clientX / z, y: e.clientY / z, r }])
       window.setTimeout(() => setPaws((p) => p.filter((z) => z.id !== id)), 760)
     }
     window.addEventListener('mousemove', onMove, { passive: true })

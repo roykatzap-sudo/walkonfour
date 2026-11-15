@@ -14,7 +14,8 @@ function typeForPath(path: string): string {
 // בעמודים האלה כבר יש מנגנון הצעה ייעודי/לא רלוונטי - לא מציגים את הכפתור הצף.
 // במפה (/map) - כי יש שם כפתור "דווח על גינה חסרה" + כדי לא לכסות את המפה.
 // בקהילה (/community) - חוויית הקהילה הסגורה לא צריכה כפתור הצעה כללי.
-const HIDE_ON = ['/admin', '/unsubscribe', '/privacy', '/terms', '/map', '/community']
+// בעמוד עיר (/city/...) יש טופס "מה חסר" ייעודי, ובכלים האינטראקטיביים הכפתור מכסה את הטופס בנייד.
+const HIDE_ON = ['/admin', '/unsubscribe', '/privacy', '/terms', '/map', '/community', '/city/', '/tools/', '/near-me', '/search', '/quiz']
 
 export function GlobalSuggest() {
   const pathname = usePathname() || '/'
@@ -64,16 +65,26 @@ export function GlobalSuggest() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label="יש לכם הצעה? הצעה לתוספת לאתר"
-        style={{
-          position: 'fixed', bottom: 84, insetInlineEnd: 18, zIndex: 600,
-          display: 'inline-flex', alignItems: 'center', gap: 7,
-          background: 'var(--brand)', color: '#241a12', border: 'none',
-          borderRadius: 999, padding: '11px 18px', fontSize: 15, fontWeight: 800,
-          fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 24px rgba(201,154,91,.45)',
-        }}
+        className="gsug-fab"
       >
-        <span aria-hidden="true">💡</span> יש לכם הצעה?
+        <span aria-hidden="true">💡</span> <span className="gsug-label">יש לכם הצעה?</span>
       </button>
+      {/* בנייד הכפתור מתכווץ לעיגול קטן, כדי לא לכסות תוכן וכפתורים */}
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            .gsug-fab { position: fixed; bottom: 84px; inset-inline-end: 18px; z-index: 600; display: inline-flex; align-items: center; gap: 7px;
+              background: var(--brand); color: #241a12; border: none; border-radius: 999px; padding: 11px 18px; font-size: 15px; font-weight: 800;
+              font-family: inherit; cursor: pointer; box-shadow: 0 8px 24px rgba(201,154,91,.45); min-height: 48px; }
+            .gsug-fab:focus-visible { outline: 3px solid #241a12; outline-offset: 3px; }
+            @media (max-width: 640px) {
+              .gsug-fab { width: 48px; height: 48px; padding: 0; justify-content: center; font-size: 20px; }
+              .gsug-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+            }
+            @media print { .gsug-fab { display: none; } }
+          `,
+        }}
+      />
 
       {open && (
         <div

@@ -13,12 +13,14 @@ const PRIMARY_LINKS: NavLink[] = [
   { href: '/articles', label: 'מדריכים' },
   { href: '/vet', label: 'שאלות לווטרינר' },
   { href: '/tools', label: 'כלים' },
+  { href: '/search', label: 'חיפוש' },
 ]
 
 /** קישורים משניים תחת "עוד ▾". (אזור הקהילה סגור בהשקה - יתווסף כשייפתח) */
 const MORE_LINKS: NavLink[] = [
   { href: '/facebook', label: 'הקהילה בפייסבוק' },
   { href: '/emergency', label: 'מצבי חירום' },
+  { href: '/near-me', label: 'הגינה הקרובה אליי' },
   { href: '/match', label: 'איזה כלב מתאים לי' },
   { href: '/cities', label: 'מדריכי ערים' },
   { href: '/map', label: 'מפת גינות' },
@@ -27,7 +29,12 @@ const MORE_LINKS: NavLink[] = [
 ]
 
 /** רשימה שטוחה - למגירת המובייל, שם מציגים את הכל ללא תת-תפריטים. */
-const ALL_LINKS: NavLink[] = [...PRIMARY_LINKS, ...MORE_LINKS]
+// במגירת המובייל החיפוש ראשון - זו הדרך המהירה ביותר למצוא משהו.
+const ALL_LINKS: NavLink[] = [
+  { href: '/search', label: 'חיפוש באתר' },
+  ...PRIMARY_LINKS.filter((l) => l.href !== '/search'),
+  ...MORE_LINKS,
+]
 
 /** האם יש להפחית תנועה. מכבד OS + מתג הנגישות באתר. בטוח ל-SSR. */
 function prefersReducedMotion(): boolean {

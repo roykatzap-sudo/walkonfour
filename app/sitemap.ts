@@ -4,6 +4,8 @@ import { breeds } from '@/lib/breeds'
 import { breedArticles } from '@/lib/articles'
 import { guides } from '@/lib/guides'
 import { cityHubSlugs } from '@/lib/cityHubs'
+import { allDogParks } from '@/lib/dogParksAll'
+import { DOG_PARK_COUNT, CITY_GUIDE_COUNT } from '@/lib/siteStats'
 import { comparisons } from '@/lib/comparisons'
 import { lawSpokes } from '@/lib/lawSpokes'
 
@@ -28,6 +30,14 @@ type StaticEntry = {
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date()
 
+  // רשת ביטחון: המספרים שמוצגים בדף הבית מוקלדים ידנית (כדי לא לנפח את הבאנדל),
+  // ולכן כאן, בזמן build, מוודאים שהם תואמים לנתונים האמיתיים.
+  if (DOG_PARK_COUNT !== allDogParks.length || CITY_GUIDE_COUNT !== cityHubSlugs().length) {
+    throw new Error(
+      `lib/siteStats.ts לא מסונכרן: DOG_PARK_COUNT=${DOG_PARK_COUNT} (בפועל ${allDogParks.length}), CITY_GUIDE_COUNT=${CITY_GUIDE_COUNT} (בפועל ${cityHubSlugs().length})`,
+    )
+  }
+
   // רק עמודים חיים ולא חסומים ב-middleware. חסומים (מופנים ל-/soon): forum/events/groups/petsitting/lost-found/adopt/market/businesses/wall/premium/start/digest/health-tracker.
   const staticPages: StaticEntry[] = [
     { path: '/', priority: 1.0, changeFrequency: 'daily' },
@@ -41,6 +51,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/vet', priority: 0.8, changeFrequency: 'monthly' },
     { path: '/facebook', priority: 0.9, changeFrequency: 'monthly' },
     { path: '/emergency', priority: 0.85, changeFrequency: 'monthly' },
+    { path: '/near-me', priority: 0.85, changeFrequency: 'monthly' },
+    { path: '/glossary', priority: 0.8, changeFrequency: 'monthly' },
+    { path: '/quiz', priority: 0.7, changeFrequency: 'monthly' },
+    { path: '/checklists', priority: 0.7, changeFrequency: 'monthly' },
+    { path: '/tools/dog-id-card', priority: 0.75, changeFrequency: 'monthly' },
+    { path: '/welcome', priority: 0.5, changeFrequency: 'monthly' },
     { path: '/tools/lost-dog-poster', priority: 0.8, changeFrequency: 'monthly' },
     { path: '/faq', priority: 0.7, changeFrequency: 'monthly' },
     // הגזע הלאומי - דף עם תכולה ייחודית

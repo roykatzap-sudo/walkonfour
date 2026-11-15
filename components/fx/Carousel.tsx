@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { pageZoom } from '@/lib/pageZoom'
 
 /**
  * קרוסלה אופקית חלקה - scroll-snap, חצי ניווט, גרירה בעכבר, דהיית קצוות.
@@ -63,7 +64,7 @@ export function Carousel({
       if (!down) return
       const dx = e.clientX - startX
       if (Math.abs(dx) > 4) moved = true
-      el.scrollLeft = startScroll - dx
+      el.scrollLeft = startScroll - dx / pageZoom()
     }
     const onUp = () => { down = false; el.classList.remove('kv-carousel-grabbing') }
     // מניעת קליק בטעות אחרי גרירה

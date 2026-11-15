@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { pageZoom } from '@/lib/pageZoom'
 
 /**
  * כלבים שעוברים על המסך מדי פעם (easter-egg חתום, אקטיבי).
@@ -107,7 +108,8 @@ export function WanderingDog() {
     seq.current += 1
     const base = seq.current * 3
     const emojis = ['💛', '🐾', '💛']
-    const burst: Heart[] = emojis.map((emoji, i) => ({ id: base + i, x: clientX + (i - 1) * 16, y: clientY - 8, emoji }))
+    const z = pageZoom()
+    const burst: Heart[] = emojis.map((emoji, i) => ({ id: base + i, x: clientX / z + (i - 1) * 16, y: clientY / z - 8, emoji }))
     setHearts((h) => [...h, ...burst])
     window.setTimeout(() => setHearts((h) => h.filter((x) => !burst.some((b) => b.id === x.id))), 950)
   }

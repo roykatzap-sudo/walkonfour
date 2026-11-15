@@ -21,7 +21,7 @@ export default async function DogsListPage() {
   const dogs = (await withCommunityDb((c) => listUserDogs(c, user.id))) || []
 
   return (
-    <main style={{ minHeight: '100dvh', paddingTop: 80 }}>
+    <main style={{ minHeight: 'calc(100dvh / var(--kv-z, 1))', paddingTop: 80 }}>
       <CommunityHeader nickname={user.nickname} />
       <div style={{ maxWidth: 640, margin: '0 auto', padding: '30px 20px 60px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 22, gap: 12, flexWrap: 'wrap' }}>

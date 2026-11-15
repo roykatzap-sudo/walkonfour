@@ -206,7 +206,7 @@ export function AccessibilityMenu() {
         .kv-a11y-trigger:focus-visible { outline: 3px solid #c99a5b; outline-offset: 3px; }
         .kv-a11y-panel {
           background: #fbf7ef; border: 1.5px solid #c99a5b; border-radius: 16px; padding: 14px;
-          width: 268px; max-height: min(66vh, 560px); overflow-y: auto;
+          width: 268px; max-height: min(calc(66vh / var(--kv-z, 1)), 560px); overflow-y: auto;
           box-shadow: 0 14px 40px rgba(40, 28, 12, 0.25); display: flex; flex-direction: column; gap: 8px;
         }
         .kv-a11y-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }

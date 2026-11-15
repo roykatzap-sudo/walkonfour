@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useRef } from 'react'
+import { pageZoom } from '@/lib/pageZoom'
 
 /**
  * האם יש להפחית תנועה. בטוח ל-SSR.
@@ -44,8 +45,9 @@ export function MagneticButton({
     const el = ref.current
     if (!el || prefersReducedMotion()) return
     const r = el.getBoundingClientRect()
-    const x = (e.clientX - (r.left + r.width / 2)) * strength
-    const y = (e.clientY - (r.top + r.height / 2)) * strength
+    const z = pageZoom()
+    const x = ((e.clientX - (r.left + r.width / 2)) * strength) / z
+    const y = ((e.clientY - (r.top + r.height / 2)) * strength) / z
     el.style.transform = `translate(${x}px, ${y}px)`
   }
   function reset() {

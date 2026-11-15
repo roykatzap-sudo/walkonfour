@@ -55,7 +55,7 @@ const guideToGuides: Record<string, RelatedItem[]> = {
     { href: '/guides/dog-insurance', label: 'כמה עולה ביטוח לכלב', reason: 'הסעיף השני בגודלו בתקציב, 70-280 ש"ח לחודש' },
   ],
   'spay-neuter-cost': [
-    { href: '/guides/dog-license-fee', label: 'כמה עולה רישיון לכלב', reason: 'עיקור מוריד את האגרה מכ-400 לכ-44 ש"ח' },
+    { href: '/guides/dog-license-fee', label: 'כמה עולה רישיון לכלב', reason: 'עיקור חוסך תוספת של כ-400 ש"ח לאגרה השנתית' },
     { href: '/guides/vaccinations-2026', label: 'כמה עולה חיסון לכלב', reason: 'נדרש לפני הניתוח, 86-162 ש"ח בקליניקה פרטית' },
     { href: '/guides/vet-visit-cost', label: 'כמה עולה ביקור אצל וטרינר', reason: 'בדיקה לפני ניתוח וביקורת אחריו, 160-430 ש"ח' },
     { href: '/guides/monthly-dog-cost', label: 'כמה עולה כלב בחודש', reason: 'איפה הניתוח נכנס בתקציב השנה הראשונה' },

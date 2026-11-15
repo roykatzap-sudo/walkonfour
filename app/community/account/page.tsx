@@ -17,7 +17,7 @@ export default async function AccountPage() {
   if (!user) redirect('/community/login')
 
   return (
-    <main style={{ minHeight: '100dvh', paddingTop: 80 }}>
+    <main style={{ minHeight: 'calc(100dvh / var(--kv-z, 1))', paddingTop: 80 }}>
       <CommunityHeader nickname={user.nickname} />
       <div style={{ maxWidth: 640, margin: '0 auto', padding: '30px 20px 60px' }}>
         <div style={{ marginBottom: 22 }}>

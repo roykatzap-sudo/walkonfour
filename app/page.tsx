@@ -12,7 +12,7 @@ import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { Carousel } from '@/components/fx/Carousel'
 import { FounderNote } from '@/components/home/FounderNote'
 import { communities, img } from '@/lib/communities'
-import { DOG_PARK_COUNT } from '@/lib/siteStats'
+import { DOG_PARK_COUNT, CITY_GUIDE_COUNT } from '@/lib/siteStats'
 import { breeds, getBreed, breedImg } from '@/lib/breeds'
 import { demoWalks } from '@/lib/walks'
 import { GroupLink } from '@/components/shared/GroupLink'
@@ -187,7 +187,7 @@ export default function Home() {
           <div className="hs"><div className="hs-val"><Counter to={breeds.length} /></div><div className="hs-lbl">גזעים</div></div>
           <div className="hs"><div className="hs-val"><Counter to={DOG_PARK_COUNT} /></div><div className="hs-lbl">גינות על המפה</div></div>
           <div className="hs"><div className="hs-val"><Counter to={demoWalks.length} /></div><div className="hs-lbl">מסלולים</div></div>
-          <div className="hs"><div className="hs-val"><Counter to={42} /></div><div className="hs-lbl">ערים</div></div>
+          <div className="hs"><div className="hs-val"><Counter to={CITY_GUIDE_COUNT} /></div><div className="hs-lbl">ערים</div></div>
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 0 46px', position: 'relative', zIndex: 2 }}>
           <FounderNote />

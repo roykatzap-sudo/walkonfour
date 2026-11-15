@@ -4,6 +4,7 @@ import { JsonLd, breadcrumbSchema } from '@/components/seo/JsonLd'
 import { ogImageUrl } from '@/lib/seo'
 import { getGuide } from '@/lib/guides'
 import { GroupLink } from '@/components/shared/GroupLink'
+import { OfflineSave } from '@/components/emergency/OfflineSave'
 
 const TITLE = 'כלב במצב חירום: מה עושים עכשיו'
 const DESC =
@@ -51,6 +52,8 @@ export default function EmergencyPage() {
           במצב חירום רפואי מתקשרים קודם כול לווטרינר או למרפאת חירום וטרינרית. העמוד הזה הוא מידע כללי, והוא לא מחליף אותם.
         </p>
       </div>
+
+      <OfflineSave />
 
       <nav aria-label="קפיצה למצב" style={{ display: 'flex', flexWrap: 'wrap', gap: 8, margin: '0 0 30px' }}>
         {items.map((c) => (

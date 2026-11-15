@@ -25,7 +25,7 @@ export default async function CommunityParkPage({ params }: { params: { id: stri
   if (!park) notFound()
 
   return (
-    <main style={{ minHeight: '100dvh', paddingTop: 80 }}>
+    <main style={{ minHeight: 'calc(100dvh / var(--kv-z, 1))', paddingTop: 80 }}>
       <CommunityHeader nickname={user.nickname} />
       <div style={{ maxWidth: 720, margin: '0 auto', padding: '24px 20px 60px' }}>
         <div style={{ marginBottom: 20 }}>

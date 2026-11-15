@@ -10,6 +10,7 @@
    **עובד אחד בלבד, בקשה כל 2.5 שניות.** הרצה מקבילית גורמת לחסימה (429).
    הפלט נשמר ב-`revgeo_cache_new.json`; הסקריפט קורא כל קובץ `revgeo_cache*.json`.
 4. `python3 build_data.py` - בונה את שני קובצי ה-lib.
-5. `npm run build`, בדיקה, ודחיפה.
+5. לעדכן את `DOG_PARK_COUNT` ו-`CITY_GUIDE_COUNT` ב-`lib/siteStats.ts`. אם שוכחים, ה-build נכשל עם הודעה שמציינת את המספרים הנכונים.
+6. `npm run build`, בדיקה, ודחיפה.
 
 הנתונים: © תורמי OpenStreetMap, רישיון ODbL.

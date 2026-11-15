@@ -83,6 +83,22 @@ export default function CitiesPage() {
           .city-card:hover, .city-card:focus-visible { transform: none; }
         }
       ` }} />
+      {/* קיצור דרך: מי שרוצה פשוט את הגינה הקרובה */}
+      <Link
+        href="/near-me"
+        className="kv-press"
+        style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap', textDecoration: 'none',
+          margin: '0 0 22px', padding: '16px 22px', borderRadius: 18, background: '#241a12', color: '#fff',
+        }}
+      >
+        <span>
+          <strong style={{ display: 'block', fontSize: 19, fontWeight: 900 }}>הגינה הקרובה אליי</strong>
+          <span style={{ fontSize: 15.5, color: 'rgba(255,255,255,.88)' }}>לפי המיקום שלכם, עם מרחק וניווט</span>
+        </span>
+        <span style={{ fontWeight: 800, fontSize: 16, color: '#f0d49a', whiteSpace: 'nowrap' }}>למציאת גינה ←</span>
+      </Link>
+
       <CityFilter total={hubs.length} />
       <div className="city-grid">
         {hubs.map((h) => (

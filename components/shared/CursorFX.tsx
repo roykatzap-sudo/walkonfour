@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { pageZoom } from '@/lib/pageZoom'
 
 /**
  * האם יש להפחית תנועה. מכבד גם את הגדרת מערכת ההפעלה (prefers-reduced-motion)
@@ -65,7 +66,8 @@ export function CursorFX() {
     let ready = false
 
     const onMove = (e: PointerEvent) => {
-      cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`
+      const z = pageZoom()
+      cursor.style.transform = `translate(${e.clientX / z}px, ${e.clientY / z}px)`
       if (!ready) {
         ready = true
         cursor.classList.add('ready')

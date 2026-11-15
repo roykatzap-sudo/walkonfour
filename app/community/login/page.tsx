@@ -10,7 +10,7 @@ export const metadata = buildMetadata({
 
 export default function CommunityLoginPage() {
   return (
-    <main style={{ minHeight: '100dvh', display: 'grid', placeItems: 'center', padding: '80px 20px 40px' }}>
+    <main style={{ minHeight: 'calc(100dvh / var(--kv-z, 1))', display: 'grid', placeItems: 'center', padding: '80px 20px 40px' }}>
       <div className="card" style={{ maxWidth: 420, width: '100%', padding: '32px 26px' }}>
         <div style={{ textAlign: 'center', marginBottom: 22 }}>
           <div style={{ fontSize: 38, marginBottom: 4 }} aria-hidden="true">🐾</div>
