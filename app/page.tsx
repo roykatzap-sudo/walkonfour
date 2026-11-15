@@ -15,7 +15,7 @@ import { communities, img } from '@/lib/communities'
 import { DOG_PARK_COUNT } from '@/lib/siteStats'
 import { breeds, getBreed, breedImg } from '@/lib/breeds'
 import { demoWalks } from '@/lib/walks'
-import { FB_GROUP_URL } from '@/lib/social'
+import { GroupLink } from '@/components/shared/GroupLink'
 
 const MARQUEE = [
   'מדריכי גזעים בלי לייפות',
@@ -154,9 +154,9 @@ export default function Home() {
             גינות, מסלולים ומה שאף ווטרינר לא יספיק לכם להגיד. מאנשים שכבר עברו את זה.
           </p>
           <div className="hero-btns">
-            <a href={FB_GROUP_URL} target="_blank" rel="noopener noreferrer" className="hbm kv-press kv-glow">
+            <GroupLink src="hero" className="hbm kv-press kv-glow">
               הצטרפו לקבוצת הפייסבוק
-            </a>
+            </GroupLink>
             <Link className="hbg-link kv-press" href="/cities">
               מה יש כבר בעיר שלי ←
             </Link>
@@ -492,7 +492,7 @@ export default function Home() {
           <p className="wl-band-note">רק נעדכן כשיש חדש.</p>
           <p className="wl-band-fb">
             עוד לא בשלים להירשם? הקהילה כבר חיה ב
-            <a href="https://www.facebook.com/groups/2421586375002894" target="_blank" rel="noopener noreferrer">קבוצת הפייסבוק שלנו</a>
+            <GroupLink src="home-footer">קבוצת הפייסבוק שלנו</GroupLink>
             . בואו להגיד שלום.
           </p>
         </div>

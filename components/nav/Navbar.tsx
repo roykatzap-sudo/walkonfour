@@ -17,6 +17,7 @@ const PRIMARY_LINKS: NavLink[] = [
 /** קישורים משניים תחת "עוד ▾". (אזור הקהילה סגור בהשקה - יתווסף כשייפתח) */
 const MORE_LINKS: NavLink[] = [
   { href: '/facebook', label: 'הקהילה בפייסבוק' },
+  { href: '/emergency', label: 'מצבי חירום' },
   { href: '/match', label: 'איזה כלב מתאים לי' },
   { href: '/cities', label: 'מדריכי ערים' },
   { href: '/map', label: 'מפת גינות' },

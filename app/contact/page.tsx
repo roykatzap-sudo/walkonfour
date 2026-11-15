@@ -1,4 +1,5 @@
 import { buildMetadata } from '@/lib/seo'
+import { GroupLink } from '@/components/shared/GroupLink'
 
 export const metadata = buildMetadata({
   title: 'צרו קשר',
@@ -7,8 +8,6 @@ export const metadata = buildMetadata({
   path: '/contact',
 })
 
-// קבוצת הפייסבוק הרשמית - הערוץ החי לשיתוף, שאלות ותגובות.
-const FB_GROUP = 'https://www.facebook.com/groups/2421586375002894'
 
 export default function ContactPage() {
   return (
@@ -29,18 +28,12 @@ export default function ContactPage() {
           המקום לשתף תמונות, לשאול שאלות על גידול, אילוף ובריאות, ולפגוש בעלי כלבים
           אחרים. כל פוסט ותגובה נקראים - אנחנו שם.
         </p>
-        <a
-          href={FB_GROUP}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn btn-primary"
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 10, fontSize: 16, padding: '14px 30px' }}
-        >
+        <GroupLink src="contact" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, fontSize: 16, padding: '14px 30px' }}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.9 3.78-3.9 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.9h-2.34V22c4.78-.79 8.43-4.94 8.43-9.94Z" />
           </svg>
           להצטרפות לקבוצה
-        </a>
+        </GroupLink>
       </div>
 
       <p style={{ textAlign: 'center', fontSize: 14.5, color: 'var(--text-muted)', marginTop: 18, lineHeight: 1.7 }}>

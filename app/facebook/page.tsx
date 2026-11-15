@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { JsonLd, breadcrumbSchema, faqSchema } from '@/components/seo/JsonLd'
 import { ogImageUrl } from '@/lib/seo'
 import { FB_GROUP_URL } from '@/lib/social'
+import { GroupLink } from '@/components/shared/GroupLink'
 
 const TITLE = 'קבוצת הפייסבוק של קהילה על ארבע - בעלי כלבים מכל הארץ'
 const DESC =
@@ -72,12 +73,12 @@ const fbBtn: React.CSSProperties = {
 
 function FbButton({ label = 'להצטרפות לקבוצה בפייסבוק' }: { label?: string }) {
   return (
-    <a href={FB_GROUP_URL} target="_blank" rel="noopener noreferrer" className="kv-press" style={fbBtn}>
+    <GroupLink src="facebook-page" className="kv-press" style={fbBtn}>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="#fff" aria-hidden="true">
         <path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.52 1.49-3.91 3.78-3.91 1.09 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.63.78-1.63 1.57v1.88h2.78l-.44 2.91h-2.34V22c4.78-.79 8.43-4.94 8.43-9.94z" />
       </svg>
       {label}
-    </a>
+    </GroupLink>
   )
 }
 

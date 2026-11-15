@@ -6,12 +6,14 @@ import { AdminWaitlist } from './AdminWaitlist'
 import { AdminSuggestions } from './AdminSuggestions'
 import { AdminParkReports } from './AdminParkReports'
 import { AdminDirectory } from './AdminDirectory'
+import { AdminGroupClicks } from './AdminGroupClicks'
 
 const TABS = [
   { key: 'waitlist', label: 'רשימת המתנה', icon: '📋' },
   { key: 'suggestions', label: 'הצעות', icon: '💡' },
   { key: 'park-reports', label: 'דיווחי גינות', icon: '🌳' },
   { key: 'directory', label: 'מדריך עסקים', icon: '🏪' },
+  { key: 'group-clicks', label: 'הקלקות לקבוצה', icon: '👥' },
 ]
 
 export function AdminDashboard() {
@@ -26,7 +28,7 @@ export function AdminDashboard() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 24, borderBottom: '2px solid rgba(201,154,91,.18)' }}>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 24, borderBottom: '2px solid rgba(201,154,91,.18)' }}>
         {TABS.map((t) => (
           <button
             key={t.key}
@@ -68,6 +70,7 @@ export function AdminDashboard() {
       <div style={{ display: tab === 'suggestions' ? 'block' : 'none' }}><AdminSuggestions /></div>
       <div style={{ display: tab === 'park-reports' ? 'block' : 'none' }}><AdminParkReports /></div>
       <div style={{ display: tab === 'directory' ? 'block' : 'none' }}><AdminDirectory onPendingCount={setDirPending} /></div>
+      {tab === 'group-clicks' && <AdminGroupClicks />}
     </AdminGate>
   )
 }

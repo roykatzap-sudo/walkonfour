@@ -1,12 +1,13 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { buildMetadata } from '@/lib/seo'
+import { buildMetadata, absoluteUrl } from '@/lib/seo'
 import { JsonLd, localBusinessSchema, breadcrumbSchema } from '@/components/seo/JsonLd'
 import { Stars } from '@/components/shared/Stars'
 import { BIZ_CATEGORY_ICON, type BizCategory } from '@/lib/businesses'
 import { getBusinessBySlug } from '@/lib/directory/store'
 import { ReviewForm } from '@/components/businesses/ReviewForm'
 import { ReportButton } from '@/components/businesses/ReportButton'
+import { BusinessBadge } from '@/components/businesses/BusinessBadge'
 import type { DirectoryReview } from '@/lib/directory/types'
 
 export const dynamic = 'force-dynamic'
@@ -288,6 +289,9 @@ export default async function BusinessDetailPage({ params }: Props) {
         </h2>
         <ReviewForm businessSlug={slug} />
       </section>
+
+      {/* ── לבעלי העסק: קישור ותג להטמעה ── */}
+      <BusinessBadge url={encodeURI(absoluteUrl(path))} name={business.name} />
     </main>
   )
 }

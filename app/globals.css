@@ -984,3 +984,12 @@ html { scrollbar-color: #d3c5ab var(--cream); }
 @media (max-width: 720px) {
   .btn { min-height: max(48px, var(--tap)); }
 }
+
+
+/* ── הדפסה: רק התוכן עצמו, בלי ניווט, פוטר, חלוניות וקישוטים ── */
+@media print {
+  #main ~ *, *:has(~ #main), .no-print { display: none !important; }
+  .kv-reveal, .rv3d, .r, .route-fade, [data-kv-reveal] { opacity: 1 !important; transform: none !important; animation: none !important; }
+  body { background: #fff !important; }
+  a[href]::after { content: none !important; }
+}

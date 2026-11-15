@@ -1,3 +1,5 @@
+import { GroupLink } from '@/components/shared/GroupLink'
+
 /**
  * פתק מייסד קצר - שובר את הסימטריה הנקייה של עמודת ה-hero ומוסיף קול אנושי אחד אמיתי.
  * בלי גרדיאנט, בלי אמוג'י. כרטיס סנד רך עם רוטציה קלה, כמו פתק שמישהו השאיר.
@@ -12,7 +14,7 @@ export function FounderNote() {
       <p className="fn-sign">חגי, ולונה (לברדור)</p>
       <p className="fn-fb">
         בינתיים אנחנו כבר מדברים ב
-        <a href="https://www.facebook.com/groups/2421586375002894" target="_blank" rel="noopener noreferrer">קבוצת הפייסבוק</a>.
+        <GroupLink src="founder-note">קבוצת הפייסבוק</GroupLink>.
       </p>
     </aside>
   )

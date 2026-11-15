@@ -1,13 +1,14 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { trackGroupClick } from '@/components/shared/GroupLink'
+import { FB_GROUP_URL } from '@/lib/social'
 
 /**
  * הזמנה להצטרף לקבוצת הפייסבוק - קופץ בכל דף, בכל כניסה לאתר, אחרי 5 שניות
  * (או גלילה של רבע עמוד). אם סוגרים אותו - חוזר שוב אחרי 3 דקות, וחוזר חלילה
  * בכל סגירה. בלי שום זיכרון: לא משנה מי המבקר וכמה פעמים נכנס - תמיד יקבל הזמנה.
  */
-const FB_GROUP = 'https://www.facebook.com/groups/2421586375002894'
 const RESHOW_MS = 3 * 60_000 // 3 דקות אחרי סגירה → קופץ שוב
 
 export function FacebookCTA() {
@@ -77,7 +78,7 @@ export function FacebookCTA() {
           <div className="fbcta-sub">קבוצת הפייסבוק של "קהילה על ארבע" - שאלות, טיפים והמלצות מבעלי כלבים מכל הארץ. הקבוצה בתחילת הדרך, אז מי שנכנס עכשיו הוא מהראשונים.</div>
         </div>
       </div>
-      <a href={FB_GROUP} target="_blank" rel="noopener noreferrer" className="fbcta-btn" onClick={dismiss}>
+      <a href={FB_GROUP_URL} target="_blank" rel="noopener noreferrer" className="fbcta-btn" onClick={() => { trackGroupClick('popup'); dismiss() }}>
         להצטרפות לקבוצה 🐾
       </a>
 

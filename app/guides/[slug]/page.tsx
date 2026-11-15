@@ -4,13 +4,20 @@ import type { Metadata } from 'next'
 import { guides, getGuide, guideImg } from '@/lib/guides'
 import { Reveal3D } from '@/components/fx/Reveal3D'
 import { JoinCommunityCard } from '@/components/fx/JoinCommunityCard'
-import { FB_GROUP_URL } from '@/lib/social'
+import { GroupLink } from '@/components/shared/GroupLink'
+import { GuideShare } from '@/components/guides/GuideShare'
 import { JsonLd, articleSchema, breadcrumbSchema, faqSchema, howToSchema } from '@/components/seo/JsonLd'
 import { ReadingProgress } from '@/components/articles/ReadingProgress'
 import { buildMetadata } from '@/lib/seo'
 import { getRelatedForGuide, getBreedsForGuide } from '@/lib/relatedContent'
 import { RelatedContentBlock } from '@/components/shared/RelatedContentBlock'
 import { CostCalculator } from '@/components/tools/CostCalculator'
+
+/** מדריכים שמופיעים בעמוד /emergency - מקבלים קישור חזרה אליו. */
+const EMERGENCY_SLUGS = new Set([
+  'lost-dog-first-24-hours', 'dog-snake-bite-viper', 'rabies-israel-2026', 'dog-ate-chocolate',
+  'dog-vomit-what-to-do', 'summer-heat', 'dog-sirens-safe-room', 'dog-ticks-ehrlichiosis', 'dog-first-aid',
+])
 
 export function generateStaticParams() {
   return guides.map((g) => ({ slug: g.slug }))
@@ -117,6 +124,12 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
             .guide-faq:focus-within { outline: 3px solid #c99a5b; outline-offset: 2px; }
             .guide-faq summary { list-style: none; }
             .guide-faq summary::-webkit-details-marker { display: none; }
+            .guide-table-wrap { overflow-x: auto; border: 1px solid rgba(201,154,91,.3); border-radius: 14px; background: #fff; }
+            .guide-table { width: 100%; border-collapse: collapse; font-size: 15.5px; line-height: 1.6; min-width: 520px; }
+            .guide-table th, .guide-table td { padding: 12px 14px; text-align: start; vertical-align: top; border-bottom: 1px solid rgba(201,154,91,.2); color: #3a3128; }
+            .guide-table thead th { background: #fdf6e9; font-weight: 800; color: #2a2018; }
+            .guide-table tbody th { font-weight: 800; color: #2a2018; white-space: nowrap; }
+            .guide-table tbody tr:last-child th, .guide-table tbody tr:last-child td { border-bottom: none; }
             @media (prefers-reduced-motion: reduce) { .guide-faq { transition: none; } }
           `,
         }}
@@ -166,6 +179,28 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
           </div>
         )}
 
+        {/* טבלת סיכום - עובדות בשליש הראשון של העמוד, בפורמט שקל לסרוק */}
+        {guide.table && (
+          <figure style={{ margin: '0 0 34px' }}>
+            <figcaption style={{ fontSize: 20, fontWeight: 900, color: '#2a2018', marginBottom: 10 }}>{guide.table.caption}</figcaption>
+            <div className="guide-table-wrap">
+              <table className="guide-table">
+                <thead>
+                  <tr>{guide.table.head.map((h) => <th key={h} scope="col">{h}</th>)}</tr>
+                </thead>
+                <tbody>
+                  {guide.table.rows.map((row, r) => (
+                    <tr key={r}>
+                      {row.map((c, k) => (k === 0 ? <th key={k} scope="row">{c}</th> : <td key={k}>{c}</td>))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {guide.table.note && <p className="muted" style={{ fontSize: 14, lineHeight: 1.7, margin: '8px 0 0' }}>{guide.table.note}</p>}
+          </figure>
+        )}
+
         {/* SECTIONS */}
         <article>
           {guide.sections.map((s, i) => (
@@ -178,11 +213,9 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
               </div>
               {/* הזמנה לקהילה שמותאמת לנושא, בשליש הראשון של המדריך */}
               {i === 0 && guide.communityAsk && (
-                <a
-                  href={FB_GROUP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="kv-press"
+                <GroupLink
+                  src="guide-inline"
+                  className="kv-press no-print"
                   style={{
                     display: 'flex', alignItems: 'center', gap: 14, textDecoration: 'none', marginBottom: 34,
                     background: '#eef4ff', border: '1px solid rgba(24,119,242,.28)', borderRadius: 16, padding: '16px 20px',
@@ -195,11 +228,27 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
                     {guide.communityAsk}{' '}
                     <span style={{ color: '#1877f2', fontWeight: 800, whiteSpace: 'nowrap' }}>לקבוצת הפייסבוק ←</span>
                   </span>
-                </a>
+                </GroupLink>
               )}
             </Reveal3D>
           ))}
         </article>
+
+        {/* כלי משלים למדריך: מחולל המודעות למדריך "כלב אבד", ועמוד החירום למדריכי הבטיחות */}
+        {guide.slug === 'lost-dog-first-24-hours' && (
+          <aside className="no-print" style={{ background: '#fdf6e9', border: '1px solid rgba(201,154,91,.3)', borderRadius: 16, padding: '18px 22px', margin: '0 0 30px' }}>
+            <p style={{ margin: 0, fontSize: 16.5, lineHeight: 1.8, color: '#2a2018' }}>
+              <strong>צריכים מודעה עכשיו?</strong> המחולל שלנו מכין מודעת &quot;כלב אבד&quot; להדפסה ותמונה לשיתוף בוואטסאפ ובקבוצות פייסבוק.{' '}
+              <Link href="/tools/lost-dog-poster" className="link" style={{ fontWeight: 800 }}>להכנת מודעה</Link>
+            </p>
+          </aside>
+        )}
+        {EMERGENCY_SLUGS.has(guide.slug) && (
+          <p className="no-print" style={{ margin: '0 0 30px', fontSize: 15.5, lineHeight: 1.7 }}>
+            <Link href={`/emergency#${guide.slug}`} className="link" style={{ fontWeight: 800 }}>כל מצבי החירום בעמוד אחד</Link>
+            {' '}· כדאי לשמור בטלפון.
+          </p>
+        )}
 
         {/* מחשבון מוטמע - רק במדריכי עלויות. מי שמחפש "כמה עולה" רוצה לחשב,
             לא רק לקרוא. מעלה זמן שהייה ונותן רגע שיתוף בתוך הדף המדורג. */}
@@ -229,6 +278,11 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
               </li>
             ))}
           </ul>
+        </div>
+
+        {/* שיתוף - אחרי הקריאה, לא לפני התוכן */}
+        <div style={{ marginTop: 26 }}>
+          <GuideShare title={guide.title} quickAnswer={guide.quickAnswer} path={`/guides/${guide.slug}`} />
         </div>
 
         {/* FAQ - גלוי בעמוד. גוגל מכבד רק נתונים מובנים שגם נראים למשתמש. */}
@@ -268,11 +322,20 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
           ממשי - כדאי להתייעץ עם וטרינר או מאלף מוסמך.
         </p>
 
+        {/* גילוי נאות: איך נכתב המדריך. גוגל ממליץ לגלות שימוש באוטומציה. */}
+        <p className="muted" style={{ marginTop: 10, fontSize: 14, lineHeight: 1.7 }}>
+          <strong>איך נכתב המדריך:</strong> מערכת קהילה על ארבע כתבה אותו בעזרת כלי בינה מלאכותית.
+          {guide.sources && guide.sources.length > 0
+            ? ' העובדות נבדקו מול המקורות שברשימה למעלה, נכון לתאריך העדכון.'
+            : ''}{' '}
+          מצאתם טעות? <Link href="/contact" className="link">כתבו לנו</Link> ונתקן.
+        </p>
+
         {/* CTA - קבוצת הפייסבוק (קהילה אמיתית) */}
         <JoinCommunityCard tone="guides" />
 
         {/* RELATED - קישורים סמנטיים בתוך אשכול העלויות */}
-        <RelatedContentBlock heading="מדריכי עלויות שכדאי לקרוא לפני שמחליטים" items={related} />
+        <RelatedContentBlock heading={guide.category === 'עלויות' ? 'מדריכי עלויות שכדאי לקרוא לפני שמחליטים' : 'מדריכים קשורים'} items={related} />
 
         {/* מזרים סמכות מדפי המחירון לדפי הגזע */}
         <RelatedContentBlock heading="כמה עולה לגדל גזע מסוים?" items={getBreedsForGuide(guide.slug)} />

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { guides, guideImg } from '@/lib/guides'
+import { breedArticles } from '@/lib/articles'
 import { Reveal3D } from '@/components/fx/Reveal3D'
 import { Tilt3D } from '@/components/fx/Tilt3D'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
@@ -20,6 +21,9 @@ const CATEGORY_ACCENT: Record<string, string> = {
   'התנהגות': '#a8763f',
 }
 const accentFor = (cat: string) => CATEGORY_ACCENT[cat] ?? '#c99a5b'
+
+/** המדריכים החדשים, אלה שנכתבו עם מקורות, מוצגים ראשונים. הסדר בתוך כל קבוצה נשמר. */
+const ordered = [...guides.filter((g) => g.sources?.length), ...guides.filter((g) => !g.sources?.length)]
 
 export default function GuidesPage() {
   return (
@@ -50,6 +54,25 @@ export default function GuidesPage() {
         </div>
       </div>
 
+      {/* מצבי חירום - קישור בולט לעמוד התשובות הקצרות */}
+      <Link
+        href="/emergency"
+        className="kv-press"
+        style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap',
+          textDecoration: 'none', margin: '0 0 22px', padding: '18px 22px', borderRadius: 18,
+          background: '#fff4f2', border: '1px solid rgba(198,40,40,.3)', borderInlineStart: '5px solid #c62828',
+        }}
+      >
+        <span>
+          <strong style={{ display: 'block', fontSize: 19, fontWeight: 900, color: '#3a1a16' }}>כלב במצב חירום: מה עושים עכשיו</strong>
+          <span style={{ fontSize: 15.5, color: '#5a3a35', lineHeight: 1.6 }}>
+            כלב שאבד, הכשת נחש, חשש לכלבת, שוקולד, מכת חום ואזעקות. תשובה של כמה שורות לכל מצב.
+          </span>
+        </span>
+        <span style={{ fontWeight: 800, fontSize: 16, color: '#c62828', whiteSpace: 'nowrap' }}>לעמוד החירום ←</span>
+      </Link>
+
       <ul
         style={{
           listStyle: 'none',
@@ -60,7 +83,7 @@ export default function GuidesPage() {
           gap: 16,
         }}
       >
-        {guides.map((g, i) => (
+        {ordered.map((g, i) => (
           <Reveal3D key={g.slug} as="li" delay={((i % 4) + 1) as 1 | 2 | 3 | 4}>
             <Link
               href={`/guides/${g.slug}`}
@@ -130,7 +153,7 @@ export default function GuidesPage() {
       {/* קישור צולב למדריכי הגזעים */}
       <div className="card" style={{ marginTop: 24, textAlign: 'center', padding: 28 }}>
         <h3 style={{ fontSize: 21, fontWeight: 900, marginBottom: 6 }}>מחפשים מידע על גזע מסוים?</h3>
-        <p className="muted" style={{ marginBottom: 18 }}>יש לנו מדריך מלא לכל אחד מ-29 הגזעים הנפוצים בארץ.</p>
+        <p className="muted" style={{ marginBottom: 18 }}>יש לנו מדריך מלא לכל אחד מ-{breedArticles.length} הגזעים הנפוצים בארץ.</p>
         <Link href="/articles" className="btn btn-primary">למדריכי הגזעים</Link>
       </div>
     </main>

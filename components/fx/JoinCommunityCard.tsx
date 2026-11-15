@@ -1,3 +1,5 @@
+import { GroupLink } from '@/components/shared/GroupLink'
+
 /* כרטיס הזמנה inline לקבוצת הפייסבוק - מתאים להטמעה באמצע עמודי תוכן
    (מסלולים, גינות, מדריכים). מציג טון ספציפי לפי context. */
 
@@ -28,9 +30,8 @@ const COPY: Record<Tone, { title: string; sub: string; cta: string }> = {
   },
 }
 
-const FB_GROUP = 'https://www.facebook.com/groups/2421586375002894'
 
-export function JoinCommunityCard({ tone = 'general' }: { tone?: Tone }) {
+export function JoinCommunityCard({ tone = 'general', src }: { tone?: Tone; src?: string }) {
   const c = COPY[tone]
   return (
     <aside
@@ -54,10 +55,8 @@ export function JoinCommunityCard({ tone = 'general' }: { tone?: Tone }) {
       </div>
       <h3 style={{ fontSize: 22, fontWeight: 900, margin: '6px 0 8px', color: '#fff', letterSpacing: '-.3px' }}>{c.title}</h3>
       <p style={{ fontSize: 15.5, color: 'rgba(255,255,255,.94)', maxWidth: 520, margin: '0 auto', lineHeight: 1.65 }}>{c.sub}</p>
-      <a
-        href={FB_GROUP}
-        target="_blank"
-        rel="noopener noreferrer"
+      <GroupLink
+        src={src ?? (tone === 'guides' ? 'guide-end' : `card-${tone}`)}
         style={{
           display: 'inline-block',
           marginTop: 18,
@@ -72,7 +71,7 @@ export function JoinCommunityCard({ tone = 'general' }: { tone?: Tone }) {
         }}
       >
         {c.cta}
-      </a>
+      </GroupLink>
     </aside>
   )
 }
