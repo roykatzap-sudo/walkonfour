@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { guides, getGuide, guideImg } from '@/lib/guides'
 import { Reveal3D } from '@/components/fx/Reveal3D'
 import { JoinCommunityCard } from '@/components/fx/JoinCommunityCard'
+import { FB_GROUP_URL } from '@/lib/social'
 import { JsonLd, articleSchema, breadcrumbSchema, faqSchema, howToSchema } from '@/components/seo/JsonLd'
 import { ReadingProgress } from '@/components/articles/ReadingProgress'
 import { buildMetadata } from '@/lib/seo'
@@ -152,6 +153,19 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
       </section>
 
       <div style={{ maxWidth: 860, margin: '0 auto', padding: '40px 24px 80px' }}>
+        {/* תשובה קצרה בראש המדריך - מי שבא עם שאלה מקבל תשובה מיד */}
+        {guide.quickAnswer && (
+          <div
+            style={{
+              background: '#fdf6e9', border: '1px solid rgba(201,154,91,.3)', borderInlineStart: '5px solid var(--brand)',
+              borderRadius: 16, padding: '20px 22px', marginBottom: 34,
+            }}
+          >
+            <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--brand-dark, #a97c46)', marginBottom: 6 }}>בקצרה</div>
+            <p style={{ margin: 0, fontSize: 17.5, lineHeight: 1.75, color: '#2a2018', fontWeight: 600 }}>{renderBold(guide.quickAnswer)}</p>
+          </div>
+        )}
+
         {/* SECTIONS */}
         <article>
           {guide.sections.map((s, i) => (
@@ -162,6 +176,27 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
                   <p key={j} style={{ fontSize: 16.5, lineHeight: 1.9, color: '#3a3128', marginBottom: 14, maxWidth: '66ch' }}>{renderBold(p)}</p>
                 ))}
               </div>
+              {/* הזמנה לקהילה שמותאמת לנושא, בשליש הראשון של המדריך */}
+              {i === 0 && guide.communityAsk && (
+                <a
+                  href={FB_GROUP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="kv-press"
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 14, textDecoration: 'none', marginBottom: 34,
+                    background: '#eef4ff', border: '1px solid rgba(24,119,242,.28)', borderRadius: 16, padding: '16px 20px',
+                  }}
+                >
+                  <span aria-hidden="true" style={{ flexShrink: 0, width: 40, height: 40, borderRadius: '50%', background: '#1877f2', display: 'grid', placeItems: 'center' }}>
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.52 1.49-3.91 3.78-3.91 1.09 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.63.78-1.63 1.57v1.88h2.78l-.44 2.91h-2.34V22c4.78-.79 8.43-4.94 8.43-9.94z" /></svg>
+                  </span>
+                  <span style={{ fontSize: 16, lineHeight: 1.6, color: '#1b2a44', fontWeight: 600 }}>
+                    {guide.communityAsk}{' '}
+                    <span style={{ color: '#1877f2', fontWeight: 800, whiteSpace: 'nowrap' }}>לקבוצת הפייסבוק ←</span>
+                  </span>
+                </a>
+              )}
             </Reveal3D>
           ))}
         </article>
@@ -210,6 +245,20 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
                 </details>
               ))}
             </div>
+          </section>
+        )}
+
+        {/* מקורות - קישורים חיצוניים שעליהם נשען המדריך */}
+        {guide.sources && guide.sources.length > 0 && (
+          <section style={{ marginTop: 36 }}>
+            <h2 style={{ fontSize: 20, fontWeight: 900, color: '#2a2018', margin: '0 0 10px' }}>מקורות</h2>
+            <ul style={{ margin: 0, paddingInlineStart: 20, display: 'grid', gap: 6 }}>
+              {guide.sources.map((src) => (
+                <li key={src.url} style={{ fontSize: 15, lineHeight: 1.6 }}>
+                  <a href={src.url} target="_blank" rel="noopener noreferrer" className="link">{src.label}</a>
+                </li>
+              ))}
+            </ul>
           </section>
         )}
 
