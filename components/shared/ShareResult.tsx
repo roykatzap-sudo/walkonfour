@@ -113,7 +113,7 @@ export function ShareResult({
           outline-offset: 3px;
         }
         .shr-wa {
-          background: #25d366;
+          background: #17804a;
           color: #fff;
         }
         .shr-wa:hover {

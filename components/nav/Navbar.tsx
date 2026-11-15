@@ -277,7 +277,7 @@ export function Navbar() {
             </div>
           </div>
           {/* CTA ראשי - קבוצת הפייסבוק, היעד המרכזי של האתר (kv-nav-btn נשאר גלוי גם במובייל) */}
-          <GroupLink src="nav" className="kv-nav-btn kv-press kv-glow" ariaLabel="הצטרפו לקבוצת הפייסבוק (נפתח בחלון חדש)">
+          <GroupLink src="nav" className="kv-nav-btn kv-press kv-glow" ariaLabel="הצטרפו לקבוצה בפייסבוק (נפתח בחלון חדש)">
             הצטרפו לקבוצה
           </GroupLink>
           {/* אזור הקהילה (הרשמה/פרופיל/שמירה) סגור בהשקה - יתווסף כשייפתח */}

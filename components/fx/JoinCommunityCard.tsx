@@ -39,7 +39,7 @@ export function JoinCommunityCard({ tone = 'general', src }: { tone?: Tone; src?
         margin: '40px 0',
         padding: '28px 24px',
         borderRadius: 22,
-        background: 'linear-gradient(135deg, #1877f2 0%, #1565d8 100%)',
+        background: 'linear-gradient(135deg, #1565d8 0%, #0f55c0 100%)',
         color: '#fff',
         textAlign: 'center',
         boxShadow: '0 18px 50px rgba(24,119,242,.28)',

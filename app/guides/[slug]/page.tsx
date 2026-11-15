@@ -226,7 +226,7 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
                   </span>
                   <span style={{ fontSize: 16, lineHeight: 1.6, color: '#1b2a44', fontWeight: 600 }}>
                     {guide.communityAsk}{' '}
-                    <span style={{ color: '#1877f2', fontWeight: 800, whiteSpace: 'nowrap' }}>לקבוצת הפייסבוק ←</span>
+                    <span style={{ color: '#0f5fcc', fontWeight: 800, whiteSpace: 'nowrap' }}>לקבוצת הפייסבוק ←</span>
                   </span>
                 </GroupLink>
               )}

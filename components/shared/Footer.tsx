@@ -37,7 +37,7 @@ export function Footer() {
         className="kv-footer-fb kv-press kv-glow kv-reveal"
         style={{
           display: 'inline-flex', alignItems: 'center', gap: 10, minHeight: 50,
-          background: '#1877f2', color: '#fff', fontWeight: 900, fontSize: 16,
+          background: '#1565d8', color: '#fff', fontWeight: 900, fontSize: 16,
           padding: '12px 26px', borderRadius: 999, textDecoration: 'none',
           margin: '6px 0 8px', boxShadow: '0 8px 22px rgba(24,119,242,.3)',
         }}

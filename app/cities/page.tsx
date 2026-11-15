@@ -1,3 +1,4 @@
+import { CityFilter } from '@/components/city/CityFilter'
 import Link from 'next/link'
 import { buildMetadata } from '@/lib/seo'
 import { FloatingShapes } from '@/components/fx/FloatingShapes'
@@ -82,12 +83,14 @@ export default function CitiesPage() {
           .city-card:hover, .city-card:focus-visible { transform: none; }
         }
       ` }} />
+      <CityFilter total={hubs.length} />
       <div className="city-grid">
         {hubs.map((h) => (
           <Link
             key={h.community.slug}
             href={`/city/${h.community.slug}`}
             className="card city-card"
+            data-name={h.community.name}
           >
             <div className="city-name" style={{ marginBottom: 10 }}>
               <span style={{ fontSize: 22, fontWeight: 900 }}>{h.community.name}</span>

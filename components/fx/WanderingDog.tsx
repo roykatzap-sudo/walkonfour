@@ -118,7 +118,7 @@ export function WanderingDog() {
         <div className="wdog-layer" aria-hidden="true">
           {crosses.map((c) => (
             <div key={c.id} className="wdog-run" style={{ bottom: c.top, ['--wdir' as string]: c.dir }}>
-              <button type="button" className={`wdog-hit${petting ? ' pet' : ''}`} aria-label="ללטף את הכלב" onClick={(e) => petAt(e.clientX, e.clientY)}>
+              <button type="button" tabIndex={-1} className={`wdog-hit${petting ? ' pet' : ''}`} aria-label="ללטף את הכלב" onClick={(e) => petAt(e.clientX, e.clientY)}>
                 <span className="wdog-bob" style={{ transform: c.dir === 1 ? 'scaleX(-1)' : 'none' }}>{c.dog}</span>
               </button>
             </div>

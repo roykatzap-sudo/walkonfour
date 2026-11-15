@@ -127,7 +127,7 @@ export function FacebookCTA() {
         .fbcta-sub { font-size: 14px; color: var(--text-muted); margin-top: 4px; line-height: 1.55; }
         .fbcta-btn {
           display: block; text-align: center; margin-top: 14px;
-          background: #1877f2; color: #fff; font-weight: 800; font-size: 15px;
+          background: #1565d8; color: #fff; font-weight: 800; font-size: 16px;
           padding: 11px; border-radius: 13px; text-decoration: none;
           transition: filter 0.15s;
         }

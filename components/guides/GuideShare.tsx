@@ -53,8 +53,8 @@ export function GuideShare({ title, quickAnswer, path }: { title: string; quickA
         }
         .gsh-b:hover { background: #fdf6ea; }
         .gsh-b:focus-visible { outline: 3px solid rgba(201, 154, 91, 0.6); outline-offset: 3px; }
-        .gsh-wa { background: #1f9d55; color: #fff; border-color: transparent; }
-        .gsh-wa:hover { background: #1a8a4a; }
+        .gsh-wa { background: #17804a; color: #fff; border-color: transparent; }
+        .gsh-wa:hover { background: #136c3e; }
         @media (max-width: 560px) {
           .gsh { flex-direction: column; align-items: stretch; }
           .gsh-b { flex: 1; }

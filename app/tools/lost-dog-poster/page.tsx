@@ -76,7 +76,7 @@ export default function LostDogPosterPage() {
         <GroupLink
           src="poster"
           className="kv-press"
-          style={{ display: 'inline-flex', alignItems: 'center', minHeight: 50, padding: '12px 26px', borderRadius: 999, background: '#1877f2', color: '#fff', fontWeight: 800, fontSize: 16.5, textDecoration: 'none' }}
+          style={{ display: 'inline-flex', alignItems: 'center', minHeight: 50, padding: '12px 26px', borderRadius: 999, background: '#1565d8', color: '#fff', fontWeight: 800, fontSize: 16.5, textDecoration: 'none' }}
         >
           לקבוצת הפייסבוק
         </GroupLink>

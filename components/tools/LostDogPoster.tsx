@@ -269,7 +269,7 @@ export function LostDogPoster() {
           min-height: 50px; padding: 0 20px; border-radius: 999px; cursor: pointer; font: inherit; font-size: 16px; font-weight: 800;
           background: #fff; color: var(--brand-dark); border: 1.5px solid rgba(201,154,91,.5);
         }
-        .ldp-b1 { background: #1f9d55; color: #fff; border-color: transparent; }
+        .ldp-b1 { background: #17804a; color: #fff; border-color: transparent; }
         .ldp-b:disabled { opacity: .6; cursor: default; }
         .ldp-b:focus-visible { outline: 3px solid rgba(201,154,91,.7); outline-offset: 3px; }
         .ldp-msg { min-height: 22px; margin: 10px 0 0; font-size: 15px; font-weight: 700; color: #1b7a43; }
@@ -282,7 +282,7 @@ export function LostDogPoster() {
         .ldp-head { color: #fff; font-weight: 900; font-size: 52px; line-height: 1; padding: 18px 10px; }
         .ldp-photo {
           margin: 14px 18px 10px; aspect-ratio: 16 / 9; border: 4px solid; background: #f1ece3;
-          display: grid; place-items: center; overflow: hidden; color: #8a7f70; font-weight: 700;
+          display: grid; place-items: center; overflow: hidden; color: #5f574c; font-weight: 700;
         }
         .ldp-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .ldp-name { font-size: 34px; font-weight: 900; color: #1f1a14; margin: 6px 14px 4px; }
