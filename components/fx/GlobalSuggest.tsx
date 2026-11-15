@@ -65,7 +65,7 @@ export function GlobalSuggest() {
         onClick={() => setOpen(true)}
         aria-label="הצעה לתוספת לאתר"
         style={{
-          position: 'fixed', bottom: 18, insetInlineEnd: 18, zIndex: 600,
+          position: 'fixed', bottom: 84, insetInlineEnd: 18, zIndex: 600,
           display: 'inline-flex', alignItems: 'center', gap: 7,
           background: 'var(--brand)', color: '#fff', border: 'none',
           borderRadius: 999, padding: '11px 18px', fontSize: 15, fontWeight: 800,

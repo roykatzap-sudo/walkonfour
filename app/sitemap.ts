@@ -39,6 +39,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/walks', priority: 0.85, changeFrequency: 'weekly' },
     { path: '/map', priority: 0.6, changeFrequency: 'monthly' },
     { path: '/vet', priority: 0.8, changeFrequency: 'monthly' },
+    { path: '/facebook', priority: 0.9, changeFrequency: 'monthly' },
     { path: '/faq', priority: 0.7, changeFrequency: 'monthly' },
     // הגזע הלאומי - דף עם תכולה ייחודית
     { path: '/canaan-dog', priority: 0.85, changeFrequency: 'monthly' },

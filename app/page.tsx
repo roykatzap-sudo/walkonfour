@@ -15,6 +15,7 @@ import { communities, img } from '@/lib/communities'
 import { DOG_PARK_COUNT } from '@/lib/siteStats'
 import { breeds, getBreed, breedImg } from '@/lib/breeds'
 import { demoWalks } from '@/lib/walks'
+import { FB_GROUP_URL } from '@/lib/social'
 
 const MARQUEE = [
   'מדריכי גזעים בלי לייפות',
@@ -153,14 +154,17 @@ export default function Home() {
             גינות, מסלולים ומה שאף ווטרינר לא יספיק לכם להגיד. מאנשים שכבר עברו את זה.
           </p>
           <div className="hero-btns">
-            <MagneticButton href="/waitlist" className="hbm kv-press-mag kv-glow">
-              הצטרפו לרשימת ההמתנה
-            </MagneticButton>
+            <a href={FB_GROUP_URL} target="_blank" rel="noopener noreferrer" className="hbm kv-press kv-glow">
+              הצטרפו לקבוצת הפייסבוק
+            </a>
             <Link className="hbg-link kv-press" href="/cities">
               מה יש כבר בעיר שלי ←
             </Link>
           </div>
-          <p className="hero-assure">נעדכן אתכם כשנפתחת הקהילה בעיר שלכם.</p>
+          <p className="hero-assure">
+            בעלי כלבים מכל הארץ, בקבוצה אחת.{' '}
+            <Link href="/facebook" style={{ color: 'inherit', textDecoration: 'underline', textUnderlineOffset: 3 }}>למה כדאי להצטרף?</Link>
+          </p>
         </div>
         <div className="hero-banner">
           <div ref={heroParallaxRef} className="hero-parallax">
