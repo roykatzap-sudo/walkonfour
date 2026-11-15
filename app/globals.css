@@ -291,7 +291,7 @@ body.kv-zoomed, body.kv-zoomed * { cursor: auto !important; }
   box-shadow: 0 6px 24px rgba(42,32,24,.04);
 }
 .kv-logo { font-size: 19px; font-weight: 900; white-space: nowrap; color: #241a12; text-decoration: none; }
-.kv-logo em { color: var(--brand); font-style: normal; }
+.kv-logo em { color: #a97c46; font-style: normal; } /* brand-dark: ניגודיות 3.5:1 על הרקע הבהיר (טקסט גדול) */
 .kv-nav-r { display: flex; gap: 20px; align-items: center; }
 @media (max-width: 1180px) { .kv-nav-r { gap: 15px; } .kv-nav-r a { font-size: 13px; } }
 .kv-nav-r a { position: relative; color: #5e5346; text-decoration: none; font-size: 14px; font-weight: 600; transition: color .2s; min-height: 44px; display: inline-flex; align-items: center; }

@@ -17,7 +17,7 @@ export function CityPlacesList({ places, first = 6, moreLabel }: { places: CityP
       {p.hours && <p className="cpl-where">שעות: {p.hours}</p>}
       <div className="cpl-btns">
         {p.phone && (
-          <a href={telHref(p.phone)} className="cpl-btn cpl-waze" aria-label={`חיוג אל ${p.name}`}>
+          <a href={telHref(p.phone)} className="cpl-btn cpl-waze" aria-label={`חיוג אל ${p.name}: ${p.phone}`}>
             <bdi dir="ltr">{p.phone}</bdi>
           </a>
         )}

@@ -33,7 +33,7 @@ export function buildCitySeo(community: Community, c: CityCounts): CitySeo {
   const walksClause = c.walks > 0 ? ` באזור יש גם ${c.walks === 1 ? 'מסלול טיול אחד' : `${c.walks} מסלולי טיול`} שמתאימים לכלבים.` : ''
 
   const quickAnswer =
-    `ב${name} ממופות ${parkWord}${fencedClause}. לכל גינה יש כפתור ניווט ישיר, ולרובן גם הרחוב הקרוב.` +
+    `ב${name} ובסביבה הקרובה ממופות ${parkWord}${fencedClause}. לכל גינה יש כפתור ניווט ישיר, ולרבות מהן גם הרחוב הקרוב.` +
     vetsClause +
     walksClause +
     ' הנתונים מבוססים על מפת OpenStreetMap ועל רשימות עירוניות, ואפשר לדווח על גינה חסרה בתחתית העמוד.'
@@ -41,7 +41,7 @@ export function buildCitySeo(community: Community, c: CityCounts): CitySeo {
   const faq: CityFaq[] = [
     {
       q: `כמה גינות כלבים יש ב${name}?`,
-      a: `במפה שלנו מסומנות ${parkWord} ב${name}${fencedClause}. ייתכן שיש גינות נוספות שעדיין לא מופו. אם אתם מכירים גינה שלא מופיעה, אפשר להוסיף אותה דרך הטופס בתחתית העמוד.`,
+      a: `במפה שלנו מסומנות ${parkWord} ב${name} ובסביבה הקרובה${fencedClause}. ייתכן שיש גינות נוספות שעדיין לא מופו. אם אתם מכירים גינה שלא מופיעה, אפשר להוסיף אותה דרך הטופס בתחתית העמוד.`,
     },
     {
       q: `איפה מותר לשחרר כלב מהרצועה ב${name}?`,

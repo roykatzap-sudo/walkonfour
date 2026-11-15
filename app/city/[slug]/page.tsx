@@ -34,7 +34,7 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
   const one = parks.length === 1
   const title = one
     ? `גינת כלבים ב${community.name}: מיקום, ניווט וכללי רצועה 2026`
-    : `גינות כלבים ב${community.name}: ${parks.length} מיקומים מעודכנים 2026`
+    : `גינות כלבים ב${community.name}: ${parks.length} מיקומים בעיר ובסביבה 2026`
   const walksClause = walks.length > 0 ? `${walks.length} מסלולי טיול באזור, ` : ''
   const vetsClause = vets.length > 0 ? `${vets.length === 1 ? 'מרפאה וטרינרית' : `${vets.length} מרפאות וטרינריות`} באזור, ` : ''
   const description = `${one ? 'גינת הכלבים' : `רשימת ${parks.length} גינות הכלבים`} ב${community.name} עם ניווט ישיר ב-Waze וב-Google Maps, ${vetsClause}${walksClause}וכללי הרצועה והרישוי שחלים בעיר.`
@@ -235,10 +235,10 @@ export default function CityPage({ params }: { params: { slug: string } }) {
       {parks.length > 0 && (
         <section id="parks" style={{ marginTop: 36, scrollMarginTop: 96 }}>
           <h2 style={{ fontSize: 26, fontWeight: 900, color: 'var(--ink)', margin: '0 0 6px' }}>
-            {parks.length === 1 ? `גינת כלבים אחת ממופה ב${community.name}` : `${parks.length} גינות כלבים ממופות ב${community.name}`}
+            {parks.length === 1 ? `גינת כלבים אחת ממופה ב${community.name}` : `${parks.length} גינות כלבים ממופות ב${community.name} ובסביבה`}
           </h2>
           <p style={{ color: '#5b4d3c', fontSize: 16, lineHeight: 1.7, margin: '0 0 16px' }}>
-            לוחצים על כפתור הניווט ומגיעים ישר לשער. הרחוב שמופיע ליד כל גינה הוא הרחוב הקרוב אליה, לצורך התמצאות.
+            הרשימה כוללת גם גינות ביישובים הצמודים, ולכן ליד כל גינה מופיעים העיר והשכונה שלה. לוחצים על כפתור הניווט ומגיעים למקום. הרחוב שמופיע הוא הרחוב הקרוב לגינה, לצורך התמצאות.
           </p>
           <CityParksList parks={parks} city={community.name} />
           <Link href="/map" className="btn btn-ghost" style={{ marginTop: 16, display: 'inline-block' }}>
