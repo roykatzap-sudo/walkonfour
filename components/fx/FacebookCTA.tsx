@@ -1,15 +1,27 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { trackGroupClick } from '@/components/shared/GroupLink'
+import { trackGroupClick, GROUP_CLICKED_KEY } from '@/components/shared/GroupLink'
 import { FB_GROUP_URL } from '@/lib/social'
 
 /**
  * הזמנה להצטרף לקבוצת הפייסבוק - קופץ בכל דף, בכל כניסה לאתר, אחרי 5 שניות
  * (או גלילה של רבע עמוד). אם סוגרים אותו - חוזר שוב אחרי 3 דקות, וחוזר חלילה
- * בכל סגירה. בלי שום זיכרון: לא משנה מי המבקר וכמה פעמים נכנס - תמיד יקבל הזמנה.
+ * בכל סגירה. חריג אחד: מי שכבר לחץ על קישור לקבוצה (מכל כפתור באתר) לא מקבל
+ * הקפצה במשך שבוע - אין טעם להזמין שוב את מי שכבר נכנס.
  */
 const RESHOW_MS = 3 * 60_000 // 3 דקות אחרי סגירה → קופץ שוב
+const QUIET_AFTER_CLICK_MS = 7 * 24 * 60 * 60_000 // מי שכבר לחץ על קישור לקבוצה - שבוע בלי הקפצה
+
+/** האם המבקר כבר לחץ על קישור לקבוצה בשבוע האחרון (מכל כפתור באתר). */
+function alreadyClicked(): boolean {
+  try {
+    const at = Number(window.localStorage.getItem(GROUP_CLICKED_KEY) || 0)
+    return at > 0 && Date.now() - at < QUIET_AFTER_CLICK_MS
+  } catch {
+    return false
+  }
+}
 
 export function FacebookCTA() {
   const [show, setShow] = useState(false)
@@ -19,10 +31,11 @@ export function FacebookCTA() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return
+    if (alreadyClicked()) return
 
     let armed = true
     const reveal = () => {
-      if (!armed) return
+      if (!armed || alreadyClicked()) return
       armed = false
       window.removeEventListener('scroll', onScroll)
       window.clearTimeout(timer)
@@ -61,7 +74,7 @@ export function FacebookCTA() {
     }, 280)
     // קופץ שוב אחרי 3 דקות (וחוזר חלילה בכל סגירה)
     if (reshowRef.current) window.clearTimeout(reshowRef.current)
-    reshowRef.current = window.setTimeout(() => setShow(true), RESHOW_MS)
+    reshowRef.current = window.setTimeout(() => { if (!alreadyClicked()) setShow(true) }, RESHOW_MS)
   }
 
   if (!show) return null

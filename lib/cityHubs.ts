@@ -9,6 +9,7 @@ import { allDogParks } from './dogParksAll'
 import { manualParks } from './dogParksManual'
 import { demoWalks as walks, type Walk } from './walks'
 import type { DogPark } from '@/types'
+import { cityPlaces, type CityPlace } from './cityPlaces'
 
 /** מרחק מקורב בק״מ (קו ישר, מספיק לצירוף עירוני). */
 function distKm(aLat: number, aLng: number, bLat: number, bLng: number): number {
@@ -19,6 +20,10 @@ export type CityHub = {
   community: Community
   parks: DogPark[]
   walks: Walk[]
+  /** מרפאות וטרינריות ליד העיר (OpenStreetMap), לפי קרבה למרכז. */
+  vets: CityPlace[]
+  /** חנויות לחיות מחמד ליד העיר (OpenStreetMap), לפי קרבה למרכז. */
+  petShops: CityPlace[]
 }
 
 /** מרחק מקסימלי (ק״מ) לשיוך פריט לעיר הקרובה ביותר. */
@@ -69,14 +74,18 @@ export function getCityHub(slug: string): CityHub | null {
     .map((p) => ({ p, d: distKm(community.lat, community.lng, p.lat, p.lng) }))
     .sort((a, b) => a.d - b.d)
     .map((o) => o.p)
-  const parks =
-    manualHere.length > 0
-      ? manualHere
-      : nearestSorted(allDogParks, slug, community.lat, community.lng, PARK_MAX_KM)
+  // הרשימה הרשמית קודם, ואחריה גינות OSM שהעיר הזאת היא הקרובה אליהן ביותר
+  // (allDogParks כבר משמיט כפילויות OSM של גינות רשמיות).
+  const nearby = nearestSorted(allDogParks, slug, community.lat, community.lng, PARK_MAX_KM)
+  const manualIds = new Set(manualHere.map((p) => p.id))
+  const parks = [...manualHere, ...nearby.filter((p) => !manualIds.has(p.id))]
+  const places = nearestSorted(cityPlaces, slug, community.lat, community.lng, PARK_MAX_KM)
   return {
     community,
     parks,
     walks: near(walks, community.lat, community.lng, R_WALKS),
+    vets: places.filter((p) => p.kind === 'vet'),
+    petShops: places.filter((p) => p.kind === 'pet_shop'),
   }
 }
 

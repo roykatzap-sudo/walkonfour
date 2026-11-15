@@ -99,6 +99,11 @@ export default function CitiesPage() {
                   🐕 {h.parks.length} גינות
                 </span>
               )}
+              {h.vets.length > 0 && (
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(70,130,190,.1)', borderRadius: 999, padding: '4px 11px', fontWeight: 700 }}>
+                  {h.vets.length} וטרינרים
+                </span>
+              )}
               {h.walks.length > 0 && (
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(90,140,80,.1)', borderRadius: 999, padding: '4px 11px', fontWeight: 700 }}>
                   🥾 {h.walks.length} מסלולים

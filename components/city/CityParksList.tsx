@@ -1,63 +1,98 @@
-'use client'
-
-import { useState } from 'react'
 import type { DogPark } from '@/types'
 
-const GENERIC = new Set(['גינת כלבים', 'גן כלבים', ''])
+/* רשימת גינות הכלבים של עיר.
+   רכיב שרת: כל הגינות נמצאות ב-HTML (גם אלה שמאחורי "עוד גינות"), כך שמנועי
+   חיפוש וקוראי מסך רואים את הרשימה המלאה. לכל גינה שני כפתורי ניווט גדולים,
+   לפי קואורדינטה מדויקת. */
 
-function isNamed(p: DogPark): boolean {
+const GENERIC = new Set(['גינת כלבים', 'גן כלבים', 'גינת הכלבים', ''])
+
+/** ה-CSS של כרטיסי הרשימות בעמוד העיר (גינות, מרפאות, חנויות, מסלולים). מוזרק פעם אחת בעמוד. */
+export const CITY_LIST_CSS = `
+            .cpl-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+            .cpl-card { background: #fff; border: 1px solid rgba(201,154,91,.25); border-radius: 16px; padding: 16px 16px 14px; box-shadow: var(--shadow-xs); display: flex; flex-direction: column; }
+            .cpl-name { margin: 0; font-size: 17.5px; font-weight: 800; color: var(--ink); line-height: 1.35; }
+            .cpl-where { margin: 4px 0 0; font-size: 15px; color: #5b4d3c; line-height: 1.5; }
+            .cpl-chips { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+            .cpl-chips li { font-size: 14px; font-weight: 700; color: #2f6a33; background: rgba(76,145,80,.12); border: 1px solid rgba(76,145,80,.3); border-radius: 999px; padding: 3px 11px; }
+            .cpl-btns { display: flex; gap: 8px; margin-top: auto; padding-top: 14px; }
+            .cpl-btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 0 12px; border-radius: 12px; font-size: 15.5px; font-weight: 800; text-decoration: none; color: var(--brand-dark, #7a5a2e); background: #fff; border: 1.5px solid rgba(201,154,91,.55); }
+            .cpl-btn:hover { background: #fdf6ea; }
+            .cpl-btn:focus-visible { outline: 3px solid #c99a5b; outline-offset: 2px; }
+            .cpl-waze { background: #241a12; color: #fff; border-color: #241a12; }
+            .cpl-waze:hover { background: #3a2c20; }
+            .cpl-more { margin-top: 14px; }
+            .cpl-more > summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; min-height: 48px; padding: 0 24px; border-radius: 999px; background: #fff; border: 1.5px solid var(--brand); color: var(--brand-dark, #7a5a2e); font-weight: 800; font-size: 16px; }
+            .cpl-more > summary::-webkit-details-marker { display: none; }
+            .cpl-more > summary:focus-visible { outline: 3px solid #c99a5b; outline-offset: 2px; }
+            .cpl-more[open] > summary { margin-bottom: 14px; }
+            .cpl-more[open] > summary .cpl-closed, .cpl-more:not([open]) > summary .cpl-open { display: none; }
+`
+
+export function isNamedPark(p: DogPark): boolean {
   return !!p.name && !GENERIC.has(p.name.trim())
 }
 
-/** קישור Google Maps: לפי כתובת אם יש, אחרת לפי שם+עיר, אחרת לפי הקואורדינטה. */
-function gmaps(p: DogPark): string {
-  let q: string
-  if (p.address) q = encodeURIComponent(`${p.address} ${p.city || ''}`.trim())
-  else if (isNamed(p)) q = encodeURIComponent(`${p.name} ${p.city || ''}`.trim())
-  else q = `${p.lat},${p.lng}`
-  return `https://www.google.com/maps/search/?api=1&query=${q}`
+/** שם לתצוגה: השם האמיתי אם יש, אחרת "גינת כלבים ליד <רחוב>". */
+export function parkTitle(p: DogPark): string {
+  if (isNamedPark(p)) return p.name as string
+  if (p.near) return `גינת כלבים ליד ${p.near}`
+  if (p.hood) return `גינת כלבים ב${p.hood}`
+  return 'גינת כלבים'
 }
 
-export function CityParksList({ parks, city }: { parks: DogPark[]; city: string }) {
-  const [showAll, setShowAll] = useState(false)
-  // גינות עם שם אמיתי קודם, אחר כך הגנריות
-  const sorted = [...parks].sort((a, b) => (isNamed(a) ? 0 : 1) - (isNamed(b) ? 0 : 1))
-  const visible = showAll ? sorted : sorted.slice(0, 5)
-  const rest = sorted.length - 5
+const waze = (p: DogPark) => `https://waze.com/ul?ll=${p.lat},${p.lng}&navigate=yes`
+const gmaps = (p: DogPark) => `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`
+
+function ParkCard({ p, city }: { p: DogPark; city: string }) {
+  const title = parkTitle(p)
+  const where = [isNamedPark(p) && p.near ? `ליד ${p.near}` : null, p.address ?? null, p.hood ?? null, p.city || city]
+    .filter(Boolean)
+    .join(' · ')
+  const chips = [p.fenced ? 'מגודרת' : null, p.lit ? 'תאורה' : null, p.wheelchair ? 'נגישה לכיסא גלגלים' : null].filter(Boolean) as string[]
+  return (
+    <li className="cpl-card">
+      <h3 className="cpl-name">{title}</h3>
+      <p className="cpl-where">{where}</p>
+      {chips.length > 0 && (
+        <ul className="cpl-chips" aria-label="מאפיינים">
+          {chips.map((c) => <li key={c}>{c}</li>)}
+        </ul>
+      )}
+      <div className="cpl-btns">
+        <a href={waze(p)} target="_blank" rel="noopener noreferrer" className="cpl-btn cpl-waze" aria-label={`ניווט ב-Waze אל ${title} (נפתח בחלון חדש)`}>
+          ניווט ב-Waze
+        </a>
+        <a href={gmaps(p)} target="_blank" rel="noopener noreferrer" className="cpl-btn" aria-label={`פתיחה ב-Google Maps: ${title} (נפתח בחלון חדש)`}>
+          Google Maps
+        </a>
+      </div>
+    </li>
+  )
+}
+
+export function CityParksList({ parks, city, first = 8 }: { parks: DogPark[]; city: string; first?: number }) {
+  // גינות עם שם אמיתי קודם, אחר כך אלה שיש להן רחוב קרוב, ובסוף השאר. הסדר הפנימי (קרבה למרכז) נשמר.
+  const rank = (p: DogPark) => (isNamedPark(p) ? 0 : p.near ? 1 : 2)
+  const sorted = [...parks].sort((a, b) => rank(a) - rank(b))
+  const head = sorted.slice(0, first)
+  const rest = sorted.slice(first)
 
   return (
-    <div>
-      <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 10 }}>
-        {visible.map((p) => (
-          <li key={p.id}>
-            <a
-              href={gmaps(p)}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ display: 'block', background: '#fff', border: '1px solid rgba(201,154,91,.2)', borderRadius: 14, padding: '13px 15px', textDecoration: 'none', color: 'inherit', height: '100%', boxShadow: 'var(--shadow-xs)' }}
-            >
-              <div style={{ fontWeight: 800, color: 'var(--ink)', fontSize: 15 }}>
-                {isNamed(p) ? p.name : 'גינת כלבים'}
-              </div>
-              {p.address && (
-                <div style={{ fontSize: 13, color: '#6a6155', marginTop: 3 }}>{p.address}</div>
-              )}
-              <div style={{ fontSize: 12.5, color: 'var(--brand)', fontWeight: 700, marginTop: 4 }}>
-                📍 {p.city || city} · פתח ב-Google Maps ↗
-              </div>
-            </a>
-          </li>
-        ))}
+    <div className="cpl">
+      <ul className="cpl-grid">
+        {head.map((p) => <ParkCard key={p.id} p={p} city={city} />)}
       </ul>
-
-      {!showAll && rest > 0 && (
-        <button
-          type="button"
-          onClick={() => setShowAll(true)}
-          style={{ marginTop: 14, background: '#fff', border: '1.5px solid var(--brand)', color: 'var(--brand)', fontWeight: 800, fontSize: 14.5, padding: '11px 22px', borderRadius: 999, cursor: 'pointer' }}
-        >
-          הצג עוד {rest} גינות ↓
-        </button>
+      {rest.length > 0 && (
+        <details className="cpl-more">
+          <summary>
+            <span className="cpl-closed">הצגת עוד {rest.length} גינות ב{city}</span>
+            <span className="cpl-open">הסתרת הגינות הנוספות</span>
+          </summary>
+          <ul className="cpl-grid">
+            {rest.map((p) => <ParkCard key={p.id} p={p} city={city} />)}
+          </ul>
+        </details>
       )}
     </div>
   )

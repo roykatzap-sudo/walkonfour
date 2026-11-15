@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
 import { usePathname } from 'next/navigation'
+import { GroupLink } from '@/components/shared/GroupLink'
 
 type NavLink = { href: string; label: string }
 
@@ -275,15 +276,10 @@ export function Navbar() {
               ))}
             </div>
           </div>
-          {/* CTA רשימת המתנה - עקבי בכל האתר (kv-nav-btn נשאר גלוי גם במובייל) */}
-          <Link
-            href="/waitlist"
-            className={`kv-nav-btn kv-press kv-glow${isActive('/waitlist') ? ' is-active' : ''}`}
-            aria-current={isActive('/waitlist') ? 'page' : undefined}
-            aria-label="הצטרפו לרשימת ההמתנה"
-          >
-            🐾 הצטרפו
-          </Link>
+          {/* CTA ראשי - קבוצת הפייסבוק, היעד המרכזי של האתר (kv-nav-btn נשאר גלוי גם במובייל) */}
+          <GroupLink src="nav" className="kv-nav-btn kv-press kv-glow" ariaLabel="הצטרפו לקבוצת הפייסבוק (נפתח בחלון חדש)">
+            הצטרפו לקבוצה
+          </GroupLink>
           {/* אזור הקהילה (הרשמה/פרופיל/שמירה) סגור בהשקה - יתווסף כשייפתח */}
           {/* כפתור המבורגר - מוצג רק במובייל (CSS) */}
           <button
@@ -344,15 +340,23 @@ export function Navbar() {
               {l.label}
             </Link>
           ))}
-          {/* CTA רשימת המתנה - בולט בתחתית המגירה */}
-          <Link
-            href="/waitlist"
+          {/* CTA ראשי - קבוצת הפייסבוק, בולט בתחתית המגירה */}
+          <GroupLink
+            src="nav-drawer"
             className="kv-nav-btn kv-press kv-glow"
             onClick={() => setMenuOpen(false)}
             tabIndex={menuOpen ? 0 : -1}
-            aria-label="הצטרפו לרשימת ההמתנה"
+            ariaLabel="הצטרפו לקבוצת הפייסבוק (נפתח בחלון חדש)"
           >
-            🐾 הצטרפו לרשימת ההמתנה
+            הצטרפו לקבוצת הפייסבוק
+          </GroupLink>
+          <Link
+            href="/waitlist"
+            onClick={() => setMenuOpen(false)}
+            tabIndex={menuOpen ? 0 : -1}
+            aria-current={isActive('/waitlist') ? 'page' : undefined}
+          >
+            רשימת ההמתנה לאתר
           </Link>
         </div>
       </div>

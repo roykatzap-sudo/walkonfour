@@ -5,8 +5,11 @@ import { FloatingShapes } from '@/components/fx/FloatingShapes'
 import { JsonLd, breadcrumbSchema, faqSchema, placeListSchema } from '@/components/seo/JsonLd'
 import { getCityHub, cityHubSlugs, allCityHubs } from '@/lib/cityHubs'
 import { buildCitySeo } from '@/lib/citySeo'
-import { CityParksList } from '@/components/city/CityParksList'
-import { CitySeoBlock } from '@/components/city/CitySeoBlock'
+import { CityParksList, isNamedPark, CITY_LIST_CSS } from '@/components/city/CityParksList'
+import { CityQuickAnswer, CityFaqBlock } from '@/components/city/CitySeoBlock'
+import { CityPlacesList } from '@/components/city/CityPlacesList'
+import { GroupLink } from '@/components/shared/GroupLink'
+import { OSM_DATA_DATE } from '@/lib/cityPlaces'
 import { SuggestMissing } from '@/components/city/SuggestMissing'
 import { JoinCommunityCard } from '@/components/fx/JoinCommunityCard'
 import { getGuidesForCity } from '@/lib/relatedContent'
@@ -24,16 +27,17 @@ function distKm(aLat: number, aLng: number, bLat: number, bLng: number): number 
 export function generateMetadata({ params }: { params: { slug: string } }) {
   const hub = getCityHub(params.slug)
   if (!hub) return buildMetadata({ title: 'עיר לא נמצאה', path: `/city/${params.slug}`, noindex: true })
-  const { community, parks, walks } = hub
+  const { community, parks, walks, vets } = hub
   // ★ SEO title שמתחיל ב"גינות כלבים [עיר]" - המילה הראשונה הכי חזקה לגוגל.
   // הכותרת לא מבטיחה מסלולי טיול כשאין כאלה, והתיאור לא מבטיח חוקים ווטרינרים
   // שלא קיימים על העמוד (מלכודת CTR שמייצרת נטישה).
   const one = parks.length === 1
   const title = one
-    ? `גינת כלבים ב${community.name}: כתובת, מפה וכללי רצועה 2026`
+    ? `גינת כלבים ב${community.name}: מיקום, ניווט וכללי רצועה 2026`
     : `גינות כלבים ב${community.name}: ${parks.length} מיקומים מעודכנים 2026`
   const walksClause = walks.length > 0 ? `${walks.length} מסלולי טיול באזור, ` : ''
-  const description = `${one ? 'גינת הכלבים' : `רשימת ${parks.length} גינות הכלבים`} ב${community.name} עם כתובת מדויקת וניווט במפה, ${walksClause}וכללי הרצועה והרישוי שחלים בעיר. מתעדכן מדיווחי בעלי כלבים.`
+  const vetsClause = vets.length > 0 ? `${vets.length === 1 ? 'מרפאה וטרינרית' : `${vets.length} מרפאות וטרינריות`} באזור, ` : ''
+  const description = `${one ? 'גינת הכלבים' : `רשימת ${parks.length} גינות הכלבים`} ב${community.name} עם ניווט ישיר ב-Waze וב-Google Maps, ${vetsClause}${walksClause}וכללי הרצועה והרישוי שחלים בעיר.`
   return buildMetadata({
     title,
     description,
@@ -88,7 +92,7 @@ const DIFFICULTY_STYLE: Record<string, { bg: string; fg: string; bd: string; ico
 export default function CityPage({ params }: { params: { slug: string } }) {
   const hub = getCityHub(params.slug)
   if (!hub) notFound()
-  const { community, parks, walks } = hub
+  const { community, parks, walks, vets, petShops } = hub
   // ערים שכנות אמיתיות: קודם אותו מחוז, ואז לפי מרחק. המיון הקודם (לפי מספר
   // גינות) גרם לכל 41 העמודים להצביע על אותן שמונה ערים גדולות.
   const others = allCityHubs()
@@ -99,12 +103,26 @@ export default function CityPage({ params }: { params: { slug: string } }) {
       return w(a.community) - w(b.community)
     })
     .slice(0, 8)
-  const seo = buildCitySeo(community, parks.length, walks.length)
+  const seo = buildCitySeo(community, {
+    parks: parks.length,
+    fenced: parks.filter((p) => p.fenced).length,
+    walks: walks.length,
+    vets: vets.length,
+    petShops: petShops.length,
+  })
+  // קישורי קפיצה בתוך העמוד - רק לחלקים שבאמת קיימים בעיר הזאת
+  const jumps = [
+    parks.length > 0 ? { href: '#parks', label: 'גינות כלבים' } : null,
+    vets.length > 0 ? { href: '#vets', label: 'וטרינרים' } : null,
+    petShops.length > 0 ? { href: '#shops', label: 'חנויות' } : null,
+    walks.length > 0 ? { href: '#walks', label: 'אטרקציות וטיולים' } : null,
+    { href: '#faq', label: 'שאלות נפוצות' },
+  ].filter(Boolean) as { href: string; label: string }[]
 
-  // רק גינות עם שם אמיתי, ורק החמש שמרונדרות בצד השרת (השאר נכנסות ל-DOM אחרי קליק).
+  // רק גינות עם שם אמיתי נכנסות לסכמה (כל הרשימה מרונדרת בצד השרת).
   const namedParks = parks
-    .filter((p) => !!p.name && p.name.trim() !== 'גינת כלבים' && p.name.trim() !== 'גן כלבים')
-    .slice(0, 5)
+    .filter((p) => isNamedPark(p))
+    .slice(0, 10)
     .map((p) => ({
       name: p.name as string,
       address: p.address ?? null,
@@ -119,7 +137,7 @@ export default function CityPage({ params }: { params: { slug: string } }) {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
       name: `גינות כלבים ב${community.name}`,
-      description: `${parks.length} גינות כלבים ממופות ו-${walks.length} מסלולי טיול ב${community.name}.`,
+      description: `${parks.length} גינות כלבים ממופות ב${community.name}${vets.length > 0 ? `, ${vets.length} מרפאות וטרינריות` : ''}${walks.length > 0 ? ` ו-${walks.length} מסלולי טיול באזור` : ''}.`,
       url: `${SITE_URL}/city/${community.slug}`,
       inLanguage: 'he-IL',
       about: {
@@ -142,6 +160,25 @@ export default function CityPage({ params }: { params: { slug: string } }) {
   return (
     <main className="page" style={{ maxWidth: 860 }}>
       <JsonLd data={schemas} />
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            ${CITY_LIST_CSS}
+            .city-jumps { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+            .city-jumps a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 15px; border-radius: 999px; background: #fff; border: 1.5px solid rgba(201,154,91,.5); color: #5a4d3c; font-weight: 800; font-size: 15px; text-decoration: none; }
+            .city-jumps a:hover { background: #fdf6ea; }
+            .city-jumps a:focus-visible, .city-fb:focus-visible { outline: 3px solid #c99a5b; outline-offset: 2px; }
+            .city-fb { display: flex; align-items: center; gap: 14px; text-decoration: none; margin-top: 16px; background: #eef4ff; border: 1px solid rgba(24,119,242,.3); border-radius: 16px; padding: 16px 20px; }
+            .city-fb-ico { flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%; background: #1877f2; display: grid; place-items: center; }
+            .city-fb-text { font-size: 16.5px; line-height: 1.65; color: #1b2a44; }
+            .city-fb-go { color: #0f5fcc; font-weight: 800; white-space: nowrap; }
+            .city-faq { background: #fff; border: 1px solid rgba(201,154,91,.25); border-radius: 14px; padding: 14px 18px; }
+            .city-faq summary { cursor: pointer; font-size: 17px; font-weight: 800; color: var(--ink); line-height: 1.5; }
+            .city-faq summary:focus-visible { outline: 3px solid #c99a5b; outline-offset: 3px; border-radius: 6px; }
+            .city-faq p { margin: 10px 0 2px; font-size: 16.5px; line-height: 1.8; color: #3d342a; }
+          `,
+        }}
+      />
 
       {/* HERO */}
       <div
@@ -164,63 +201,124 @@ export default function CityPage({ params }: { params: { slug: string } }) {
             גינות כלבים ב{community.name}
           </h1>
           <p className="page-sub" style={{ maxWidth: 600, fontSize: 17.5, color: '#5b4d3c', lineHeight: 1.7 }}>
-            {parks.length === 1 ? 'גינה אחת ממופה' : `${parks.length} גינות ממופות`}{walks.length > 0 ? ` ו-${walks.length} ${walks.length === 1 ? 'מסלול טיול' : 'מסלולי טיול'} באזור` : ''} - מעודכן ע"י הקהילה.
+            {parks.length === 1 ? 'גינה אחת ממופה' : `${parks.length} גינות ממופות`}{walks.length > 0 ? ` ו-${walks.length} ${walks.length === 1 ? 'מסלול טיול' : 'מסלולי טיול'} באזור` : ''}, עם ניווט ישיר לכל אחת.
           </p>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 16 }}>
             {parks.length > 0 && <Stat n={parks.length} label="גינות כלבים" />}
+            {vets.length > 0 && <Stat n={vets.length} label="וטרינרים" />}
+            {petShops.length > 0 && <Stat n={petShops.length} label="חנויות" />}
             {walks.length > 0 && <Stat n={walks.length} label="מסלולי טיול" />}
           </div>
+          <nav aria-label="קפיצה לחלק בעמוד" className="city-jumps">
+            {jumps.map((j) => (
+              <a key={j.href} href={j.href}>{j.label}</a>
+            ))}
+          </nav>
         </div>
       </div>
 
-      {/* ★ בלוק SEO - תשובה מהירה + FAQ */}
-      <CitySeoBlock city={community.name} seo={seo} />
+      {/* תשובה קצרה בראש העמוד */}
+      <CityQuickAnswer seo={seo} />
+
+      {/* הזמנה לקבוצת הפייסבוק שמותאמת לעיר - בשליש הראשון של העמוד */}
+      <GroupLink src="city-inline" className="kv-press city-fb">
+        <span aria-hidden="true" className="city-fb-ico">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="#fff"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.52 1.49-3.91 3.78-3.91 1.09 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.63.78-1.63 1.57v1.88h2.78l-.44 2.91h-2.34V22c4.78-.79 8.43-4.94 8.43-9.94z" /></svg>
+        </span>
+        <span className="city-fb-text">
+          <strong>גרים ב{community.name}?</strong> ספרו בקבוצת הפייסבוק שלנו איזו גינה הכי שווה, באיזו שעה יש שם חברים לכלב, ומה כדאי לדעת לפני שמגיעים.{' '}
+          <span className="city-fb-go">לקבוצת הפייסבוק ←</span>
+        </span>
+      </GroupLink>
 
       {/* גינות כלבים */}
       {parks.length > 0 && (
-        <section style={{ marginTop: 40 }}>
+        <section id="parks" style={{ marginTop: 36, scrollMarginTop: 96 }}>
           <h2 style={{ fontSize: 26, fontWeight: 900, color: 'var(--ink)', margin: '0 0 6px' }}>
-            🐕 {parks.length} גינות כלבים ממופות ב{community.name}
+            {parks.length === 1 ? `גינת כלבים אחת ממופה ב${community.name}` : `${parks.length} גינות כלבים ממופות ב${community.name}`}
           </h2>
-          <p style={{ color: '#5b4d3c', fontSize: 15.5, margin: '0 0 16px' }}>
-            מקומות לשחרר רצועה ולתת לכלב לרוץ חופשי. הקרובות למרכז {community.name}:
+          <p style={{ color: '#5b4d3c', fontSize: 16, lineHeight: 1.7, margin: '0 0 16px' }}>
+            לוחצים על כפתור הניווט ומגיעים ישר לשער. הרחוב שמופיע ליד כל גינה הוא הרחוב הקרוב אליה, לצורך התמצאות.
           </p>
           <CityParksList parks={parks} city={community.name} />
           <Link href="/map" className="btn btn-ghost" style={{ marginTop: 16, display: 'inline-block' }}>
-            לכל הגינות על המפה →
+            לכל הגינות על המפה
           </Link>
+        </section>
+      )}
+
+      {/* וטרינרים */}
+      {vets.length > 0 && (
+        <section id="vets" style={{ marginTop: 48, scrollMarginTop: 96 }}>
+          <h2 style={{ fontSize: 26, fontWeight: 900, color: 'var(--ink)', margin: '0 0 6px' }}>
+            מרפאות וטרינריות ב{community.name} ובסביבה
+          </h2>
+          <p style={{ color: '#5b4d3c', fontSize: 16, lineHeight: 1.7, margin: '0 0 16px' }}>
+            {vets.length === 1 ? 'מרפאה אחת שמופיעה' : `${vets.length} מרפאות שמופיעות`} במפת OpenStreetMap, מהקרובה למרכז העיר. הרשימה לא מלאה,
+            לא בדקנו כל מרפאה בעצמנו, והיא אינה המלצה. כדאי להתקשר לפני שמגיעים.
+          </p>
+          <CityPlacesList places={vets} moreLabel="עוד מרפאות" />
+        </section>
+      )}
+
+      {/* חנויות */}
+      {petShops.length > 0 && (
+        <section id="shops" style={{ marginTop: 48, scrollMarginTop: 96 }}>
+          <h2 style={{ fontSize: 26, fontWeight: 900, color: 'var(--ink)', margin: '0 0 6px' }}>
+            חנויות לחיות מחמד ב{community.name} ובסביבה
+          </h2>
+          <p style={{ color: '#5b4d3c', fontSize: 16, lineHeight: 1.7, margin: '0 0 16px' }}>
+            {petShops.length === 1 ? 'חנות אחת שמופיעה' : `${petShops.length} חנויות שמופיעות`} במפת OpenStreetMap. גם הרשימה הזאת חלקית ואינה המלצה.
+          </p>
+          <CityPlacesList places={petShops} moreLabel="עוד חנויות" />
         </section>
       )}
 
       {/* טיולים */}
       {walks.length > 0 && (
-        <section style={{ marginTop: 48 }}>
+        <section id="walks" style={{ marginTop: 48, scrollMarginTop: 96 }}>
           <h2 style={{ fontSize: 26, fontWeight: 900, color: 'var(--ink)', margin: '0 0 6px' }}>
-            🥾 מסלולי טיול עם הכלב ליד {community.name}
+            אטרקציות ומסלולי טיול עם הכלב ליד {community.name}
           </h2>
+          <p style={{ color: '#5b4d3c', fontSize: 16, lineHeight: 1.7, margin: '0 0 4px' }}>
+            מקומות שמתירים כניסה עם כלבים, מהקרוב לרחוק. בשמורות ובגנים לאומיים הכלב ברצועה, וכדאי לבדוק שעות ומדיניות לפני שיוצאים.
+          </p>
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 12, marginTop: 12 }}>
             {walks.slice(0, 8).map((w) => {
               const diff = DIFFICULTY_STYLE[w.difficulty] ?? DIFFICULTY_STYLE['בינוני']
               return (
                 <li key={w.id} style={{ background: '#fff', border: '1px solid rgba(201,154,91,.18)', borderRadius: 14, padding: '15px 18px', boxShadow: 'var(--shadow-xs)' }}>
-                  <div style={{ fontWeight: 800, color: 'var(--ink)', fontSize: 16 }}>{w.name}</div>
-                  <div style={{ fontSize: 14, color: '#5b4d3c', marginTop: 4, marginBottom: 10 }}>
-                    📍 {w.city} · {w.lengthKm} ק״מ · {Math.round(distKm(community.lat, community.lng, w.lat, w.lng))} ק״מ ממרכז {community.name}
+                  <h3 style={{ margin: 0, fontWeight: 800, color: 'var(--ink)', fontSize: 17.5 }}>{w.name}</h3>
+                  <div style={{ fontSize: 15, color: '#5b4d3c', marginTop: 4, marginBottom: 10 }}>
+                    {w.city} · {w.lengthKm} ק״מ · {Math.round(distKm(community.lat, community.lng, w.lat, w.lng))} ק״מ ממרכז {community.name}
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
                     <WalkBadge label={w.difficulty} icon={diff.icon} bg={diff.bg} fg={diff.fg} bd={diff.bd} />
                     {w.shade && <WalkBadge label="צל" icon="🌳" bg="rgba(76,145,80,.1)" fg="#2f6a33" bd="rgba(76,145,80,.28)" />}
                     {w.water && <WalkBadge label="מים" icon="💧" bg="rgba(70,130,190,.12)" fg="#245e88" bd="rgba(70,130,190,.32)" />}
+                    {w.fenced && <WalkBadge label="מקטע מגודר" icon="🚧" bg="rgba(201,154,91,.15)" fg="#8a5a1e" bd="rgba(201,154,91,.4)" />}
+                  </div>
+                  <p style={{ margin: '10px 0 0', fontSize: 16, lineHeight: 1.7, color: '#3d342a' }}>{w.description}</p>
+                  <div className="cpl-btns" style={{ maxWidth: 420 }}>
+                    <a href={`https://waze.com/ul?ll=${w.lat},${w.lng}&navigate=yes`} target="_blank" rel="noopener noreferrer" className="cpl-btn cpl-waze" aria-label={`ניווט ב-Waze אל ${w.name} (נפתח בחלון חדש)`}>
+                      ניווט ב-Waze
+                    </a>
+                    <a href={`https://www.google.com/maps/search/?api=1&query=${w.lat},${w.lng}`} target="_blank" rel="noopener noreferrer" className="cpl-btn" aria-label={`פתיחה ב-Google Maps: ${w.name} (נפתח בחלון חדש)`}>
+                      Google Maps
+                    </a>
                   </div>
                 </li>
               )
             })}
           </ul>
           <Link href="/walks" className="btn btn-ghost" style={{ marginTop: 16, display: 'inline-block' }}>
-            לכל מסלולי הטיול →
+            לכל מסלולי הטיול
           </Link>
         </section>
       )}
+
+      {/* שאלות נפוצות - אחרי הרשימות, לא לפניהן */}
+      <CityFaqBlock city={community.name} seo={seo} />
 
       {/* אשכול העלויות - עמודי הערים לא קישרו עד היום לאף מדריך מחירון */}
       <RelatedContentBlock
@@ -248,6 +346,12 @@ export default function CityPage({ params }: { params: { slug: string } }) {
 
       {/* קישור לקהילה המקבילה - מחבר את "מדריך" ל"קהילה" */}
       <JoinCommunityCard tone="parks" />
+
+      <p className="muted" style={{ fontSize: 14, lineHeight: 1.7, marginTop: 8 }}>
+        מיקומי הגינות, המרפאות והחנויות: ©{' '}
+        <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="link">תורמי OpenStreetMap</a>
+        , נכון ל-{OSM_DATA_DATE.split('-').reverse().join('.')}, בתוספת רשימות עירוניות. מצאתם טעות? הטופס שלמעלה מגיע אלינו.
+      </p>
 
       {/* CTA */}
       <div style={{ marginTop: 24, display: 'flex', gap: 12, flexWrap: 'wrap' }}>

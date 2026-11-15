@@ -111,4 +111,14 @@ export type DogPark = {
   website: string | null
   /** כתובת רחוב (לרשימות עירוניות רשמיות; אופציונלי). */
   address?: string | null
+  /** הרחוב הקרוב ביותר לנקודה (גאוקודינג הפוך). קירוב, לא כתובת רשמית. */
+  near?: string | null
+  /** שכונה או רובע, אם ידוע. */
+  hood?: string | null
+  /** מסומנת ב-OSM כמגודרת (barrier). */
+  fenced?: boolean
+  /** מסומנת ב-OSM כמוארת. */
+  lit?: boolean
+  /** מסומנת ב-OSM כנגישה לכיסא גלגלים. */
+  wheelchair?: boolean
 }

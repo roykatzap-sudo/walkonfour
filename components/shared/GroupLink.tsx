@@ -9,7 +9,15 @@ import { FB_GROUP_URL } from '@/lib/social'
  * נשלחת ברקע ב-sendBeacon. src = מיקום הכפתור (hero, guide-inline, popup...).
  */
 /** שולח ספירת הקלקה ברקע. לשימוש גם מרכיבים שמחזיקים <a> משלהם. */
+/** מפתח בזיכרון הדפדפן: מתי המבקר לחץ על קישור לקבוצה. משמש כדי לא להקפיץ לו שוב הזמנה. */
+export const GROUP_CLICKED_KEY = 'kv-group-clicked-at'
+
 export function trackGroupClick(src: string) {
+  try {
+    window.localStorage.setItem(GROUP_CLICKED_KEY, String(Date.now()))
+  } catch {
+    /* מצב גלישה פרטית - ממשיכים בלי זיכרון */
+  }
   try {
     const body = JSON.stringify({ src, page: window.location.pathname })
     if (typeof navigator.sendBeacon === 'function') {
@@ -29,6 +37,7 @@ export function GroupLink({
   style,
   onClick,
   ariaLabel,
+  tabIndex,
 }: {
   src: string
   children: ReactNode
@@ -36,6 +45,7 @@ export function GroupLink({
   style?: CSSProperties
   onClick?: () => void
   ariaLabel?: string
+  tabIndex?: number
 }) {
   function track() {
     trackGroupClick(src)
@@ -50,11 +60,13 @@ export function GroupLink({
       className={className}
       style={style}
       aria-label={ariaLabel}
+      tabIndex={tabIndex}
       data-group-src={src}
       onClick={track}
       onAuxClick={track}
     >
       {children}
+      {!ariaLabel && <span className="kv-sr-only"> (נפתח בחלון חדש)</span>}
     </a>
   )
 }
