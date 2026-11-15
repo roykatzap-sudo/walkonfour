@@ -720,6 +720,8 @@ body.kv-zoomed, body.kv-zoomed * { cursor: auto !important; }
 /* ───────────────────── MAP ───────────────────── */
 .map-section { padding: 100px 0 0; background: var(--ink); position: relative; overflow: hidden; }
 .map-section-inner { max-width: 1200px; margin: 0 auto; padding: 0 52px; }
+/* תג סקשן על רקע כהה - זהב בהיר לניגודיות AA */
+.map-header .section-tag { color: #e8c887; }
 .map-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 52px; gap: 24px; flex-wrap: wrap; }
 .map-title { font-size: var(--h2); font-weight: 900; letter-spacing: -2px; color: #fff; }
 .map-title em { color: var(--brand-light); font-style: normal; }

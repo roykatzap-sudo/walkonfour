@@ -64,7 +64,7 @@ export function MapSection({ showHeader = true }: { showHeader?: boolean } = {})
         {inView ? (
           <DogParksMap />
         ) : (
-          <div className="map-wrap" style={{ display: 'grid', placeItems: 'center', color: 'rgba(255,255,255,.35)' }}>
+          <div className="map-wrap" style={{ display: 'grid', placeItems: 'center', color: 'rgba(255,255,255,.72)' }}>
             🐕 גוללו לכאן כדי לטעון את מפת הגינות
           </div>
         )}

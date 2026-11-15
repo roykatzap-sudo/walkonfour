@@ -315,6 +315,7 @@ export function Navbar() {
         aria-modal="true"
         aria-label="תפריט ניווט"
         aria-hidden={!menuOpen}
+        {...(menuOpen ? {} : ({ inert: '' } as unknown as { inert?: boolean }))}
       >
         <div className="kv-drawer-head">
           <Link href="/" className="kv-logo" onClick={() => setMenuOpen(false)} aria-label="קהילה על ארבע - לדף הבית">

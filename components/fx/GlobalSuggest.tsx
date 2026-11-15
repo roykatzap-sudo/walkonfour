@@ -63,11 +63,11 @@ export function GlobalSuggest() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="הצעה לתוספת לאתר"
+        aria-label="יש לכם הצעה? הצעה לתוספת לאתר"
         style={{
           position: 'fixed', bottom: 84, insetInlineEnd: 18, zIndex: 600,
           display: 'inline-flex', alignItems: 'center', gap: 7,
-          background: 'var(--brand)', color: '#fff', border: 'none',
+          background: 'var(--brand)', color: '#241a12', border: 'none',
           borderRadius: 999, padding: '11px 18px', fontSize: 15, fontWeight: 800,
           fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 24px rgba(201,154,91,.45)',
         }}
