@@ -536,7 +536,7 @@ function FilterChip({
         fontWeight: 700,
         fontFamily: 'inherit',
         cursor: 'pointer',
-        transition: 'all .2s',
+        transition: 'background-color .2s, border-color .2s, color .2s, box-shadow .2s, transform .2s, opacity .2s',
         border: active ? '1.5px solid var(--brand)' : '1.5px solid rgba(0,0,0,.12)',
         background: active ? 'var(--brand)' : '#fff',
         color: active ? '#fff' : 'var(--ink)',

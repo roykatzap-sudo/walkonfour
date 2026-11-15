@@ -179,7 +179,7 @@ export default async function PostPage({ params }: { params: { id: string } }) {
                 display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                 width: 44, height: 44, borderRadius: '50%',
                 background: '#fff', border: `1.5px solid ${s.color}`, color: s.color,
-                transition: 'all .2s',
+                transition: 'background-color .2s, border-color .2s, color .2s, box-shadow .2s, transform .2s, opacity .2s',
               }}
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">

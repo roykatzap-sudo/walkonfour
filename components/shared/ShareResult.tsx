@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { Icon } from '@/components/shared/Icon'
 
 /**
  * שיתוף תוצאה מכלי אינטראקטיבי.
@@ -59,7 +60,7 @@ export function ShareResult({
           שלחו בוואטסאפ
         </button>
         <button type="button" onClick={copy} className="shr-b shr-cp">
-          {copied ? '✓ הועתק' : '🔗 העתקת קישור'}
+          {copied ? 'הועתק' : <><Icon name="link" size={18} /> העתקת קישור</>}
         </button>
         {hasNative && (
           <button type="button" onClick={nativeShare} className="shr-b shr-cp shr-native">

@@ -50,10 +50,10 @@
 
 /* ── reveal-3d (JS toggles .in) - כניסה מודגשת: מרחק גדול יותר + blur-in ── */
 /* חשיפה בסגנון upwind - fade-up נקי ושקט, בלי דרמת 3D */
-.rv3d { opacity: 0; filter: blur(4px); transform: translateY(32px); transition: opacity .7s ease-in-out, transform .7s ease-in-out, filter .7s ease-in-out; }
+.rv3d { opacity: 0; filter: blur(2px); transform: translateY(12px); transition: opacity .42s var(--ease-out, ease-out), transform .42s var(--ease-out, ease-out), filter .42s var(--ease-out, ease-out); }
 .rv3d.in { opacity: 1; filter: blur(0); transform: translateY(0); }
-.rv3d.d1 { transition-delay: .08s } .rv3d.d2 { transition-delay: .18s }
-.rv3d.d3 { transition-delay: .28s } .rv3d.d4 { transition-delay: .38s }
+.rv3d.d1 { transition-delay: .04s } .rv3d.d2 { transition-delay: .09s }
+.rv3d.d3 { transition-delay: .14s } .rv3d.d4 { transition-delay: .19s }
 
 /* ── magnetic button ── */
 .magnetic { display: inline-flex; align-items: center; justify-content: center; will-change: transform; transition: transform 300ms ease-in-out; }
@@ -113,7 +113,7 @@
 a.chip3d { color: #7a5a2e; font-size: 15px; min-height: 40px; border-color: rgba(201,154,91,.45); }
 a.chip3d:hover { background: rgba(232,200,135,.28); }
 a.chip3d:focus-visible { outline: 3px solid #c99a5b; outline-offset: 2px; }
-button.chip3d { transition: all 300ms ease-in-out; }
+button.chip3d { transition: background-color .2s ease-out, border-color .2s ease-out, color .2s ease-out, box-shadow .2s ease-out, transform .2s ease-out, opacity .2s ease-out; }
 button.chip3d:hover { border-color: rgba(216,176,106,.6); box-shadow: 0 0 14px rgba(216,176,106,.25); background: rgba(232,200,135,.2); }
 .chip3d-dark { background: rgba(232,200,135,.1); color: #e8c887; border-color: rgba(232,200,135,.2); }
 

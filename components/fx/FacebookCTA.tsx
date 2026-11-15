@@ -95,7 +95,7 @@ export function FacebookCTA() {
     window.setTimeout(() => {
       setShow(false)
       setClosing(false)
-    }, 280)
+    }, 160)
     if (reshowRef.current) window.clearTimeout(reshowRef.current)
     reshowRef.current = window.setTimeout(() => {
       if (!alreadyClicked()) setShow(true)
@@ -143,10 +143,10 @@ export function FacebookCTA() {
           border-radius: 20px;
           box-shadow: 0 18px 50px rgba(42, 32, 24, 0.22);
           padding: 18px 18px 16px;
-          animation: fbcta-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+          animation: fbcta-in 0.26s cubic-bezier(0.23, 1, 0.32, 1) both;
         }
-        .fbcta.closing { animation: fbcta-out 0.28s ease forwards; }
-        @keyframes fbcta-in { from { opacity: 0; transform: translateY(24px) scale(0.96); } to { opacity: 1; transform: none; } }
+        .fbcta.closing { animation: fbcta-out 0.16s ease-out forwards; }
+        @keyframes fbcta-in { from { opacity: 0; transform: translateY(12px) scale(0.97); } to { opacity: 1; transform: none; } }
         @keyframes fbcta-out { to { opacity: 0; transform: translateY(16px); } }
         .fbcta-x {
           position: absolute; top: 6px; inset-inline-end: 6px;

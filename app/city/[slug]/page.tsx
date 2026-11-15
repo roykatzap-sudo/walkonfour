@@ -12,6 +12,7 @@ import { CityParkFeatures } from '@/components/city/CityParkFeatures'
 import { CityQuickAnswer, CityFaqBlock } from '@/components/city/CitySeoBlock'
 import { CityPlacesList } from '@/components/city/CityPlacesList'
 import { GroupLink } from '@/components/shared/GroupLink'
+import { Icon } from '@/components/shared/Icon'
 import { OSM_DATA_DATE } from '@/lib/cityPlaces'
 import { SuggestMissing } from '@/components/city/SuggestMissing'
 import { JoinCommunityCard } from '@/components/fx/JoinCommunityCard'
@@ -63,33 +64,38 @@ function Stat({ n, label }: { n: number; label: string }) {
 }
 
 // באדג' צבעוני קריא למאפייני מסלול (קושי / צל / מים) - גדול ומובחן לבני 40+.
-function WalkBadge({ label, icon, bg, fg, bd }: { label: string; icon: string; bg: string; fg: string; bd: string }) {
+function WalkBadge({ label, icon, bg, fg, bd }: { label: string; icon: React.ReactNode; bg: string; fg: string; bd: string }) {
   return (
     <span
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        gap: 5,
+        gap: 6,
         background: bg,
         color: fg,
         border: `1px solid ${bd}`,
         borderRadius: 999,
         padding: '5px 12px',
-        fontSize: 14,
+        fontSize: 14.5,
         fontWeight: 800,
         lineHeight: 1.2,
         whiteSpace: 'nowrap',
       }}
     >
-      <span aria-hidden="true">{icon}</span> {label}
+      {icon} {label}
     </span>
   )
 }
 
+/** נקודת צבע קטנה לרמת קושי - במקום אימוג'י של עיגול צבעוני. */
+function Dot({ color }: { color: string }) {
+  return <span aria-hidden="true" style={{ width: 9, height: 9, borderRadius: '50%', background: color, flexShrink: 0 }} />
+}
+
 const DIFFICULTY_STYLE: Record<string, { bg: string; fg: string; bd: string; icon: string }> = {
-  'קל': { bg: 'rgba(76,145,80,.12)', fg: '#2f6a33', bd: 'rgba(76,145,80,.32)', icon: '🟢' },
-  'בינוני': { bg: 'rgba(201,154,91,.15)', fg: '#8a5a1e', bd: 'rgba(201,154,91,.4)', icon: '🟡' },
-  'מאתגר': { bg: 'rgba(190,80,60,.12)', fg: '#a2402f', bd: 'rgba(190,80,60,.32)', icon: '🔴' },
+  'קל': { bg: 'rgba(76,145,80,.12)', fg: '#2f6a33', bd: 'rgba(76,145,80,.32)', icon: '#3f8f45' },
+  'בינוני': { bg: 'rgba(201,154,91,.15)', fg: '#8a5a1e', bd: 'rgba(201,154,91,.4)', icon: '#c08a2e' },
+  'מאתגר': { bg: 'rgba(190,80,60,.12)', fg: '#a2402f', bd: 'rgba(190,80,60,.32)', icon: '#c0503c' },
 }
 
 export default function CityPage({ params }: { params: { slug: string } }) {
@@ -301,10 +307,10 @@ export default function CityPage({ params }: { params: { slug: string } }) {
                     {w.city} · {w.lengthKm} ק״מ · {Math.round(distKm(community.lat, community.lng, w.lat, w.lng))} ק״מ ממרכז {community.name}
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
-                    <WalkBadge label={w.difficulty} icon={diff.icon} bg={diff.bg} fg={diff.fg} bd={diff.bd} />
-                    {w.shade && <WalkBadge label="צל" icon="🌳" bg="rgba(76,145,80,.1)" fg="#2f6a33" bd="rgba(76,145,80,.28)" />}
-                    {w.water && <WalkBadge label="מים" icon="💧" bg="rgba(70,130,190,.12)" fg="#245e88" bd="rgba(70,130,190,.32)" />}
-                    {w.fenced && <WalkBadge label="מקטע מגודר" icon="🚧" bg="rgba(201,154,91,.15)" fg="#8a5a1e" bd="rgba(201,154,91,.4)" />}
+                    <WalkBadge label={w.difficulty} icon={<Dot color={diff.icon} />} bg={diff.bg} fg={diff.fg} bd={diff.bd} />
+                    {w.shade && <WalkBadge label="צל" icon={<Icon name="tree" size={16} />} bg="rgba(76,145,80,.1)" fg="#2f6a33" bd="rgba(76,145,80,.28)" />}
+                    {w.water && <WalkBadge label="מים" icon={<Icon name="drop" size={16} />} bg="rgba(70,130,190,.12)" fg="#245e88" bd="rgba(70,130,190,.32)" />}
+                    {w.fenced && <WalkBadge label="מקטע מגודר" icon={<Icon name="fence" size={16} />} bg="rgba(201,154,91,.15)" fg="#8a5a1e" bd="rgba(201,154,91,.4)" />}
                   </div>
                   <p style={{ margin: '10px 0 0', fontSize: 16, lineHeight: 1.7, color: '#3d342a' }}>{w.description}</p>
                   <div className="cpl-btns" style={{ maxWidth: 420 }}>

@@ -57,6 +57,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/checklists', priority: 0.7, changeFrequency: 'monthly' },
     { path: '/tools/dog-id-card', priority: 0.75, changeFrequency: 'monthly' },
     { path: '/welcome', priority: 0.5, changeFrequency: 'monthly' },
+    { path: '/tools/vaccine-reminder', priority: 0.75, changeFrequency: 'monthly' },
+    { path: '/whats-new', priority: 0.5, changeFrequency: 'weekly' },
     { path: '/tools/lost-dog-poster', priority: 0.8, changeFrequency: 'monthly' },
     { path: '/faq', priority: 0.7, changeFrequency: 'monthly' },
     // הגזע הלאומי - דף עם תכולה ייחודית

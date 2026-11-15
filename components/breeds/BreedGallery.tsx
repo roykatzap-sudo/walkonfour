@@ -72,7 +72,7 @@ export function BreedGallery({ breeds }: { breeds: Breed[] }) {
           __html: `
             .breed-flip:hover .flip-inner { transform: none; }
             .breed-flip.flipped .flip-inner { transform: rotateY(180deg) !important; }
-            .breed-toggle { display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:8px 16px; border-radius:999px; font-size:14px; font-weight:700; cursor:pointer; transition: all .2s ease; }
+            .breed-toggle { display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:8px 16px; border-radius:999px; font-size:14px; font-weight:700; cursor:pointer; transition: background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease, opacity .2s ease; }
           `,
         }}
       />
@@ -116,7 +116,7 @@ export function BreedGallery({ breeds }: { breeds: Breed[] }) {
                   border: active ? '1px solid #c99a5b' : undefined,
                   background: active ? '#c99a5b' : undefined,
                   color: active ? '#fff' : undefined,
-                  transition: 'all .2s ease',
+                  transition: 'background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease, opacity .2s ease',
                 }}
               >
                 {s}
@@ -157,7 +157,7 @@ export function BreedGallery({ breeds }: { breeds: Breed[] }) {
                     border: active ? '1px solid #c99a5b' : undefined,
                     background: active ? '#c99a5b' : undefined,
                     color: active ? '#fff' : undefined,
-                    transition: 'all .2s ease',
+                    transition: 'background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease, opacity .2s ease',
                   }}
                 >
                   {f.label}

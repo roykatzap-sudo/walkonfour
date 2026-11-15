@@ -88,6 +88,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 84px; overflow-x: clip; max-
    במקום לשנות מאות גדלים, מגדילים את הדף כולו בהדרגה. --kv-z הוא מקדם ההגדלה;
    רכיבים שממקמים אלמנטים לפי העכבר מחלקים בו (lib/pageZoom.ts), ויחידות vh מחולקות בו. */
 :root { --kv-z: 1; }
+/* עקומות תנועה: יציאה מהירה שמרגישה מגיבה, ותנועה על המסך עם האצה והאטה */
+:root { --ease-out: cubic-bezier(0.23, 1, 0.32, 1); --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); }
 @media (min-width: 1900px) { :root { --kv-z: 1.12; } }
 @media (min-width: 2200px) { :root { --kv-z: 1.3; } }
 @media (min-width: 2600px) { :root { --kv-z: 1.55; } }
@@ -288,9 +290,9 @@ body.kv-zoomed, body.kv-zoomed * { cursor: auto !important; }
 .paw-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
 
 /* ── REVEAL ── */
-.r { opacity: 0; transform: translateY(36px); transition: opacity .8s ease, transform .8s ease; }
-.r.d1 { transition-delay: .1s } .r.d2 { transition-delay: .2s }
-.r.d3 { transition-delay: .3s } .r.d4 { transition-delay: .4s }
+.r { opacity: 0; transform: translateY(14px); transition: opacity .45s var(--ease-out), transform .45s var(--ease-out); }
+.r.d1 { transition-delay: .05s } .r.d2 { transition-delay: .1s }
+.r.d3 { transition-delay: .15s } .r.d4 { transition-delay: .2s }
 .r.on { opacity: 1; transform: translateY(0); }
 
 /* ───────────────────────── NAV ───────────────────────── */
@@ -653,7 +655,7 @@ body.kv-zoomed, body.kv-zoomed * { cursor: auto !important; }
 .gc-bar { background: rgba(255,255,255,.06); height: 5px; border-radius: 100px; margin-bottom: 8px; overflow: hidden; }
 .gc-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg,var(--brand),var(--brand-light)); width: 0; transition: width 1.5s cubic-bezier(.4,0,.2,1); }
 .gc-meta { display: flex; justify-content: space-between; font-size: 12px; color: rgba(255,255,255,.6); font-weight: 500; }
-.gc-btn { width: 100%; margin-top: 18px; padding: 14px; min-height: 48px; border-radius: 12px; border: 1px solid rgba(232,200,135,.45); background: transparent; color: var(--brand-light); font-weight: 700; font-size: 15px; font-family: inherit; cursor: pointer; transition: all .2s; }
+.gc-btn { width: 100%; margin-top: 18px; padding: 14px; min-height: 48px; border-radius: 12px; border: 1px solid rgba(232,200,135,.45); background: transparent; color: var(--brand-light); font-weight: 700; font-size: 15px; font-family: inherit; cursor: pointer; transition: background-color .2s, border-color .2s, color .2s, box-shadow .2s, transform .2s, opacity .2s; }
 .gc-btn:hover { background: var(--brand-light); color: #000; border-color: var(--brand-light); }
 @media (max-width: 900px) { .gr-grid { grid-template-columns: 1fr; } .gr-section { padding: 70px 20px; } }
 
@@ -712,7 +714,7 @@ body.kv-zoomed, body.kv-zoomed * { cursor: auto !important; }
 .pc-feat { font-size: 15px; padding: 8px 0; color: #3a3128; display: flex; align-items: center; gap: 10px; }
 .ok { color: var(--brand-dark); font-weight: 700; }
 .no { color: #b8b2a8; }
-.pc-btn { width: 100%; margin-top: 26px; padding: 15px; min-height: 48px; display: inline-flex; align-items: center; justify-content: center; border-radius: 100px; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer; transition: all .2s; }
+.pc-btn { width: 100%; margin-top: 26px; padding: 15px; min-height: 48px; display: inline-flex; align-items: center; justify-content: center; border-radius: 100px; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer; transition: background-color .2s, border-color .2s, color .2s, box-shadow .2s, transform .2s, opacity .2s; }
 .pc-out { background: transparent; color: #241a12; border: 1.5px solid #e0e0e0; }
 .pc-out:hover { border-color: #241a12; }
 .pc-fill { background: var(--brand); color: #fff; border: none; box-shadow: 0 8px 24px rgba(201,154,91,.2); }
@@ -746,10 +748,10 @@ body.kv-zoomed, body.kv-zoomed * { cursor: auto !important; }
 .map-search::placeholder { color: rgba(255,255,255,.6); }
 .map-search:focus { border-color: rgba(232,200,135,.6); }
 .map-city-btns { display: flex; gap: 8px; flex-wrap: wrap; }
-.mcb { background: rgba(42,32,24,.9); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.2); color: rgba(255,255,255,.85); padding: 9px 14px; min-height: 40px; display: inline-flex; align-items: center; border-radius: 100px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all .2s; white-space: nowrap; }
+.mcb { background: rgba(42,32,24,.9); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.2); color: rgba(255,255,255,.85); padding: 9px 14px; min-height: 40px; display: inline-flex; align-items: center; border-radius: 100px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background-color .2s, border-color .2s, color .2s, box-shadow .2s, transform .2s, opacity .2s; white-space: nowrap; }
 .mcb:hover, .mcb.on { background: rgba(232,200,135,.15); border-color: rgba(232,200,135,.4); color: var(--brand-light); }
 .map-bottom-bar { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center; }
-.locate-me-btn { background: rgba(42,32,24,.95); backdrop-filter: blur(12px); border: 1px solid rgba(232,200,135,.45); color: var(--brand-light); padding: 12px 22px; min-height: 44px; border-radius: 100px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 20px rgba(0,0,0,.4); transition: all .25s; }
+.locate-me-btn { background: rgba(42,32,24,.95); backdrop-filter: blur(12px); border: 1px solid rgba(232,200,135,.45); color: var(--brand-light); padding: 12px 22px; min-height: 44px; border-radius: 100px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 20px rgba(0,0,0,.4); transition: background-color .25s, border-color .25s, color .25s, box-shadow .25s, transform .25s, opacity .25s; }
 .locate-me-btn:hover { background: rgba(232,200,135,.15); box-shadow: 0 8px 32px rgba(232,200,135,.2); }
 .locate-me-btn.on { background: var(--brand); color: #fff; border-color: #fff; box-shadow: 0 6px 24px rgba(201,154,91,.55); }
 .locate-me-btn.on:hover { background: var(--brand-dark); color: #fff; }
@@ -806,7 +808,7 @@ body.kv-zoomed, body.kv-zoomed * { cursor: auto !important; }
 .input { padding: 13px 16px; min-height: 46px; border: 1.5px solid #d8d2c7; border-radius: 12px; font-size: 16px; font-family: inherit; background: #fff; outline: none; transition: border-color .2s, box-shadow .2s; }
 .input:focus { border-color: var(--brand); box-shadow: 0 0 0 4px rgba(201,154,91,.14); }
 textarea.input { resize: vertical; min-height: 110px; }
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 26px; min-height: 48px; border-radius: 100px; font-size: 15px; font-weight: 700; font-family: inherit; border: none; cursor: pointer; transition: all 300ms ease-in-out; text-decoration: none; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 26px; min-height: 48px; border-radius: 100px; font-size: 15px; font-weight: 700; font-family: inherit; border: none; cursor: pointer; transition: background-color .2s ease-out, border-color .2s ease-out, color .2s ease-out, box-shadow .2s ease-out, transform .2s ease-out, opacity .2s ease-out; text-decoration: none; }
 .btn:disabled, .btn[disabled] { opacity: .55; cursor: not-allowed; }
 .btn-primary {
   background: linear-gradient(180deg, #d5a96b, var(--brand) 55%, #b9884b);
@@ -1012,4 +1014,32 @@ html { scrollbar-color: #d3c5ab var(--cream); }
 .kv-sr-only {
   position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+
+/* ── תחושת לחיצה: כל כפתור שוקע מעט כשלוחצים עליו, ומגיב מיד ──
+   חל על הכפתורים של הכלים והעמודים החדשים, שלא עברו דרך .kv-press. */
+.cpl-btn, .cpl-report, .cpl-more > summary, .np-btn, .np-go, .lq-btn, .lq-opt, .ckl-b, .dic-b, .ldp-b, .gsh-b, .shr-b,
+.pf-send, .pf-close, .fbcta-btn, .fbcta-x, .fbp-bar-btn, .city-jumps a, .gl-nav a, a.chip3d, .gsug-fab, .city-fb {
+  transition: transform 160ms var(--ease-out), background-color 160ms ease, border-color 160ms ease, filter 160ms ease;
+}
+.cpl-btn:active, .cpl-more > summary:active, .np-btn:active, .np-go:active, .lq-btn:active, .ckl-b:active, .dic-b:active, .ldp-b:active,
+.gsh-b:active, .shr-b:active, .pf-send:active, .pf-close:active, .fbcta-btn:active, .fbp-bar-btn:active, .city-jumps a:active,
+.gl-nav a:active, a.chip3d:active, .gsug-fab:active { transform: scale(.97); }
+.lq-opt:active, .city-fb:active { transform: scale(.99); }
+
+/* ── מסכי מגע: ריחוף "נדבק" אחרי הקשה. מבטלים שם את תזוזות הריחוף ── */
+@media (hover: none) {
+  .card:hover, .gc:hover, .ev:hover, .tc:hover, .pc:hover, .hbm:hover, .kv-nav-btn:hover, .kv-fav:hover, .breed-flip:hover,
+  .ev-btn:hover, .pc-fill:hover, .kv-saved-link:hover, .kv-lift:hover, .kv-lift-md:hover, .shr-b:hover { transform: none; }
+  .kv-carousel-arrow:hover { transform: translateY(-50%); }
+  .pg-item:hover .pg-img, .rc:hover img, .split-img:hover img, .ev:hover .ev-img img, .breed-flip:hover .flip-face > img { transform: none; }
+  .kv-card-link:hover .kv-tool-icon { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cpl-btn, .cpl-more > summary, .np-btn, .np-go, .lq-btn, .lq-opt, .ckl-b, .dic-b, .ldp-b, .gsh-b, .shr-b, .pf-send, .pf-close,
+  .fbcta-btn, .fbp-bar-btn, .city-jumps a, .gl-nav a, a.chip3d, .gsug-fab, .city-fb { transition: none; }
+  .cpl-btn:active, .np-btn:active, .np-go:active, .lq-btn:active, .ckl-b:active, .dic-b:active, .ldp-b:active, .gsh-b:active, .shr-b:active,
+  .pf-send:active, .pf-close:active, .fbcta-btn:active, .fbp-bar-btn:active, .city-jumps a:active, .gl-nav a:active, a.chip3d:active,
+  .gsug-fab:active, .lq-opt:active, .city-fb:active { transform: none; }
 }

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { GroupLink } from '@/components/shared/GroupLink'
 
 type NavLink = { href: string; label: string }
@@ -70,6 +70,20 @@ export function Navbar() {
   const moreRef = useRef<HTMLDivElement>(null)
   const navRowRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
+  const router = useRouter()
+
+  // קיצור מקלדת: "/" פותח את החיפוש (אלא אם מקלידים בשדה כלשהו)
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return
+      const t = e.target as HTMLElement | null
+      if (t && (t.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName))) return
+      e.preventDefault()
+      router.push('/search')
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [router])
 
   // עמוד פעיל: התאמה מדויקת או תת-נתיב (למשל /breeds/labrador → "גזעים" פעיל)
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/')

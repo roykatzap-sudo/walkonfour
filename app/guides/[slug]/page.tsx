@@ -6,6 +6,7 @@ import { Reveal3D } from '@/components/fx/Reveal3D'
 import { JoinCommunityCard } from '@/components/fx/JoinCommunityCard'
 import { GroupLink } from '@/components/shared/GroupLink'
 import { GuideShare } from '@/components/guides/GuideShare'
+import { GuideFeedback } from '@/components/guides/GuideFeedback'
 import { JsonLd, articleSchema, breadcrumbSchema, faqSchema, howToSchema } from '@/components/seo/JsonLd'
 import { ReadingProgress } from '@/components/articles/ReadingProgress'
 import { buildMetadata } from '@/lib/seo'
@@ -283,6 +284,7 @@ export default function GuidePage({ params }: { params: { slug: string } }) {
         {/* שיתוף - אחרי הקריאה, לא לפני התוכן */}
         <div style={{ marginTop: 26 }}>
           <GuideShare title={guide.title} quickAnswer={guide.quickAnswer} path={`/guides/${guide.slug}`} />
+          <GuideFeedback slug={guide.slug} />
         </div>
 
         {/* FAQ - גלוי בעמוד. גוגל מכבד רק נתונים מובנים שגם נראים למשתמש. */}

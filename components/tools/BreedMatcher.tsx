@@ -139,10 +139,10 @@ export function BreedMatcher() {
               width: 26px; height: 26px; border-radius: 50%;
               background: ${PRIMARY}; color: #fff; font-weight: 900; font-size: 15px;
               flex: 0 0 auto;
-              transform: scale(0); opacity: 0;
+              transform: scale(.6); opacity: 0;
             }
             .bm-chosen .bm-check { animation: bm-check-in .42s var(--kv-ease-spring, cubic-bezier(.34,1.4,.5,1)) .06s both; }
-            @keyframes bm-check-in { from { transform: scale(0) rotate(-25deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+            @keyframes bm-check-in { from { transform: scale(.6) rotate(-25deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
 
             /* ── כף-רגל צועדת על סרגל ההתקדמות ── */
             .bm-progress-paw {

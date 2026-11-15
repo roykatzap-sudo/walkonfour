@@ -80,7 +80,7 @@ export function MapTabs() {
           font-size: 16px;
           font-weight: 700;
           cursor: pointer;
-          transition: all .22s;
+          transition: background-color .22s, border-color .22s, color .22s, box-shadow .22s, transform .22s, opacity .22s;
           white-space: nowrap;
         }
         .tab-btn:hover { color: #c99a5b; }

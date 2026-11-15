@@ -62,6 +62,9 @@ export function Footer() {
       <div className="kv-reveal" style={footerGroupStyle}>
         <div style={footerHeadingStyle} aria-hidden="true">תוכן וקהילה</div>
         <nav className="kv-footer-links" aria-label="ניווט תחתון" style={footerColStyle}>
+          <Link href="/search" className="kv-underline">חיפוש באתר</Link>
+          <Link href="/emergency" className="kv-underline">מצבי חירום</Link>
+          <Link href="/whats-new" className="kv-underline">מה חדש</Link>
           <Link href="/waitlist" className="kv-underline">רשימת המתנה</Link>
           <Link href="/breeds" className="kv-underline">גזעים</Link>
           <Link href="/articles" className="kv-underline">מדריכי גזעים</Link>

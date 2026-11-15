@@ -109,7 +109,7 @@ export default function MarketPage() {
                   border: active ? '1px solid #c99a5b' : undefined,
                   background: active ? '#c99a5b' : undefined,
                   color: active ? '#fff' : undefined,
-                  transition: 'all .2s ease',
+                  transition: 'background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease, opacity .2s ease',
                 }}
               >
                 {c}

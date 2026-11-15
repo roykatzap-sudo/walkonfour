@@ -8,6 +8,7 @@ import { AdminParkReports } from './AdminParkReports'
 import { AdminDirectory } from './AdminDirectory'
 import { AdminGroupClicks } from './AdminGroupClicks'
 import { AdminParkFeatures } from './AdminParkFeatures'
+import { AdminGuideFeedback } from './AdminGuideFeedback'
 
 const TABS = [
   { key: 'waitlist', label: 'רשימת המתנה', icon: '📋' },
@@ -16,6 +17,7 @@ const TABS = [
   { key: 'directory', label: 'מדריך עסקים', icon: '🏪' },
   { key: 'group-clicks', label: 'הקלקות לקבוצה', icon: '👥' },
   { key: 'park-features', label: 'מה יש בגינה', icon: '🌳' },
+  { key: 'guide-feedback', label: 'משוב על מדריכים', icon: '👍' },
 ]
 
 export function AdminDashboard() {
@@ -74,6 +76,7 @@ export function AdminDashboard() {
       <div style={{ display: tab === 'directory' ? 'block' : 'none' }}><AdminDirectory onPendingCount={setDirPending} /></div>
       {tab === 'group-clicks' && <AdminGroupClicks />}
       {tab === 'park-features' && <AdminParkFeatures />}
+      {tab === 'guide-feedback' && <AdminGuideFeedback />}
     </AdminGate>
   )
 }

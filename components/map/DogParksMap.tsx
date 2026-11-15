@@ -70,7 +70,7 @@ export function DogParksMap() {
     const size = sel ? 38 : 32
     return L.divIcon({
       className: '',
-      html: `<div style="width:${size}px;height:${size}px;background:${bg};border:2px solid #e8c887;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:${sel ? 17 : 14}px;box-shadow:${sh};cursor:pointer;transition:all .2s">🐕</div>`,
+      html: `<div style="width:${size}px;height:${size}px;background:${bg};border:2px solid #e8c887;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:${sel ? 17 : 14}px;box-shadow:${sh};cursor:pointer;transition:background-color .2s, border-color .2s, color .2s, box-shadow .2s, transform .2s, opacity .2s">🐕</div>`,
       iconSize: [size, size],
       iconAnchor: [size / 2, size / 2],
     })
@@ -516,7 +516,7 @@ export function DogParksMap() {
           background-size: 5px 5px, 5px 5px;
           background-repeat: no-repeat;
           min-width: 160px;
-          transition: all .2s;
+          transition: background-color .2s, border-color .2s, color .2s, box-shadow .2s, transform .2s, opacity .2s;
         }
         .map-city-select:hover, .map-city-select:focus {
           border-color: var(--brand-light);

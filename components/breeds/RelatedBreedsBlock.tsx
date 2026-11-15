@@ -62,7 +62,7 @@ export function RelatedBreedsBlock({ currentSlug }: { currentSlug: string }) {
               border: '1.5px solid rgba(201,154,91,.2)',
               borderRadius: 14,
               textDecoration: 'none',
-              transition: 'all .2s',
+              transition: 'background-color .2s, border-color .2s, color .2s, box-shadow .2s, transform .2s, opacity .2s',
             }}
             className="related-breed-card kv-lift kv-reveal kv-press"
           >

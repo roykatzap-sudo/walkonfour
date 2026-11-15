@@ -22,7 +22,7 @@ export function CommunitiesMap() {
       : `0 4px 16px ${c.accent}55`
     return L.divIcon({
       className: '',
-      html: `<div style="width:${size}px;height:${size}px;background:rgba(42,32,24,0.92);border:2.5px solid ${c.accent};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:${sel ? 20 : 17}px;font-weight:800;color:${c.accent};box-shadow:${glow};cursor:pointer;transition:all .2s;font-family:Heebo,sans-serif">🐾</div>`,
+      html: `<div style="width:${size}px;height:${size}px;background:rgba(42,32,24,0.92);border:2.5px solid ${c.accent};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:${sel ? 20 : 17}px;font-weight:800;color:${c.accent};box-shadow:${glow};cursor:pointer;transition:background-color .2s, border-color .2s, color .2s, box-shadow .2s, transform .2s, opacity .2s;font-family:Heebo,sans-serif">🐾</div>`,
       iconSize: [size, size],
       iconAnchor: [size / 2, size / 2],
     })
@@ -188,7 +188,7 @@ export function CommunitiesMap() {
           font-size: 14px;
           font-weight: 600;
           cursor: pointer;
-          transition: all .2s;
+          transition: background-color .2s, border-color .2s, color .2s, box-shadow .2s, transform .2s, opacity .2s;
           backdrop-filter: blur(6px);
         }
         .cm-chip:hover:not(:disabled) {

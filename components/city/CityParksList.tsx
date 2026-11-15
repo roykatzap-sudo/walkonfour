@@ -16,7 +16,8 @@ export const CITY_LIST_CSS = `
             .cpl-chips { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
             .cpl-chips:empty { display: none; }
             .cpl-chips li.cpl-no { color: #7a2e1e; background: rgba(190,80,60,.1); border-color: rgba(190,80,60,.3); }
-            .cpl-report { margin-top: 10px; min-height: 44px; padding: 0 10px; background: none; border: none; cursor: pointer; font: inherit; font-size: 15px; font-weight: 700; color: #7a5a2e; text-decoration: underline; text-underline-offset: 3px; text-align: start; }
+            .cpl-more-actions { display: flex; flex-wrap: wrap; gap: 2px 14px; margin-top: 8px; }
+            .cpl-report { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; background: none; border: none; cursor: pointer; font: inherit; font-size: 15px; font-weight: 700; color: #7a5a2e; text-decoration: underline; text-underline-offset: 3px; text-align: start; }
             .cpl-report:focus-visible { outline: 3px solid #c99a5b; outline-offset: 2px; border-radius: 8px; }
             .cpl-chips li { font-size: 14px; font-weight: 700; color: #2f6a33; background: rgba(76,145,80,.12); border: 1px solid rgba(76,145,80,.3); border-radius: 999px; padding: 3px 11px; }
             .cpl-btns { display: flex; gap: 8px; margin-top: auto; padding-top: 14px; }
@@ -70,9 +71,20 @@ function ParkCard({ p, city }: { p: DogPark; city: string }) {
           Google Maps
         </a>
       </div>
-      <button type="button" className="cpl-report" data-park-report={p.id} data-park-name={title}>
-        הייתם שם? סמנו מה יש בגינה
-      </button>
+      <div className="cpl-more-actions">
+        <a
+          href={`https://wa.me/?text=${encodeURIComponent(`גינת כלבים: ${title}\nניווט: ${waze(p)}\nעוד גינות ב${city}: https://walkonfour.org/cities?utm_source=wa_park`)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="cpl-report"
+          aria-label={`שליחת ${title} לחבר בוואטסאפ (נפתח בחלון חדש)`}
+        >
+          שליחה לחבר בוואטסאפ
+        </a>
+        <button type="button" className="cpl-report" data-park-report={p.id} data-park-name={title}>
+          סמנו מה יש בגינה
+        </button>
+      </div>
     </li>
   )
 }
