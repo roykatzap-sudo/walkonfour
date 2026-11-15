@@ -191,7 +191,6 @@ export default function ToolsPage() {
                   href={t.href}
                   className="lift-3d"
                   style={cardStyle}
-                  aria-label={`${t.title} - ${t.desc}`}
                 >
                   <div
                     aria-hidden="true"

@@ -77,7 +77,7 @@ function ParkCard({ p, city }: { p: DogPark; city: string }) {
           target="_blank"
           rel="noopener noreferrer"
           className="cpl-report"
-          aria-label={`שליחת ${title} לחבר בוואטסאפ (נפתח בחלון חדש)`}
+          aria-label={`שליחה לחבר בוואטסאפ: ${title} (נפתח בחלון חדש)`}
         >
           שליחה לחבר בוואטסאפ
         </a>
