@@ -24,6 +24,8 @@ function vis(text: string): string {
   const levels = bidi.getEmbeddingLevels(text, 'rtl')
   const flips = bidi.getReorderSegments(text, levels)
   const chars = text.split('')
+  // סוגריים בתוך טקסט מימין לשמאל צריכים להתהפך, אחרת יוצא ")כך("
+  bidi.getMirroredCharactersMap(text, levels.levels).forEach((ch, i) => { chars[i] = ch })
   for (const [start, end] of flips) {
     const slice = chars.slice(start, end + 1).reverse()
     chars.splice(start, slice.length, ...slice)
@@ -52,7 +54,7 @@ export function GET(req: Request) {
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '12px', background: BRAND_LIGHT, display: 'flex' }} />
 
         <div style={{ display: 'flex', alignItems: 'center', direction: 'rtl', fontSize: `${Math.round(132 * k)}px`, fontWeight: 900, color: '#fff', letterSpacing: '-3px', lineHeight: 1.05 }}>
-          <span style={{ display: 'flex', direction: 'rtl', gap: '26px' }}>
+          <span style={{ display: 'flex', flexDirection: 'row-reverse', gap: '26px' }}>
             <span>{vis('קהילה')}</span>
             <span style={{ color: BRAND_LIGHT }}>{vis('על ארבע')}</span>
           </span>

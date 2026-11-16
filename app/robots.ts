@@ -22,6 +22,8 @@ export default function robots(): MetadataRoute.Robots {
           '/market/post-ad',
           '/businesses/apply',
           '/go/',
+          '/post-kit',
+          '/og/post',
         ],
       },
     ],

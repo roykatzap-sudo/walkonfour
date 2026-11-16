@@ -11,6 +11,8 @@ declare module 'bidi-js' {
       start?: number,
       end?: number,
     ): [number, number][]
+    /** מפה של אינדקס -> תו מראה (סוגריים וכדומה) לתווים ברמת הטמעה אי-זוגית. מקבלת את מערך הרמות עצמו. */
+    getMirroredCharactersMap(text: string, levels: Uint8Array, start?: number, end?: number): Map<number, string>
   }
   export default function bidiFactory(): Bidi
 }

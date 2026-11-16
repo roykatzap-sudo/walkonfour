@@ -19,6 +19,7 @@ import { RouteProgress } from '@/components/fx/RouteProgress'
 import { SignatureMotion } from '@/components/fx/useSignatureMotion'
 import { JsonLd, organizationSchema, websiteSchema } from '@/components/seo/JsonLd'
 import { Analytics } from '@vercel/analytics/next'
+import { PostVisitBeacon } from '@/components/fx/PostVisitBeacon'
 import {
   SITE_URL,
   SITE_NAME,
@@ -112,6 +113,7 @@ export default function RootLayout({
           <WanderingDog />
           <PawTrail />
           <GlobalSuggest />
+          <PostVisitBeacon />
         </ToastProvider>
         <Analytics />
       </body>

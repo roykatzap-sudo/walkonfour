@@ -38,8 +38,10 @@ export function ogImageUrl(opts: { title?: string; subtitle?: string; tag?: stri
   if (opts.title) p.set('title', opts.title)
   if (opts.subtitle) p.set('subtitle', opts.subtitle)
   if (opts.tag) p.set('tag', opts.tag)
-  const qs = p.toString()
-  return qs ? `/og?${qs}` : '/og'
+  // v = גרסת העיצוב של הכרטיס. מעלים אותה כשהכרטיס משתנה, כדי שפייסבוק וואטסאפ
+  // לא ימשיכו להציג את התמונה הישנה מהמטמון. (v=2: יישור לימין ושם המותג בסדר הנכון.)
+  p.set('v', '2')
+  return `/og?${p.toString()}`
 }
 
 /** תמונת שיתוף ברירת מחדל - קובר המותג הקבוע (1200x628). */

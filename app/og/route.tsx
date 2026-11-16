@@ -9,6 +9,9 @@ import { SITE_TAGLINE } from '@/lib/seo'
  * GET /og?title=...&subtitle=...&tag=...
  * מחזיר PNG 1200x630 בפלטת קרם-לברדור, RTL, עם הלוגו והטאגליין.
  *
+ * פריסה: satori מתעלם מ-direction: rtl, ולכן היישור לימין נעשה במפורש
+ * (שורות ב-row-reverse, עמודות ב-alignItems: flex-end).
+ *
  * רץ ב-Node runtime כדי לקרוא את קובצי הפונט העברי (satori לא תומך WOFF2,
  * וברירת המחדל שלו לטינית בלבד → עברית הייתה ריבועים).
  */
@@ -41,6 +44,8 @@ function vis(text: string): string {
   const levels = bidi.getEmbeddingLevels(text, 'rtl')
   const flips = bidi.getReorderSegments(text, levels)
   const chars = text.split('')
+  // סוגריים בתוך טקסט מימין לשמאל צריכים להתהפך, אחרת יוצא ")כך("
+  bidi.getMirroredCharactersMap(text, levels.levels).forEach((ch, i) => { chars[i] = ch })
   for (const [start, end] of flips) {
     const slice = chars.slice(start, end + 1).reverse()
     chars.splice(start, slice.length, ...slice)
@@ -146,10 +151,10 @@ export function GET(req: Request) {
         />
 
         {/* שורה עליונה: לוגו + תגית */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', direction: 'rtl', fontSize: '36px', fontWeight: 800, color: '#fff' }}>
+        <div style={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', fontSize: '36px', fontWeight: 800, color: '#fff' }}>
             <span style={{ fontSize: '40px', marginLeft: '12px' }}>🐾</span>
-            <span style={{ display: 'flex', direction: 'rtl', gap: '9px' }}>
+            <span style={{ display: 'flex', flexDirection: 'row-reverse', gap: '9px' }}>
               <span>{vis('קהילה')}</span>
               <span style={{ color: BRAND_LIGHT }}>{vis('על ארבע')}</span>
             </span>
@@ -175,7 +180,7 @@ export function GET(req: Request) {
         </div>
 
         {/* גוף - תופס את כל המרחב שנשאר וממורכז אנכית, במקום חלל ריק באמצע */}
-        <div style={{ display: 'flex', flex: 1, flexDirection: 'column', justifyContent: 'center', paddingTop: '18px', paddingBottom: '26px' }}>
+        <div style={{ display: 'flex', flex: 1, flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center', paddingTop: '18px', paddingBottom: '26px' }}>
           {titleLines.map((line, i) => (
             <div
               key={i}
@@ -212,8 +217,8 @@ export function GET(req: Request) {
         </div>
 
         {/* תחתית */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', direction: 'rtl', fontSize: '25px', color: 'rgba(255,255,255,0.72)', fontWeight: 700 }}>
+        <div style={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', fontSize: '25px', color: 'rgba(255,255,255,0.72)', fontWeight: 700 }}>
             <div style={{ display: 'flex', width: '13px', height: '13px', borderRadius: '13px', background: BRAND_LIGHT, marginLeft: '13px' }} />
             {vis('הכל על כלבים, במקום אחד')}
           </div>

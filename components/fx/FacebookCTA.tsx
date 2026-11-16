@@ -19,7 +19,7 @@ import { FB_GROUP_URL } from '@/lib/social'
 const RESHOW_MS = 3 * 60_000
 const QUIET_AFTER_CLICK_MS = 7 * 24 * 60 * 60_000
 
-const HIDE_ON = ['/emergency', '/tools/', '/search', '/quiz', '/near-me', '/admin', '/facebook', '/welcome', '/community', '/unsubscribe', '/privacy', '/terms']
+const HIDE_ON = ['/emergency', '/tools/', '/search', '/quiz', '/near-me', '/admin', '/facebook', '/welcome', '/community', '/unsubscribe', '/privacy', '/terms', '/post-kit']
 
 function copyFor(path: string): { title: string; sub: string } {
   if (path.startsWith('/city/')) {

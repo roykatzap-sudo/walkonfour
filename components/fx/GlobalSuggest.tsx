@@ -16,7 +16,7 @@ function typeForPath(path: string): string {
 // במפה (/map) - כי יש שם כפתור "דווח על גינה חסרה" + כדי לא לכסות את המפה.
 // בקהילה (/community) - חוויית הקהילה הסגורה לא צריכה כפתור הצעה כללי.
 // בעמוד עיר (/city/...) יש טופס "מה חסר" ייעודי, ובכלים האינטראקטיביים הכפתור מכסה את הטופס בנייד.
-const HIDE_ON = ['/admin', '/unsubscribe', '/privacy', '/terms', '/map', '/community', '/city/', '/tools/', '/near-me', '/search', '/quiz']
+const HIDE_ON = ['/admin', '/unsubscribe', '/privacy', '/terms', '/map', '/community', '/city/', '/tools/', '/near-me', '/search', '/quiz', '/post-kit']
 
 export function GlobalSuggest() {
   const pathname = usePathname() || '/'
