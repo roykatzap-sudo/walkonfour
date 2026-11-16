@@ -2,6 +2,7 @@
 
 import type { CSSProperties, ReactNode } from 'react'
 import { FB_GROUP_URL } from '@/lib/social'
+import { getArrival } from '@/lib/arrival'
 
 /**
  * קישור לקבוצת הפייסבוק שסופר הקלקות.
@@ -19,7 +20,7 @@ export function trackGroupClick(src: string) {
     /* מצב גלישה פרטית - ממשיכים בלי זיכרון */
   }
   try {
-    const body = JSON.stringify({ src, page: window.location.pathname })
+    const body = JSON.stringify({ src, page: window.location.pathname, via: getArrival() })
     if (typeof navigator.sendBeacon === 'function') {
       navigator.sendBeacon('/api/group-click', new Blob([body], { type: 'text/plain' }))
     } else {

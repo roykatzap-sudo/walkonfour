@@ -27,10 +27,19 @@ const CREATE_SQL = `
     created_at timestamptz default now()
   )`
 
+/** הפוסט שממנו הגיע המבקר ("מקור:קמפיין"). נוסף אחרי שהטבלה כבר הייתה קיימת. */
+const ADD_VIA_SQL = 'alter table group_clicks add column if not exists via text'
+
 /** מנקה ערך חופשי למפתח קצר ובטוח (אותיות לטיניות, ספרות, מקף). */
 export function cleanSrc(v: unknown): string {
   const s = typeof v === 'string' ? v.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 40) : ''
   return s || 'unknown'
+}
+
+/** "מקור:קמפיין" של הביקור, או null. */
+export function cleanVia(v: unknown): string | null {
+  const s = typeof v === 'string' ? v.toLowerCase().replace(/[^a-z0-9_:-]/g, '').slice(0, 90) : ''
+  return s || null
 }
 
 /** נתיב עמוד: רק path, בלי query ובלי דומיין. */
@@ -45,13 +54,14 @@ export function looksLikeBot(ua: string | null): boolean {
   return /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|headless|lighthouse|monitor|curl|python|wget/i.test(ua)
 }
 
-export async function addGroupClick(src: string, page: string | null): Promise<boolean> {
+export async function addGroupClick(src: string, page: string | null, via: string | null = null): Promise<boolean> {
   if (!groupClicksConfigured()) return false
   const client = makeClient()
   try {
     await client.connect()
     await client.query(CREATE_SQL)
-    await client.query('insert into group_clicks (src, page) values ($1, $2)', [src, page])
+    await client.query(ADD_VIA_SQL)
+    await client.query('insert into group_clicks (src, page, via) values ($1, $2, $3)', [src, page, via])
     return true
   } catch (e) {
     console.error('[group-clicks] add failed', e)

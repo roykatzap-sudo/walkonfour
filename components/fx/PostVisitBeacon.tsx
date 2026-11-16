@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { getArrival } from '@/lib/arrival'
 
 /**
  * סופר כניסה לאתר מקישור מתויג (utm_source), פעם אחת לכל כניסה.
@@ -11,6 +12,7 @@ import { useEffect } from 'react'
 export function PostVisitBeacon() {
   useEffect(() => {
     try {
+      getArrival()
       const sp = new URLSearchParams(window.location.search)
       const src = sp.get('utm_source')
       if (!src) return

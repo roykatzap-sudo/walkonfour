@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { trackGroupClick, GROUP_CLICKED_KEY } from '@/components/shared/GroupLink'
 import { FB_GROUP_URL } from '@/lib/social'
+import { cameFromFacebook } from '@/lib/arrival'
 
 /**
  * הזמנה לקבוצת הפייסבוק - מופיעה אחרי 5 שניות (או גלילה של רבע עמוד), וחוזרת
@@ -52,10 +53,14 @@ export function FacebookCTA() {
   const hidden = HIDE_ON.some((p) => pathname.startsWith(p))
   const [show, setShow] = useState(false)
   const [closing, setClosing] = useState(false)
+  const [fromFb, setFromFb] = useState(false)
   const reshowRef = useRef<number | null>(null)
 
   useEffect(() => {
     if (typeof window === 'undefined' || alreadyClicked()) return
+    // מי שהגיע מפייסבוק כבר נמצא שם, והקבוצה במרחק לחיצה: מציגים לו את ההזמנה מוקדם יותר.
+    const fb = cameFromFacebook()
+    setFromFb(fb)
 
     let armed = true
     const reveal = () => {
@@ -70,7 +75,7 @@ export function FacebookCTA() {
       const scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight || 1)
       if (scrolled > 0.25) reveal()
     }
-    const timer = window.setTimeout(reveal, 5000)
+    const timer = window.setTimeout(reveal, fb ? 1800 : 5000)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => {
       window.clearTimeout(timer)
@@ -103,7 +108,8 @@ export function FacebookCTA() {
   }
 
   if (!show || hidden) return null
-  const copy = copyFor(pathname)
+  const base = copyFor(pathname)
+  const copy = fromFb ? { title: base.title, sub: `הגעתם מפייסבוק, אז זה במרחק לחיצה אחת. ${base.sub}` } : base
 
   return (
     <div className={`fbcta${closing ? ' closing' : ''}`} role="region" aria-label="הזמנה לקבוצת הפייסבוק">
@@ -121,7 +127,7 @@ export function FacebookCTA() {
         target="_blank"
         rel="noopener noreferrer"
         className="fbcta-btn"
-        onClick={() => { trackGroupClick('popup'); dismiss() }}
+        onClick={() => { trackGroupClick(fromFb ? 'popup-fb' : 'popup'); dismiss() }}
       >
         <span className="fbcta-long">להצטרפות לקבוצה</span>
         <span className="fbcta-short" aria-hidden="true">לקבוצה</span>

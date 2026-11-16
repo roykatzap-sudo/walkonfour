@@ -57,11 +57,13 @@ export type PostVisitStats = {
   byCampaign: { src: string; campaign: string; visits: number }[]
   byPage: { page: string; visits: number }[]
   byDay: { day: string; visits: number }[]
+  /** הקלקות על הקישור לקבוצה, לפי הפוסט שממנו הגיע המבקר ("מקור:קמפיין"). */
+  groupClicksByVia: { via: string; clicks: number }[]
 }
 
 /** אדמין: סיכום 30 הימים האחרונים. */
 export async function postVisitStats(): Promise<PostVisitStats> {
-  const empty: PostVisitStats = { total: 0, last7: 0, last30: 0, bySrc: [], byCampaign: [], byPage: [], byDay: [] }
+  const empty: PostVisitStats = { total: 0, last7: 0, last30: 0, bySrc: [], byCampaign: [], byPage: [], byDay: [], groupClicksByVia: [] }
   if (!postVisitsConfigured()) return empty
   const client = makeClient()
   try {
@@ -91,7 +93,18 @@ export async function postVisitStats(): Promise<PostVisitStats> {
       where created_at > now() - interval '30 days'
       group by 1 order by 1 desc`)
     const t = totals.rows[0] ?? { total: 0, last7: 0, last30: 0 }
-    return { total: t.total, last7: t.last7, last30: t.last30, bySrc: bySrc.rows, byCampaign: byCampaign.rows, byPage: byPage.rows, byDay: byDay.rows }
+    // טבלת ההקלקות לקבוצה נוצרת בנפרד, וייתכן שעדיין אין בה עמודת via - לכן בנפרד ובלי להפיל את הדוח.
+    let groupClicksByVia: { via: string; clicks: number }[] = []
+    try {
+      const g = await client.query(`
+        select via, count(*)::int as clicks from group_clicks
+        where via is not null and created_at > now() - interval '30 days'
+        group by via order by clicks desc limit 120`)
+      groupClicksByVia = g.rows
+    } catch {
+      /* אין עדיין נתונים */
+    }
+    return { total: t.total, last7: t.last7, last30: t.last30, bySrc: bySrc.rows, byCampaign: byCampaign.rows, byPage: byPage.rows, byDay: byDay.rows, groupClicksByVia }
   } catch (e) {
     console.error('[post-visits] stats failed', e)
     return empty
