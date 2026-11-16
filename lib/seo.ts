@@ -121,6 +121,13 @@ export function buildMetadata(input: PageMetaInput): Metadata {
   const url = absoluteUrl(path)
   // אם לא סופקה תמונה ספציפית - משתמשים בקובר המותג הקבוע.
   const ogImage = absoluteUrl(image ?? DEFAULT_OG_IMAGE)
+  // מידות התמונה: בלעדיהן פייסבוק לא מציג תמונה בשיתוף הראשון של קישור חדש
+  // (הוא מוריד אותה ברקע, והתצוגה המקדימה יוצאת בלי תמונה).
+  const ogDims = /\/og(\?|$)/.test(ogImage)
+    ? { width: 1200, height: 630 }
+    : image
+      ? {}
+      : { width: 1200, height: 628 }
 
   const meta: Metadata = {
     title: fullTitle,
@@ -133,7 +140,7 @@ export function buildMetadata(input: PageMetaInput): Metadata {
       siteName: SITE_NAME,
       locale: SITE_LOCALE,
       type,
-      images: [{ url: ogImage, alt: fullTitle }],
+      images: [{ url: ogImage, alt: fullTitle, ...ogDims }],
       ...(article
         ? {
             publishedTime: article.publishedTime,
