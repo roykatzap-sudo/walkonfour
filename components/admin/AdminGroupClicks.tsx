@@ -41,6 +41,8 @@ const SRC_LABEL: Record<string, string> = {
   'card-parks': 'כרטיס הזמנה: גינות',
   'card-general': 'כרטיס הזמנה: כללי',
   popup: 'חלונית קופצת',
+  'popup-thread': 'חלונית קופצת: שרשור העיר',
+  'city-thread': 'עמוד עיר: שרשור העיר בקבוצה',
   'popup-fb': 'חלונית קופצת: למי שהגיע מפייסבוק',
   footer: 'פוטר האתר',
   'facebook-page': 'עמוד הקהילה',

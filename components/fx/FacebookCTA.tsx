@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { trackGroupClick, GROUP_CLICKED_KEY } from '@/components/shared/GroupLink'
 import { FB_GROUP_URL } from '@/lib/social'
 import { cameFromFacebook } from '@/lib/arrival'
+import { cityThreadUrl, citySlugFromPath } from '@/lib/cityThreads'
 
 /**
  * הזמנה לקבוצת הפייסבוק - מופיעה אחרי 5 שניות (או גלילה של רבע עמוד), וחוזרת
@@ -109,6 +110,8 @@ export function FacebookCTA() {
 
   if (!show || hidden) return null
   const base = copyFor(pathname)
+  const slug = citySlugFromPath(pathname)
+  const threadUrl = slug ? cityThreadUrl(slug) : null
   const copy = fromFb ? { title: base.title, sub: `הגעתם מפייסבוק, אז זה במרחק לחיצה אחת. ${base.sub}` } : base
 
   return (
@@ -123,11 +126,11 @@ export function FacebookCTA() {
         </div>
       </div>
       <a
-        href={FB_GROUP_URL}
+        href={threadUrl ?? FB_GROUP_URL}
         target="_blank"
         rel="noopener noreferrer"
         className="fbcta-btn"
-        onClick={() => { trackGroupClick(fromFb ? 'popup-fb' : 'popup'); dismiss() }}
+        onClick={() => { trackGroupClick(threadUrl ? 'popup-thread' : fromFb ? 'popup-fb' : 'popup'); dismiss() }}
       >
         <span className="fbcta-long">להצטרפות לקבוצה</span>
         <span className="fbcta-short" aria-hidden="true">לקבוצה</span>

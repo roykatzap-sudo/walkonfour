@@ -39,6 +39,7 @@ export function GroupLink({
   onClick,
   ariaLabel,
   tabIndex,
+  href,
 }: {
   src: string
   children: ReactNode
@@ -47,6 +48,8 @@ export function GroupLink({
   onClick?: () => void
   ariaLabel?: string
   tabIndex?: number
+  /** קישור ספציפי בתוך הקבוצה (למשל שרשור של עיר). ברירת מחדל: הקבוצה עצמה. */
+  href?: string
 }) {
   function track() {
     trackGroupClick(src)
@@ -55,7 +58,7 @@ export function GroupLink({
 
   return (
     <a
-      href={FB_GROUP_URL}
+      href={href ?? FB_GROUP_URL}
       target="_blank"
       rel="noopener noreferrer"
       className={className}
