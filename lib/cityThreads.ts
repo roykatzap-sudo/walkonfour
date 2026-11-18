@@ -11,6 +11,9 @@ const THREADS: Record<string, string> = {
   ashdod: `${GROUP}/posts/2559648594530004/`,
   'tel-aviv': `${GROUP}/posts/2559649104529953/`,
   rishon: `${GROUP}/posts/2559649581196572/`,
+  herzliya: `${GROUP}/posts/2559652227862974/`,
+  'ramat-gan': `${GROUP}/posts/2559652654529598/`,
+  netanya: `${GROUP}/posts/2559653064529557/`,
 }
 
 /** קישור לשרשור של העיר, או null אם עוד אין. */
